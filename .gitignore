@@ -1,0 +1,27 @@
+# Binaries
+*.exe
+*.out
+
+# Dependency management (Go Modules)
+/vendor/
+
+# Go build cache
+/bin/
+/pkg/
+
+# Test artifacts
+*_test.out
+*.test
+
+# IDE specific
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*~
+# Logs
+*.log
