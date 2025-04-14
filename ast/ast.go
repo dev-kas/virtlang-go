@@ -66,12 +66,12 @@ func (n NodeType) String() string {
 type CompareOperator string
 
 const (
-	LessThanOrEqual    CompareOperator = "<="
-	LessThan           CompareOperator = "<"
-	GreaterThanOrEqual CompareOperator = "=>"
-	GreaterThan        CompareOperator = ">"
-	Equal              CompareOperator = "=="
-	NotEqual           CompareOperator = "!="
+	LessThanEqual    CompareOperator = "<="
+	LessThan         CompareOperator = "<"
+	GreaterThanEqual CompareOperator = "=>"
+	GreaterThan      CompareOperator = ">"
+	Equal            CompareOperator = "=="
+	NotEqual         CompareOperator = "!="
 )
 
 type BinaryOperator string

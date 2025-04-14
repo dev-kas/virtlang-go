@@ -38,6 +38,67 @@ const (
 	EOF                          // end of file
 )
 
+func Stringify(t TokenType) string {
+	switch t {
+	case Number:
+		return "Number"
+	case Identifier:
+		return "Identifier"
+	case Equals:
+		return "Equals"
+	case BinOperator:
+		return "BinOperator"
+	case OParen:
+		return "OParen"
+	case CParen:
+		return "CParen"
+	case Let:
+		return "Let"
+	case Const:
+		return "Const"
+	case SemiColon:
+		return "SemiColon"
+	case Comma:
+		return "Comma"
+	case Colon:
+		return "Colon"
+	case OBrace:
+		return "OBrace"
+	case CBrace:
+		return "CBrace"
+	case OBracket:
+		return "OBracket"
+	case CBracket:
+		return "CBracket"
+	case Dot:
+		return "Dot"
+	case Fn:
+		return "Fn"
+	case ComOperator:
+		return "ComOperator"
+	case If:
+		return "If"
+	case Else:
+		return "Else"
+	case String:
+		return "String"
+	case WhileLoop:
+		return "WhileLoop"
+	case Comment:
+		return "Comment"
+	case Try:
+		return "Try"
+	case Catch:
+		return "Catch"
+	case Return:
+		return "Return"
+	case EOF:
+		return "EOF"
+	default:
+		return "Unknown"
+	}
+}
+
 var KEYWORDS = map[string]TokenType{
 	"let":    Let,
 	"const":  Const,

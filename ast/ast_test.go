@@ -40,14 +40,14 @@ func TestNodeType_String(t *testing.T) {
 }
 
 func TestCompareOperatorConstants(t *testing.T) {
-	if ast.LessThanOrEqual != "<=" {
-		t.Errorf("Expected LessThanOrEqual to be '<=', but got '%s'", ast.LessThanOrEqual)
+	if ast.LessThanEqual != "<=" {
+		t.Errorf("Expected LessThanOrEqual to be '<=', but got '%s'", ast.LessThanEqual)
 	}
 	if ast.LessThan != "<" {
 		t.Errorf("Expected LessThan to be '<', but got '%s'", ast.LessThan)
 	}
-	if ast.GreaterThanOrEqual != "=>" {
-		t.Errorf("Expected GreaterThanOrEqual to be '=>', but got '%s'", ast.GreaterThanOrEqual)
+	if ast.GreaterThanEqual != "=>" {
+		t.Errorf("Expected GreaterThanOrEqual to be '=>', but got '%s'", ast.GreaterThanEqual)
 	}
 	if ast.GreaterThan != ">" {
 		t.Errorf("Expected GreaterThan to be '>', but got '%s'", ast.GreaterThan)
