@@ -2,8 +2,8 @@ package parser
 
 import (
 	"VirtLang/ast"
-	"VirtLang/lexer"
 	"VirtLang/errors"
+	"VirtLang/lexer"
 	"strconv"
 )
 
@@ -25,7 +25,10 @@ func (p *Parser) parseArrayLiteral() (ast.Expr, *errors.SyntaxError) {
 		}
 	}
 
-	p.expect(lexer.CBracket)
+	_, err := p.expect(lexer.CBracket)
+	if err != nil {
+		return nil, err
+	}
 
 	properties := []ast.Property{}
 

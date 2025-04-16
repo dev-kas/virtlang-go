@@ -6,16 +6,18 @@ import (
 	"VirtLang/lexer"
 )
 
-func (p *Parser) parseWhileLoop() (ast.Expr, *errors.SyntaxError) {
-	p.advance() // while
+func (p *Parser) parseIfStmt() (*ast.IfStatement, *errors.SyntaxError) {
+	p.advance() // if
 
 	if _, err := p.expect(lexer.OParen); err != nil {
 		return nil, err
 	}
+
 	condition, err := p.parseExpr()
 	if err != nil {
 		return nil, err
 	}
+
 	if _, err := p.expect(lexer.CParen); err != nil {
 		return nil, err
 	}
@@ -23,6 +25,7 @@ func (p *Parser) parseWhileLoop() (ast.Expr, *errors.SyntaxError) {
 	if _, err := p.expect(lexer.OBrace); err != nil {
 		return nil, err
 	}
+
 	body := []ast.Stmt{}
 
 	for !p.isEOF() && p.at().Type != lexer.CBrace {
@@ -37,7 +40,7 @@ func (p *Parser) parseWhileLoop() (ast.Expr, *errors.SyntaxError) {
 		return nil, err
 	}
 
-	return &ast.WhileLoop{
+	return &ast.IfStatement{
 		Condition: condition,
 		Body:      body,
 	}, nil

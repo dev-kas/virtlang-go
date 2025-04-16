@@ -2,13 +2,15 @@ package parser
 
 import (
 	"VirtLang/ast"
-	"VirtLang/lexer"
 	"VirtLang/errors"
+	"VirtLang/lexer"
 )
 
 func (p *Parser) parseTryCatch() (ast.Expr, *errors.SyntaxError) {
 	p.advance() // try
-	p.expect(lexer.OBrace)
+	if _, err := p.expect(lexer.OBrace); err != nil {
+		return nil, err
+	}
 
 	tryBody := []ast.Stmt{}
 
@@ -20,15 +22,21 @@ func (p *Parser) parseTryCatch() (ast.Expr, *errors.SyntaxError) {
 		tryBody = append(tryBody, stmt)
 	}
 
-	p.expect(lexer.CBrace)
-	p.expect(lexer.Catch)
+	if _, err := p.expect(lexer.CBrace); err != nil {
+		return nil, err
+	}
+	if _, err := p.expect(lexer.Catch); err != nil {
+		return nil, err
+	}
 
 	cVar, err := p.expect(lexer.Identifier)
 	if err != nil {
 		return nil, err
 	}
 
-	p.expect(lexer.OBrace)
+	if _, err := p.expect(lexer.OBrace); err != nil {
+		return nil, err
+	}
 
 	catchBody := []ast.Stmt{}
 
@@ -40,11 +48,13 @@ func (p *Parser) parseTryCatch() (ast.Expr, *errors.SyntaxError) {
 		catchBody = append(catchBody, stmt)
 	}
 
-	p.expect(lexer.CBrace)
+	if _, err := p.expect(lexer.CBrace); err != nil {
+		return nil, err
+	}
 
 	return &ast.TryCatchStmt{
-		Try:  tryBody,
+		Try:      tryBody,
 		CatchVar: cVar.Literal,
-		Catch: catchBody,
+		Catch:    catchBody,
 	}, nil
 }

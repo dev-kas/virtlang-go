@@ -2,8 +2,9 @@ package parser
 
 import (
 	"VirtLang/ast"
-	"VirtLang/lexer"
 	"VirtLang/errors"
+	"VirtLang/lexer"
+	"strconv"
 )
 
 func (p *Parser) parsePrimaryExpr() (ast.Expr, *errors.SyntaxError) {
@@ -18,10 +19,19 @@ func (p *Parser) parsePrimaryExpr() (ast.Expr, *errors.SyntaxError) {
 
 	case lexer.Number:
 		value = p.advance().Literal
+		parsedValue, err := strconv.Atoi(value.(string))
+		if err != nil {
+			return nil, &errors.SyntaxError{
+				Expected:   "Valid Number",
+				Got:        value.(string),
+				Start:      p.at().Start,
+				Difference: p.at().Difference,
+			}
+		}
 		return &ast.NumericLiteral{
-			Value: value.(int),
+			Value: parsedValue,
 		}, nil
-	
+
 	case lexer.OParen:
 		p.advance()
 		expr, err := p.parseExpr()
@@ -30,19 +40,19 @@ func (p *Parser) parsePrimaryExpr() (ast.Expr, *errors.SyntaxError) {
 		}
 		p.expect(lexer.CParen)
 		return expr, nil
-	
+
 	case lexer.OBracket:
 		return p.parseArrayLiteral()
-	
+
 	case lexer.String:
 		value = p.advance().Literal
 		return &ast.StringLiteral{
 			Value: value.(string),
 		}, nil
-	
+
 	case lexer.WhileLoop:
 		return p.parseWhileLoop()
-	
+
 	case lexer.Comment:
 		p.advance()
 		var result *ast.Expr
@@ -58,13 +68,13 @@ func (p *Parser) parsePrimaryExpr() (ast.Expr, *errors.SyntaxError) {
 		}
 
 		return *result, nil
-	
+
 	case lexer.Try:
 		return p.parseTryCatch()
-	
+
 	case lexer.Return:
 		return p.parseReturnStmt()
-	
+
 	default:
 		return nil, &errors.SyntaxError{
 			Expected:   "Primary Expression",

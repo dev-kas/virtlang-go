@@ -33,3 +33,9 @@ import "VirtLang/lexer"
 type Parser struct {
 	tokens []lexer.Token
 }
+
+func New() *Parser {
+	return &Parser{
+		tokens: []lexer.Token{},
+	}
+}

@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Parser) parseObjectExpr() (ast.Expr, *errors.SyntaxError) {
-	if p.at().Type == lexer.OBrace {
+	if p.at().Type != lexer.OBrace {
 		return p.parseAdditiveExpr()
 	}
 
