@@ -82,7 +82,5 @@ func (p *Parser) parseIfStmt() (*ast.IfStatement, *errors.SyntaxError) {
 		}
 	}
 
-	fmt.Printf("Parsed IfStatement: Condition=%v, Body=%v, ElseIf=%v, Else=%v\n", ifStmt.Condition, ifStmt.Body, ifStmt.ElseIf, ifStmt.Else)
-
 	return ifStmt, nil
 }
