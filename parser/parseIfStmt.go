@@ -4,6 +4,7 @@ import (
 	"VirtLang/ast"
 	"VirtLang/errors"
 	"VirtLang/lexer"
+	"fmt"
 )
 
 func (p *Parser) parseIfStmt() (*ast.IfStatement, *errors.SyntaxError) {
@@ -40,8 +41,48 @@ func (p *Parser) parseIfStmt() (*ast.IfStatement, *errors.SyntaxError) {
 		return nil, err
 	}
 
-	return &ast.IfStatement{
+	ifStmt := &ast.IfStatement{
 		Condition: condition,
 		Body:      body,
-	}, nil
+		ElseIf:    []*ast.IfStatement{}, // Initialize ElseIf as an empty slice
+	}
+
+	// Check for else or else if
+	for p.at().Type == lexer.Else {
+		p.advance() // else
+
+		if p.at().Type == lexer.If {
+			// Else if
+			elseIfStmt, err := p.parseIfStmt()
+			if err != nil {
+				return nil, err
+			}
+			ifStmt.ElseIf = append(ifStmt.ElseIf, elseIfStmt)
+		} else if p.at().Type == lexer.OBrace {
+			// Else
+			p.advance() // {
+			elseBody := []ast.Stmt{}
+
+			for !p.isEOF() && p.at().Type != lexer.CBrace {
+				stmt, err := p.parseStmt()
+				if err != nil {
+					return nil, err
+				}
+				elseBody = append(elseBody, stmt)
+			}
+
+			if _, err := p.expect(lexer.CBrace); err != nil {
+				return nil, err
+			}
+
+			ifStmt.Else = elseBody
+			break
+		} else {
+			return nil, errors.NewSyntaxError("Unexpected token after else", lexer.Stringify(p.at().Type), p.at().Start, p.at().Difference)
+		}
+	}
+
+	fmt.Printf("Parsed IfStatement: Condition=%v, Body=%v, ElseIf=%v, Else=%v\n", ifStmt.Condition, ifStmt.Body, ifStmt.ElseIf, ifStmt.Else)
+
+	return ifStmt, nil
 }

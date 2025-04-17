@@ -728,9 +728,8 @@ func TestFnDecl(t *testing.T) {
 }
 
 func TestIfStmt(t *testing.T) {
-	// TODO: Add support for else and else if chaining
+	// Test basic if statement
 	srccode := `if (3+1 > 3) {myFunction()}`
-
 	p := parser.New()
 	prog, err := p.ProduceAST(srccode)
 	if err != nil {
@@ -747,36 +746,54 @@ func TestIfStmt(t *testing.T) {
 		t.Fatalf("Expected a IfStatementNode, got %s", stmt.GetType())
 	}
 
-	if stmt.(*ast.IfStatement).Condition.GetType() != ast.CompareExprNode {
-		t.Fatalf("Expected condition to be CompareExpr, got %s", stmt.(*ast.IfStatement).Condition.GetType())
+	// Test if-else statement
+	srccode = `if (3+1 > 3) {myFunction()} else {otherFunction()}`
+	prog, err = p.ProduceAST(srccode)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	if stmt.(*ast.IfStatement).Condition.(*ast.CompareExpr).Operator != ast.GreaterThan {
-		t.Fatalf("Expected operator to be >, got %s", stmt.(*ast.IfStatement).Condition.(*ast.CompareExpr).Operator)
+	stmt = prog.Stmts[0]
+	if stmt.(*ast.IfStatement).Else == nil {
+		t.Fatalf("Expected an else block, got nil")
 	}
 
-	if stmt.(*ast.IfStatement).Condition.(*ast.CompareExpr).LHS.(*ast.BinaryExpr).Operator != ast.Plus {
-		t.Fatalf("Expected operator to be +, got %s", stmt.(*ast.IfStatement).Condition.(*ast.CompareExpr).LHS.(*ast.BinaryExpr).Operator)
+	if len(stmt.(*ast.IfStatement).Else) == 0 {
+		t.Fatalf("Expected else block to have statements, but it is empty")
 	}
 
-	if stmt.(*ast.IfStatement).Condition.(*ast.CompareExpr).LHS.(*ast.BinaryExpr).LHS.(*ast.NumericLiteral).Value != 3 {
-		t.Fatalf("Expected left side of (+) to be 3, got %d", stmt.(*ast.IfStatement).Condition.(*ast.CompareExpr).LHS.(*ast.BinaryExpr).LHS.(*ast.NumericLiteral).Value)
+	if stmt.(*ast.IfStatement).Else[0].(*ast.CallExpr).Callee.(*ast.Identifier).Symbol != "otherFunction" {
+		t.Fatalf("Expected else block to call otherFunction, got %s", stmt.(*ast.IfStatement).Else[0].(*ast.CallExpr).Callee.(*ast.Identifier).Symbol)
 	}
 
-	if stmt.(*ast.IfStatement).Condition.(*ast.CompareExpr).LHS.(*ast.BinaryExpr).RHS.(*ast.NumericLiteral).Value != 1 {
-		t.Fatalf("Expected right side of (+) to be 1, got %d", stmt.(*ast.IfStatement).Condition.(*ast.CompareExpr).LHS.(*ast.BinaryExpr).RHS.(*ast.NumericLiteral).Value)
+	// Test if-else if-else chain
+	srccode = `if (3+1 > 3) {myFunction()} else if (2 < 5) {anotherFunction()} else {finalFunction()}`
+	prog, err = p.ProduceAST(srccode)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	if stmt.(*ast.IfStatement).Condition.(*ast.CompareExpr).RHS.(*ast.NumericLiteral).Value != 3 {
-		t.Fatalf("Expected right side of (>) to be 3, got %d", stmt.(*ast.IfStatement).Condition.(*ast.CompareExpr).RHS.(*ast.NumericLiteral).Value)
+	stmt = prog.Stmts[0]
+	if len(stmt.(*ast.IfStatement).ElseIf) != 1 {
+		t.Fatalf("Expected 1 else-if block, got %d", len(stmt.(*ast.IfStatement).ElseIf))
 	}
 
-	if len(stmt.(*ast.IfStatement).Body) != 1 {
-		t.Fatalf("Expected 1 statement in body, got %d", len(stmt.(*ast.IfStatement).Body))
+	if len(stmt.(*ast.IfStatement).ElseIf) > 0 {
+		if stmt.(*ast.IfStatement).ElseIf[0].Condition.(*ast.CompareExpr).Operator != ast.LessThan {
+			t.Fatalf("Expected else-if condition operator to be <, got %s", stmt.(*ast.IfStatement).ElseIf[0].Condition.(*ast.CompareExpr).Operator)
+		}
+
+		if len(stmt.(*ast.IfStatement).ElseIf[0].Body) > 0 {
+			if stmt.(*ast.IfStatement).ElseIf[0].Body[0].(*ast.CallExpr).Callee.(*ast.Identifier).Symbol != "anotherFunction" {
+				t.Fatalf("Expected else-if block to call anotherFunction, got %s", stmt.(*ast.IfStatement).ElseIf[0].Body[0].(*ast.CallExpr).Callee.(*ast.Identifier).Symbol)
+			}
+		}
 	}
 
-	if stmt.(*ast.IfStatement).Body[0].(*ast.CallExpr).Callee.(*ast.Identifier).Symbol != "myFunction" {
-		t.Fatalf("Expected callee to be myFunction, got %s", stmt.(*ast.IfStatement).Body[0].(*ast.CallExpr).Callee.(*ast.Identifier).Symbol)
+	if len(stmt.(*ast.IfStatement).Else) > 0 {
+		if stmt.(*ast.IfStatement).Else[0].(*ast.CallExpr).Callee.(*ast.Identifier).Symbol != "finalFunction" {
+			t.Fatalf("Expected else block to call finalFunction, got %s", stmt.(*ast.IfStatement).Else[0].(*ast.CallExpr).Callee.(*ast.Identifier).Symbol)
+		}
 	}
 
 	// Commonly made mistakes

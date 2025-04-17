@@ -13,13 +13,13 @@ const (
 )
 
 type InternalCommunicationProtocol struct {
-	Type InternalCommunicationProtocolTypes
+	Type   InternalCommunicationProtocolTypes
 	RValue *shared.RuntimeValue
 }
 
 // RuntimeError
 type RuntimeError struct {
-	Message string
+	Message                       string
 	InternalCommunicationProtocol *InternalCommunicationProtocol
 }
 
@@ -84,6 +84,15 @@ func (e *SyntaxError) Error() string {
 			errFormatStart+" "+errFormatEnd,
 			e.Start,
 		)
+	}
+}
+
+func NewSyntaxError(expected, got string, start, difference int) *SyntaxError {
+	return &SyntaxError{
+		Expected:   expected,
+		Got:        got,
+		Start:      start,
+		Difference: difference,
 	}
 }
 
