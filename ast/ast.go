@@ -129,6 +129,8 @@ func (f *FnDeclaration) GetType() NodeType { return FnDeclarationNode }
 type IfStatement struct {
 	Body      []Stmt
 	Condition Expr
+	Else      []Stmt         // Optional else block
+	ElseIf    []*IfStatement // Optional else-if branches
 }
 
 func (i *IfStatement) GetType() NodeType { return IfStatementNode }
