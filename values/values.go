@@ -1,9 +1,9 @@
 package values
 
 import (
-	"VirtLang/environment"
-	"VirtLang/shared"
-	"VirtLang/ast"
+	"github.com/dev-kas/VirtLang-Go/ast"
+	"github.com/dev-kas/VirtLang-Go/environment"
+	"github.com/dev-kas/VirtLang-Go/shared"
 )
 
 // Factory Functions

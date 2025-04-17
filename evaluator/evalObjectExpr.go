@@ -1,10 +1,10 @@
 package evaluator
 
 import (
-	"VirtLang/ast"
-	"VirtLang/environment"
-	"VirtLang/errors"
-	"VirtLang/shared"
+	"github.com/dev-kas/VirtLang-Go/ast"
+	"github.com/dev-kas/VirtLang-Go/environment"
+	"github.com/dev-kas/VirtLang-Go/errors"
+	"github.com/dev-kas/VirtLang-Go/shared"
 )
 
 func evalObjectExpr(o *ast.ObjectLiteral, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {

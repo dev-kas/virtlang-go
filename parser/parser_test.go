@@ -1,9 +1,10 @@
 package parser_test
 
 import (
-	"VirtLang/ast"
-	"VirtLang/parser"
 	"testing"
+
+	"github.com/dev-kas/VirtLang-Go/ast"
+	"github.com/dev-kas/VirtLang-Go/parser"
 )
 
 func TestBinaryExpr(t *testing.T) {

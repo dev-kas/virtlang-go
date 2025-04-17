@@ -1,11 +1,11 @@
 package evaluator
 
 import (
-	"VirtLang/ast"
-	"VirtLang/environment"
-	"VirtLang/errors"
-	"VirtLang/shared"
-	"VirtLang/values"
+	"github.com/dev-kas/VirtLang-Go/ast"
+	"github.com/dev-kas/VirtLang-Go/environment"
+	"github.com/dev-kas/VirtLang-Go/errors"
+	"github.com/dev-kas/VirtLang-Go/shared"
+	"github.com/dev-kas/VirtLang-Go/values"
 )
 
 func evalProgram(astNode *ast.Program, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {

@@ -1,10 +1,11 @@
 package parser
 
 import (
-	"VirtLang/ast"
-	"VirtLang/errors"
-	"VirtLang/lexer"
 	"strconv"
+
+	"github.com/dev-kas/VirtLang-Go/ast"
+	"github.com/dev-kas/VirtLang-Go/errors"
+	"github.com/dev-kas/VirtLang-Go/lexer"
 )
 
 func (p *Parser) parseArrayLiteral() (ast.Expr, *errors.SyntaxError) {

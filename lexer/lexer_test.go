@@ -1,9 +1,10 @@
 package lexer_test
 
 import (
-	"VirtLang/lexer"
 	"reflect"
 	"testing"
+
+	"github.com/dev-kas/VirtLang-Go/lexer"
 )
 
 func TestTokenFactory(t *testing.T) {

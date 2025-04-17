@@ -1,9 +1,10 @@
 package environment
 
 import (
-	"VirtLang/errors"
-	"VirtLang/shared"
 	"fmt"
+
+	"github.com/dev-kas/VirtLang-Go/errors"
+	"github.com/dev-kas/VirtLang-Go/shared"
 )
 
 type Environment struct {

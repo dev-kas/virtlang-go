@@ -1,9 +1,10 @@
 package lexer
 
 import (
-	"VirtLang/errors"
 	"strings"
 	"unicode"
+
+	"github.com/dev-kas/VirtLang-Go/errors"
 )
 
 type TokenType int

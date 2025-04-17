@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"VirtLang/ast"
-	"VirtLang/lexer"
-	"VirtLang/errors"
+	"github.com/dev-kas/VirtLang-Go/ast"
+	"github.com/dev-kas/VirtLang-Go/errors"
+	"github.com/dev-kas/VirtLang-Go/lexer"
 )
 
 func (p *Parser) parseArgsList() ([]ast.Expr, *errors.SyntaxError) {

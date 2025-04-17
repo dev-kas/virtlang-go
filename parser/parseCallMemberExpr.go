@@ -1,13 +1,13 @@
 package parser
 
 import (
-	"VirtLang/ast"
-	"VirtLang/lexer"
-	"VirtLang/errors"
+	"github.com/dev-kas/VirtLang-Go/ast"
+	"github.com/dev-kas/VirtLang-Go/errors"
+	"github.com/dev-kas/VirtLang-Go/lexer"
 )
 
 func (p *Parser) parseCallMemberExpr() (ast.Expr, *errors.SyntaxError) {
-	member, err := p.parseMemberExpr();
+	member, err := p.parseMemberExpr()
 	if err != nil {
 		return nil, err
 	}

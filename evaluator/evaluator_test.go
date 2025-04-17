@@ -1,14 +1,15 @@
 package evaluator_test
 
 import (
-	"VirtLang/environment"
-	"VirtLang/evaluator"
-	"VirtLang/parser"
-	"VirtLang/shared"
 	"fmt"
 	"reflect"
 
-	// "VirtLang/values"
+	"github.com/dev-kas/VirtLang-Go/environment"
+	"github.com/dev-kas/VirtLang-Go/evaluator"
+	"github.com/dev-kas/VirtLang-Go/parser"
+	"github.com/dev-kas/VirtLang-Go/shared"
+
+	// "github.com/dev-kas/VirtLang-Go/values"
 	"testing"
 )
 
@@ -1181,4 +1182,3 @@ func TestReturnStatements(t *testing.T) {
 		}
 	}
 }
-

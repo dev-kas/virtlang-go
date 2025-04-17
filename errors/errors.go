@@ -1,8 +1,9 @@
 package errors
 
 import (
-	"VirtLang/shared"
 	"fmt"
+
+	"github.com/dev-kas/VirtLang-Go/shared"
 )
 
 // InternalCommunicationProtocol

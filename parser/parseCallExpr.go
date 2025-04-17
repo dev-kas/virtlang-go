@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"VirtLang/ast"
-	"VirtLang/errors"
-	"VirtLang/lexer"
+	"github.com/dev-kas/VirtLang-Go/ast"
+	"github.com/dev-kas/VirtLang-Go/errors"
+	"github.com/dev-kas/VirtLang-Go/lexer"
 )
 
 func (p *Parser) parseCallExpr(callee ast.Expr) (*ast.CallExpr, *errors.SyntaxError) {

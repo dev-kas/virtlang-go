@@ -1,8 +1,9 @@
 package errors_test
 
 import (
-	"VirtLang/errors"
 	"testing"
+
+	"github.com/dev-kas/VirtLang-Go/errors"
 )
 
 func TestRuntimeError(t *testing.T) {

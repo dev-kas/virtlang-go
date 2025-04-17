@@ -1,11 +1,11 @@
 package evaluator
 
 import (
-	"VirtLang/ast"
-	"VirtLang/environment"
-	"VirtLang/errors"
-	"VirtLang/shared"
-	"VirtLang/values"
+	"github.com/dev-kas/VirtLang-Go/ast"
+	"github.com/dev-kas/VirtLang-Go/environment"
+	"github.com/dev-kas/VirtLang-Go/errors"
+	"github.com/dev-kas/VirtLang-Go/shared"
+	"github.com/dev-kas/VirtLang-Go/values"
 )
 
 func evalReturnStmt(node *ast.ReturnStmt, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
@@ -17,7 +17,7 @@ func evalReturnStmt(node *ast.ReturnStmt, env *environment.Environment) (*shared
 	retValue := errors.RuntimeError{
 		Message: "<RETURN STATEMENT>",
 		InternalCommunicationProtocol: &errors.InternalCommunicationProtocol{
-			Type: errors.ICP_Return,
+			Type:   errors.ICP_Return,
 			RValue: evaluated,
 		},
 	}

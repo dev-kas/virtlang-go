@@ -1,12 +1,13 @@
 package evaluator
 
 import (
-	"VirtLang/ast"
-	"VirtLang/environment"
-	"VirtLang/errors"
-	"VirtLang/shared"
-	"VirtLang/values"
 	"fmt"
+
+	"github.com/dev-kas/VirtLang-Go/ast"
+	"github.com/dev-kas/VirtLang-Go/environment"
+	"github.com/dev-kas/VirtLang-Go/errors"
+	"github.com/dev-kas/VirtLang-Go/shared"
+	"github.com/dev-kas/VirtLang-Go/values"
 )
 
 func Evaluate(astNode ast.Stmt, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {

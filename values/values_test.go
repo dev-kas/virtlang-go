@@ -2,5 +2,5 @@ package values_test
 
 // import (
 // 	"testing"
-// 	"VirtLang/values"
+// 	"github.com/dev-kas/VirtLang-Go/values"
 // )
