@@ -21,7 +21,7 @@ func (p *Parser) parseObjectExpr() (ast.Expr, *errors.SyntaxError) {
 			return nil, err
 		}
 
-		if p.at().Type != lexer.Comma { // { key, }
+		if p.at().Type == lexer.Comma { // { key, }
 			p.advance()
 			properties = append(properties, ast.Property{
 				Key:   key.Literal,

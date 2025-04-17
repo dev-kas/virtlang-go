@@ -193,7 +193,7 @@ type Identifier struct {
 func (i *Identifier) GetType() NodeType { return IdentifierNode }
 
 type NumericLiteral struct {
-	Value int
+	Value int // TODO: Switch to float64
 }
 
 func (n *NumericLiteral) GetType() NodeType { return NumericLiteralNode }

@@ -728,7 +728,7 @@ func TestFnDecl(t *testing.T) {
 }
 
 func TestIfStmt(t *testing.T) {
-	// TODO: Add support for else and else if chainging
+	// TODO: Add support for else and else if chaining
 	srccode := `if (3+1 > 3) {myFunction()}`
 
 	p := parser.New()

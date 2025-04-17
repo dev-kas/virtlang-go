@@ -18,12 +18,14 @@ func NewEnvironment(fork *Environment) Environment {
 	if fork == nil {
 		global = true
 	}
-	return Environment{
+	env := Environment{
 		Parent:    fork,
 		Variables: map[string]shared.RuntimeValue{},
 		Constants: map[string]struct{}{},
 		Global:    global,
 	}
+
+	return env
 }
 
 func (e *Environment) DeclareVar(name string, value shared.RuntimeValue, constant bool) (*shared.RuntimeValue, *errors.RuntimeError) {
@@ -73,12 +75,16 @@ func (e *Environment) AssignVar(name string, value shared.RuntimeValue) (*shared
 		return &value, nil // Currently skip, as a replication of the original code.
 	} // TODO: Fix that above code later to see why the interpreter sometimes give an empty name.
 
-	if _, exists := e.Variables[name]; !exists {
+	env, err := e.Resolve(name)
+	if err != nil {
+		return nil, err
+	}
+	if _, exists := env.Constants[name]; exists {
 		return nil, &errors.RuntimeError{
 			Message: fmt.Sprintf("Cannot reassign to constant variable `%s`", name),
 		}
 	}
 
-	e.Variables[name] = value
+	env.Variables[name] = value
 	return &value, nil
 }

@@ -3,6 +3,7 @@ package values
 import (
 	"VirtLang/environment"
 	"VirtLang/shared"
+	"VirtLang/ast"
 )
 
 // Factory Functions
@@ -21,7 +22,7 @@ func MK_BOOL(value bool) shared.RuntimeValue {
 	}
 }
 
-func MK_NUMBER(value float64) shared.RuntimeValue {
+func MK_NUMBER(value int) shared.RuntimeValue { // TODO: convert to float64 later
 	return shared.RuntimeValue{
 		Type:  shared.Number,
 		Value: value,
@@ -48,17 +49,26 @@ func MK_OBJECT(value map[string]shared.RuntimeValue) shared.RuntimeValue {
 	}
 }
 
-type FunctionCall func(args []shared.RuntimeValue, env *environment.Environment) shared.RuntimeValue
+type NativeFunctionCall func(args []shared.RuntimeValue, env *environment.Environment) shared.RuntimeValue
 type NativeFunctionValue struct {
-	Call  FunctionCall
+	Call  NativeFunctionCall
 	Type  shared.ValueType
 	Value interface{}
 }
 
-func MK_NATIVE_FN(fn FunctionCall) NativeFunctionValue {
+func MK_NATIVE_FN(fn NativeFunctionCall) NativeFunctionValue {
 	return NativeFunctionValue{
 		Type:  shared.NativeFN,
 		Value: nil,
 		Call:  fn,
 	}
+}
+
+type FunctionValue struct {
+	Type           shared.ValueType
+	Value          any
+	Name           string
+	Params         []string
+	DeclarationEnv *environment.Environment
+	Body           []ast.Stmt
 }

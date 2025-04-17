@@ -19,7 +19,7 @@ func (p *Parser) parsePrimaryExpr() (ast.Expr, *errors.SyntaxError) {
 
 	case lexer.Number:
 		value = p.advance().Literal
-		parsedValue, err := strconv.Atoi(value.(string))
+		parsedValue, err := strconv.Atoi(value.(string)) // TODO: convert to float later
 		if err != nil {
 			return nil, &errors.SyntaxError{
 				Expected:   "Valid Number",

@@ -1,10 +1,26 @@
 package errors
 
-import "fmt"
+import (
+	"VirtLang/shared"
+	"fmt"
+)
+
+// InternalCommunicationProtocol
+type InternalCommunicationProtocolTypes int
+
+const (
+	ICP_Return InternalCommunicationProtocolTypes = iota
+)
+
+type InternalCommunicationProtocol struct {
+	Type InternalCommunicationProtocolTypes
+	RValue *shared.RuntimeValue
+}
 
 // RuntimeError
 type RuntimeError struct {
 	Message string
+	InternalCommunicationProtocol *InternalCommunicationProtocol
 }
 
 func (e *RuntimeError) Error() string {
