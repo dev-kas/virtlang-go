@@ -3,6 +3,7 @@ package values
 import (
 	"github.com/dev-kas/VirtLang-Go/ast"
 	"github.com/dev-kas/VirtLang-Go/environment"
+	"github.com/dev-kas/VirtLang-Go/errors"
 	"github.com/dev-kas/VirtLang-Go/shared"
 )
 
@@ -49,18 +50,12 @@ func MK_OBJECT(value map[string]shared.RuntimeValue) shared.RuntimeValue {
 	}
 }
 
-type NativeFunctionCall func(args []shared.RuntimeValue, env *environment.Environment) shared.RuntimeValue
-type NativeFunctionValue struct {
-	Call  NativeFunctionCall
-	Type  shared.ValueType
-	Value interface{}
-}
+type NativeFunction func(args []shared.RuntimeValue, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError)
 
-func MK_NATIVE_FN(fn NativeFunctionCall) NativeFunctionValue {
-	return NativeFunctionValue{
-		Type:  shared.NativeFN,
-		Value: nil,
-		Call:  fn,
+func MK_NATIVE_FN(fn NativeFunction) shared.RuntimeValue {
+	return shared.RuntimeValue{
+		Type: shared.NativeFN,
+		Value: fn,
 	}
 }
 

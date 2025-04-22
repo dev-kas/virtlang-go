@@ -26,7 +26,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment) (*shared.Run
 	}
 
 	if fn.Type == shared.NativeFN {
-		nativeFn, err := fn.Value.(values.NativeFunctionValue)
+		nativeFn, err := fn.Value.(values.NativeFunction)
 		if !err {
 			return nil, &errors.RuntimeError{
 				Message: fmt.Sprintf("Unable to resolve native function type: %v.", fn.Type), // TODO: Write a stringify function to make the types human readable
@@ -36,8 +36,11 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment) (*shared.Run
 		for i, arg := range args {
 			convertedArgs[i] = *arg
 		}
-		result := nativeFn.Call(convertedArgs, env)
-		return &result, nil
+		result, call_err := nativeFn(convertedArgs, env)
+		if call_err != nil {
+			return nil, call_err
+		}
+		return result, nil
 	} else if fn.Type == shared.Function {
 		fnVal := fn.Value.(values.FunctionValue)
 		scope := environment.NewEnvironment(fnVal.DeclarationEnv)

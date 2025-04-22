@@ -14,7 +14,7 @@ func evalProgram(astNode *ast.Program, env *environment.Environment) (*shared.Ru
 	for _, stmt := range astNode.Stmts {
 		evaluated, err := Evaluate(stmt, env)
 		if err != nil {
-			if err.InternalCommunicationProtocol.Type == errors.ICP_Return {
+			if err.InternalCommunicationProtocol != nil && err.InternalCommunicationProtocol.Type == errors.ICP_Return {
 				return err.InternalCommunicationProtocol.RValue, nil
 			}
 			return nil, err
