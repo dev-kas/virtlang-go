@@ -16,12 +16,20 @@ func evalMemberExpr(node *ast.MemberExpr, env *environment.Environment) (*shared
 		return nil, err
 	}
 
-	if obj.Type != shared.Object {
+	if obj.Type != shared.Object && obj.Type != shared.Array {
 		return nil, &errors.RuntimeError{
-			Message: fmt.Sprintf("Cannot access property of non-object (attempting to access properties of %v).", obj.Type),
+			Message: fmt.Sprintf("Cannot access property of non-object or non-array (attempting to access properties of %v).", shared.Stringify(obj.Type)),
 		}
 	}
 
+	if obj.Type == shared.Object {
+		return evalMemberExpr_object(node, env, obj)
+	} else {
+		return evalMemberExpr_array(node, env, obj)
+	}
+}
+
+func evalMemberExpr_object(node *ast.MemberExpr, env *environment.Environment, obj *shared.RuntimeValue) (*shared.RuntimeValue, *errors.RuntimeError) {
 	var prop *shared.RuntimeValue
 	if node.Computed {
 		val, err := Evaluate(node.Value, env)
@@ -45,7 +53,7 @@ func evalMemberExpr(node *ast.MemberExpr, env *environment.Environment) (*shared
 		// key = prop.Value.(shared.RuntimeValue).Value.(string)
 		switch v := prop.Value.(type) {
 		case string:
-			key = v
+			key = v[1: len(v)-1]
 		case int:
 			key = fmt.Sprintf("%v", v)
 		default:
@@ -57,13 +65,27 @@ func evalMemberExpr(node *ast.MemberExpr, env *environment.Environment) (*shared
 	}
 
 	if obj.Value.(map[string]*shared.RuntimeValue)[key] == nil {
-		// return nil, &errors.RuntimeError{
-		// 	Message: fmt.Sprintf("Property '%s' does not exist.", key),
-		// }
-
 		nilValue := values.MK_NIL()
 		return &nilValue, nil
 	}
 
 	return obj.Value.(map[string]*shared.RuntimeValue)[key], nil
+}
+
+func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment, arr *shared.RuntimeValue) (*shared.RuntimeValue, *errors.RuntimeError) {
+	val, err := Evaluate(node.Value, env)
+	if err != nil {
+		return nil, err
+	}
+	if val.Type != shared.Number {
+		return nil, &errors.RuntimeError{
+			Message: fmt.Sprintf("Cannot access property of array by non-number (attempting to access properties by %v).", shared.Stringify(val.Type)),
+		}
+	}
+	index := val.Value.(int)
+	if index < 0 || index >= len(arr.Value.([]shared.RuntimeValue)) {
+		nilValue := values.MK_NIL()
+		return &nilValue, nil
+	}
+	return &arr.Value.([]shared.RuntimeValue)[index], nil
 }

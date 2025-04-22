@@ -29,7 +29,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment) (*shared.Run
 		nativeFn, err := fn.Value.(values.NativeFunction)
 		if !err {
 			return nil, &errors.RuntimeError{
-				Message: fmt.Sprintf("Unable to resolve native function type: %v.", fn.Type), // TODO: Write a stringify function to make the types human readable
+				Message: fmt.Sprintf("Unable to resolve native function type: %s.", shared.Stringify(fn.Type)),
 			}
 		}
 		convertedArgs := make([]shared.RuntimeValue, len(args))
@@ -46,7 +46,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment) (*shared.Run
 		scope := environment.NewEnvironment(fnVal.DeclarationEnv)
 
 		for i, param := range fnVal.Params {
-			// TODO: check bounts and arity of fn
+			// TODO: check bounds and arity of fn
 			scope.DeclareVar(param, *args[i], true)
 		}
 
@@ -68,7 +68,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment) (*shared.Run
 		return &result, nil
 	} else {
 		return nil, &errors.RuntimeError{
-			Message: fmt.Sprintf("Cannot invoke a non-function (attempted to call a %v).", fn.Type), // TODO: Write a stringify function to make the types human readable
+			Message: fmt.Sprintf("Cannot invoke a non-function (attempted to call a %s).", shared.Stringify(fn.Type)),
 		}
 	}
 }

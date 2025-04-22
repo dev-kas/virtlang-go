@@ -23,7 +23,7 @@ func evalBinEx(binOp *ast.BinaryExpr, env *environment.Environment) (*shared.Run
 
 	if lhs.Type != shared.Number || rhs.Type != shared.Number {
 		return nil, &errors.RuntimeError{
-			Message: fmt.Sprintf("Cannot perform binary operation on non-number types (%v and %v).", lhs.Type, rhs.Type),
+			Message: fmt.Sprintf("Cannot perform binary operation on non-number types (%v and %v).", shared.Stringify(lhs.Type), shared.Stringify(rhs.Type)),
 		}
 	}
 

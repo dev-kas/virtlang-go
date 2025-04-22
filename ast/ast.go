@@ -15,6 +15,7 @@ const (
 	CallExprNode
 	PropertyNode
 	ObjectLiteralNode
+	ArrayLiteralNode
 	NumericLiteralNode
 	StringLiteralNode
 	IdentifierNode
@@ -48,6 +49,8 @@ func (n NodeType) String() string {
 		return "Property"
 	case ObjectLiteralNode:
 		return "ObjectLiteral"
+	case ArrayLiteralNode:
+		return "ArrayLiteral"
 	case NumericLiteralNode:
 		return "NumericLiteral"
 	case StringLiteralNode:
@@ -218,3 +221,10 @@ type ObjectLiteral struct {
 }
 
 func (o *ObjectLiteral) GetType() NodeType { return ObjectLiteralNode }
+
+type ArrayLiteral struct {
+	Elements []Expr
+}
+
+func (o *ArrayLiteral) GetType() NodeType { return ArrayLiteralNode }
+

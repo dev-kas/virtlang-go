@@ -28,7 +28,7 @@ func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment
 
 		if obj.Type != shared.Object {
 			return nil, &errors.RuntimeError{
-				Message: fmt.Sprintf("Cannot access property of non-object (attempting to access properties of %v).", obj.Type),
+				Message: fmt.Sprintf("Cannot access property of non-object (attempting to access properties of %v).", shared.Stringify(obj.Type)),
 			}
 		}
 

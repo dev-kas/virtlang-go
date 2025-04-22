@@ -23,6 +23,7 @@ func TestNodeType_String(t *testing.T) {
 		{ast.CallExprNode, "CallExpr"},
 		{ast.PropertyNode, "Property"},
 		{ast.ObjectLiteralNode, "ObjectLiteral"},
+		{ast.ArrayLiteralNode, "ArrayLiteral"},
 		{ast.NumericLiteralNode, "NumericLiteral"},
 		{ast.StringLiteralNode, "StringLiteral"},
 		{ast.IdentifierNode, "Identifier"},

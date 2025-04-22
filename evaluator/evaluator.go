@@ -27,6 +27,9 @@ func Evaluate(astNode ast.Stmt, env *environment.Environment) (*shared.RuntimeVa
 	case ast.ObjectLiteralNode:
 		return evalObjectExpr(astNode.(*ast.ObjectLiteral), env)
 
+	case ast.ArrayLiteralNode:
+		return evalArrayExpr(astNode.(*ast.ArrayLiteral), env)
+
 	case ast.CallExprNode:
 		return evalCallExpr(astNode.(*ast.CallExpr), env)
 

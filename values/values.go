@@ -67,3 +67,10 @@ type FunctionValue struct {
 	DeclarationEnv *environment.Environment
 	Body           []ast.Stmt
 }
+
+func MK_ARRAY(value []shared.RuntimeValue) shared.RuntimeValue {
+	return shared.RuntimeValue{
+		Type:  shared.Array,
+		Value: value,
+	}
+}

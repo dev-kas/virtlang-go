@@ -23,7 +23,7 @@ func evalComEx(expression *ast.CompareExpr, env *environment.Environment) (*shar
 
 	if lhs.Type != shared.Number || rhs.Type != shared.Number {
 		return nil, &errors.RuntimeError{
-			Message: fmt.Sprintf("Cannot compare non-number types (%v and %v).", lhs.Type, rhs.Type),
+			Message: fmt.Sprintf("Cannot compare non-number types (%v and %v).", shared.Stringify(lhs.Type), shared.Stringify(rhs.Type)),
 		}
 	}
 

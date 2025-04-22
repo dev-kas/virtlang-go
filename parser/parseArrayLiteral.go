@@ -1,8 +1,6 @@
 package parser
 
 import (
-	"strconv"
-
 	"github.com/dev-kas/VirtLang-Go/ast"
 	"github.com/dev-kas/VirtLang-Go/errors"
 	"github.com/dev-kas/VirtLang-Go/lexer"
@@ -31,16 +29,16 @@ func (p *Parser) parseArrayLiteral() (ast.Expr, *errors.SyntaxError) {
 		return nil, err
 	}
 
-	properties := []ast.Property{}
+	// properties := []ast.Property{}
 
-	for index, element := range elements {
-		properties = append(properties, ast.Property{
-			Key:   strconv.Itoa(index),
-			Value: element,
-		})
-	}
+	// for index, element := range elements {
+	// 	properties = append(properties, ast.Property{
+	// 		Key:   strconv.Itoa(index),
+	// 		Value: element,
+	// 	})
+	// }
 
-	return &ast.ObjectLiteral{
-		Properties: properties,
+	return &ast.ArrayLiteral{
+		Elements: elements,
 	}, nil
 }
