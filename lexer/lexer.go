@@ -36,6 +36,8 @@ const (
 	Try                          // try
 	Catch                        // catch
 	Return                       // return
+	Break                        // break
+	Continue                     // continue
 	EOF                          // end of file
 )
 
@@ -93,6 +95,10 @@ func Stringify(t TokenType) string {
 		return "Catch"
 	case Return:
 		return "Return"
+	case Break:
+		return "Break"
+	case Continue:
+		return "Continue"
 	case EOF:
 		return "EOF"
 	default:
@@ -101,15 +107,17 @@ func Stringify(t TokenType) string {
 }
 
 var KEYWORDS = map[string]TokenType{
-	"let":    Let,
-	"const":  Const,
-	"fn":     Fn,
-	"if":     If,
-	"else":   Else,
-	"while":  WhileLoop,
-	"try":    Try,
-	"catch":  Catch,
-	"return": Return,
+	"let":      Let,
+	"const":    Const,
+	"fn":       Fn,
+	"if":       If,
+	"else":     Else,
+	"while":    WhileLoop,
+	"try":      Try,
+	"catch":    Catch,
+	"return":   Return,
+	"break":    Break,
+	"continue": Continue,
 }
 
 type Token struct {

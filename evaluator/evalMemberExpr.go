@@ -53,7 +53,7 @@ func evalMemberExpr_object(node *ast.MemberExpr, env *environment.Environment, o
 		// key = prop.Value.(shared.RuntimeValue).Value.(string)
 		switch v := prop.Value.(type) {
 		case string:
-			key = v[1: len(v)-1]
+			key = v[1 : len(v)-1]
 		case int:
 			key = fmt.Sprintf("%v", v)
 		default:

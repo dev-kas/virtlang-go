@@ -54,7 +54,7 @@ type NativeFunction func(args []shared.RuntimeValue, env *environment.Environmen
 
 func MK_NATIVE_FN(fn NativeFunction) shared.RuntimeValue {
 	return shared.RuntimeValue{
-		Type: shared.NativeFN,
+		Type:  shared.NativeFN,
 		Value: fn,
 	}
 }

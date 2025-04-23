@@ -12,6 +12,8 @@ const (
 	TryCatchStmtNode
 	MemberExprNode
 	ReturnStmtNode
+	BreakStmtNode
+	ContinueStmtNode
 	CallExprNode
 	PropertyNode
 	ObjectLiteralNode
@@ -151,6 +153,14 @@ type ReturnStmt struct {
 
 func (r *ReturnStmt) GetType() NodeType { return ReturnStmtNode }
 
+type BreakStmt struct{}
+
+func (r *BreakStmt) GetType() NodeType { return BreakStmtNode }
+
+type ContinueStmt struct{}
+
+func (r *ContinueStmt) GetType() NodeType { return ContinueStmtNode }
+
 // Expressions
 
 type VarAssignmentExpr struct {
@@ -227,4 +237,3 @@ type ArrayLiteral struct {
 }
 
 func (o *ArrayLiteral) GetType() NodeType { return ArrayLiteralNode }
-

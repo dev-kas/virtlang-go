@@ -66,6 +66,12 @@ func Evaluate(astNode ast.Stmt, env *environment.Environment) (*shared.RuntimeVa
 	case ast.ReturnStmtNode:
 		return evalReturnStmt(astNode.(*ast.ReturnStmt), env)
 
+	case ast.BreakStmtNode:
+		return evalBreakStmt(astNode.(*ast.BreakStmt), env)
+
+	case ast.ContinueStmtNode:
+		return evalContinueStmt(astNode.(*ast.ContinueStmt), env)
+
 	default:
 		return nil, &errors.RuntimeError{
 			Message: fmt.Sprintf("Unknown node type: %s", type_),

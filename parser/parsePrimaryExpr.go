@@ -76,6 +76,12 @@ func (p *Parser) parsePrimaryExpr() (ast.Expr, *errors.SyntaxError) {
 	case lexer.Return:
 		return p.parseReturnStmt()
 
+	case lexer.Break:
+		return p.parseBreakStmt()
+
+	case lexer.Continue:
+		return p.parseContinueStmt()
+
 	default:
 		return nil, &errors.SyntaxError{
 			Expected:   "Primary Expression",

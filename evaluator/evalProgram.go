@@ -20,7 +20,9 @@ func evalProgram(astNode *ast.Program, env *environment.Environment) (*shared.Ru
 			return nil, err
 		}
 
-		result = *evaluated
+		if evaluated != nil {
+			result = *evaluated
+		}
 	}
 
 	return &result, nil
