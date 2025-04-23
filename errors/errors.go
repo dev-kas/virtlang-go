@@ -11,6 +11,8 @@ type InternalCommunicationProtocolTypes int
 
 const (
 	ICP_Return InternalCommunicationProtocolTypes = iota
+	ICP_Continue
+	ICP_Break
 )
 
 type InternalCommunicationProtocol struct {
