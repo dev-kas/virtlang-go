@@ -20,13 +20,13 @@ jobs:
               with:
                   go-version: 1.23
 
-            - name: Cache Go builds
-              uses: actions/cache@v2
-              with:
-                  path: ~/.cache/go-build
-                  key: ${{ runner.os }}-go-build-${{ hashFiles('**/*.go') }}
-                  restore-keys: |
-                      ${{ runner.os }}-go-build-
+            # - name: Cache Go builds
+            #   uses: actions/cache@v2
+            #   with:
+            #       path: ~/.cache/go-build
+            #       key: ${{ runner.os }}-go-build-${{ hashFiles('**/*.go') }}
+            #       restore-keys: |
+            #           ${{ runner.os }}-go-build-
             
             - name: Format code
               run: |
