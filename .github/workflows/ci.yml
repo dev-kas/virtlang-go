@@ -1,0 +1,64 @@
+name: CI Workflow
+
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+        branches:
+            - master
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Set up Go
+              uses: actions/setup-go@v2
+              with:
+                  go-version: 1.23
+
+            - name: Cache Go builds
+              uses: actions/cache@v2
+              with:
+                  path: ~/.cache/go-build
+                  key: ${{ runner.os }}-go-build-${{ hashFiles('**/*.go') }}
+                  restore-keys: |
+                      ${{ runner.os }}-go-build-
+            
+            - name: Format code
+              run: |
+                  go fmt ./...
+
+            - name: Run tests
+              run: |
+                  go test -v ./...
+
+            - name: Update test badge in README
+              if: ${{ always() }}
+              run: |
+                  if [ $? -eq 0 ]; then
+                    badge='<img src="https://img.shields.io/badge/tests-passing-%2318963e?style=for-the-badge&logo=textpattern&logoColor=%23ffffff&logoSize=32&label=tests&labelColor=%23034015&color=%2318963e&cacheSeconds=600" alt="Project Tests Passing">'
+                  else
+                    badge='<img alt="Project Tests Failing" src="https://img.shields.io/badge/tests%20-%20failing%20-%20%23ad4c45?style=for-the-badge&logo=textpattern&logoColor=%23ffffff&logoSize=32&label=tests&labelColor=%23732d28&color=%23ad4c45&cacheSeconds=600">'
+                  fi
+                  sed -i "s|<!-- TEST_BADGE -->.*|<!-- TEST_BADGE --> $badge|" README.md
+            
+            - name: Install gomarkdoc
+              run: |
+                  go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest
+
+            - name: Generate documentation
+              run: |
+                  gomarkdoc ./... -o DOCS.md
+
+            - name: Commit and push docs
+              uses: EndBug/add-and-commit@v9
+              with:
+                author_name: KAS [bot]
+                author_email: owner@glitchiethedev.com
+                message: 'Update formatting and generated documentation'
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
