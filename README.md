@@ -1,5 +1,5 @@
 <div align="center">
-<!-- TEST_BADGE --><img src="https://img.shields.io/badge/tests-processing-%2318963e?style=for-the-badge&logo=textpattern&logoColor=%23ffffff&logoSize=32&label=tests&labelColor=%23121212&color=%231f1f1f&cacheSeconds=600"><!-- END_TEST_BADGE -->
+<!-- TEST_BADGE --><img alt="Project Tests Failing" src="https://img.shields.io/badge/tests%20-%20failing%20-%20%23ad4c45?style=for-the-badge&logo=textpattern&logoColor=%23ffffff&logoSize=32&label=tests&labelColor=%23732d28&color=%23ad4c45&cacheSeconds=600"><!-- END_TEST_BADGE -->
 &nbsp;
 <img src="https://img.shields.io/github/license/dev-kas/VirtLang-Go?style=for-the-badge&logo=2fas&logoColor=%23ffffff&logoSize=64&labelColor=%23701e25&color=%23ab3841&cacheSeconds=6000" alt="Project License">
 &nbsp;
