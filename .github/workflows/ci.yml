@@ -46,7 +46,7 @@ jobs:
                   else
                     badge='<img alt="Project Tests Failing" src="https://img.shields.io/badge/tests%20-%20failing%20-%20%23ad4c45?style=for-the-badge&logo=textpattern&logoColor=%23ffffff&logoSize=32&label=tests&labelColor=%23732d28&color=%23ad4c45&cacheSeconds=600">'
                   fi
-                  sed -i "s|<!-- TEST_BADGE -->.*<!-- TEST_BADGE -->|<!-- TEST_BADGE -->$badge<!-- TEST_BADGE -->|" README.md
+                  sed -i "s|<!-- TEST_BADGE -->.*<!-- END_TEST_BADGE -->|<!-- TEST_BADGE -->$badge<!-- END_TEST_BADGE -->|" README.md
             
             - name: Install gomarkdoc
               run: |
