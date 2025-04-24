@@ -1182,3 +1182,446 @@ func TestReturnStatements(t *testing.T) {
 		}
 	}
 }
+func TestContinueKeyword(t *testing.T) {
+	tests := []struct {
+		input  string
+		output shared.RuntimeValue
+	}{
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { x = x + 1\nif (x == 3) { continue }\nsum = sum + x }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 12,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { x = x + 1\nif (x % 2 == 0) { continue }\nsum = sum + x }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 9,
+			},
+		},
+		{
+			input: "let x = 0\nlet count = 0\nwhile (x < 10) { x = x + 1\nif (x < 5) { continue }\ncount = count + 1 }\ncount",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 6,
+			},
+		},
+		{
+			input: "let x = 0\nlet product = 1\nwhile (x < 5) { x = x + 1\nif (x % 2 == 0) { continue }\nproduct = product * x }\nproduct",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 15,
+			},
+		},
+		{
+			input: "let x = 0\nlet result = 0\nwhile (x < 5) { x = x + 1\nif (x == 3) { continue }\nresult = result + x }\nresult",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 12,
+			},
+		},
+		{
+			input: "let x = 0\nlet evenSum = 0\nwhile (x < 10) { x = x + 1\nif (x % 2 != 0) { continue }\nevenSum = evenSum + x }\nevenSum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 30,
+			},
+		},
+		{
+			input: "let x = 0\nlet y = 0\nwhile (x < 5) { x = x + 1\nif (x == 2) { continue }\ny = y + x }\ny",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 13,
+			},
+		},
+		{
+			input: "let x = 0\nlet count = 0\nwhile (x < 7) { x = x + 1\nif (x % 3 == 0) { continue }\ncount = count + 1 }\ncount",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 5,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 6) { x = x + 1\nif (x == 4) { continue }\nsum = sum + x }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 17,
+			},
+		},
+		{
+			input: "let x = 0\nlet result = 1\nwhile (x < 5) { x = x + 1\nif (x%2 == 1) { continue }\nresult = result * x }\nresult",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 8,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 8) { x = x + 1\nif (x % 2 == 1) { continue }\nsum = sum + x }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 20,
+			},
+		},
+		{
+			input: "let x = 0\nlet count = 0\nwhile (x < 10) { x = x + 1\nif (x > 7) { continue }\ncount = count + 1 }\ncount",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 7,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { x = x + 1\nif (x == 3) { continue }\nsum = sum + x }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 12,
+			},
+		},
+		{
+			input: "let x = 0\nlet product = 1\nwhile (x < 6) { x = x + 1\nif (x == 2) { continue }\nif (x == 5) { continue }\nproduct = product * x }\nproduct",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 72,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 4) { x = x + 1\nif (x == 2) { continue }\nsum = sum + x }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 8,
+			},
+		},
+		{
+			input: "let x = 0\nlet count = 0\nwhile (x < 10) { x = x + 1\nif (x % 2 == 0) { continue }\ncount = count + 1 }\ncount",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 5,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 7) { x = x + 1\nif (x == 6) { continue }\nsum = sum + x }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 22,
+			},
+		},
+		{
+			input: "let x = 0\nlet result = 1\nwhile (x < 4) { x = x + 1\nif (x == 2) { continue }\nresult = result * x }\nresult",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 12,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { x = x + 1\nif (x == 3) { continue }\nsum = sum + x }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 12,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { x = x + 1\nif (x == 3) { continue }\nsum = sum + x }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 12,
+			},
+		},
+		{
+			input: "let err = ''\ntry {continue} catch e {err = e}\nerr",
+			output: shared.RuntimeValue{
+				Type:  shared.String,
+				Value: "Runtime Error: `continue` statement used outside of a loop context.",
+			},
+		},
+	}
+
+	for i, test := range tests {
+		p := parser.New()
+		env := environment.NewEnvironment(nil)
+		program, synErr := p.ProduceAST(test.input)
+		if synErr != nil {
+			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
+		}
+		evaluated, runErr := evaluator.Evaluate(program, &env)
+		if runErr != nil {
+			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
+		}
+		if evaluated.Type != test.output.Type {
+			t.Errorf("test %d failed: input=%q, expected type %v, got %v", i, test.input, test.output.Type, evaluated.Type)
+		}
+		if !reflect.DeepEqual(evaluated.Value, test.output.Value) {
+			t.Errorf("test %d failed: input=%q, value mismatch. expected %v, got %v", i, test.input, test.output.Value, evaluated.Value)
+		}
+	}
+}
+
+func TestBreakKeyword(t *testing.T) {
+	tests := []struct {
+		input  string
+		output shared.RuntimeValue
+	}{
+		{
+			input: "let x = 0\nwhile (x < 5) { if (x == 3) { break }\nx = x + 1 }\nx",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 3,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { if (x == 3) { break }\nsum = sum + x\nx = x + 1 }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 3,
+			},
+		},
+		{
+			input: "let x = 0\nwhile (x < 5) { break\nx = x + 1 }\nx",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 0,
+			},
+		},
+		{
+			input: "let x = 0\nlet y = 0\nwhile (x < 5) { if (x == 2) { break }\ny = y + x\nx = x + 1 }\ny",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 1,
+			},
+		},
+		{
+			input: "let x = 0\nwhile (x < 5) { if (x == 0) { break }\nx = x + 1 }\nx",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 0,
+			},
+		},
+		{
+			input: "let x = 0\nlet product = 1\nwhile (x < 5) { if (x == 3) { break }\nproduct = product * (x + 1)\nx = x + 1 }\nproduct",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 6,
+			},
+		},
+		{
+			input: "let x = 0\nwhile (x < 5) { if (x == 4) { break }\nx = x + 1 }\nx",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 4,
+			},
+		},
+		{
+			input: "let x = 0\nlet count = 0\nwhile (x < 10) { if (x == 5) { break }\ncount = count + 1\nx = x + 1 }\ncount",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 5,
+			},
+		},
+		{
+			input: "let x = 0\nlet result = 0\nwhile (x < 5) { if (x == 2) { break }\nresult = result + x\nx = x + 1 }\nresult",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 1,
+			},
+		},
+		{
+			input: "let x = 0\nlet evenSum = 0\nwhile (x < 10) { if (x == 6) { break }\nif (x % 2 == 0) { evenSum = evenSum + x }\nx = x + 1 }\nevenSum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 6,
+			},
+		},
+		{
+			input: "let x = 0\nlet y = 0\nwhile (x < 5) { if (x == 3) { break }\ny = y + x\nx = x + 1 }\ny",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 3,
+			},
+		},
+		{
+			input: "let x = 0\nlet count = 0\nwhile (x < 7) { if (x == 4) { break }\ncount = count + 1\nx = x + 1 }\ncount",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 4,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 6) { if (x == 3) { break }\nsum = sum + x\nx = x + 1 }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 3,
+			},
+		},
+		{
+			input: "let x = 0\nlet result = 1\nwhile (x < 5) { if (x == 2) { break }\nresult = result * (x + 1)\nx = x + 1 }\nresult",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 2,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { if (x == 4) { break }\nsum = sum + x\nx = x + 1 }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 6,
+			},
+		},
+		{
+			input: "let x = 0\nlet count = 0\nwhile (x < 10) { if (x == 7) { break }\ncount = count + 1\nx = x + 1 }\ncount",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 7,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { if (x == 3) { break }\nsum = sum + x\nx = x + 1 }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 3,
+			},
+		},
+		{
+			input: "let x = 0\nlet product = 1\nwhile (x < 6) { if (x == 2) { break }\nproduct = product * (x + 1)\nx = x + 1 }\nproduct",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 2,
+			},
+		},
+		{
+			input: "let x = 0\nlet sum = 0\nwhile (x < 4) { if (x == 2) { break }\nsum = sum + x\nx = x + 1 }\nsum",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 1,
+			},
+		},
+		{
+			input: "let x = 0\nlet count = 0\nwhile (x < 10) { if (x == 5) { break }\ncount = count + 1\nx = x + 1 }\ncount",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 5,
+			},
+		},
+		{
+			input: "let err = ''\ntry {break} catch e {err = e}\nerr",
+			output: shared.RuntimeValue{
+				Type:  shared.String,
+				Value: "Runtime Error: `break` statement used outside of a loop context.",
+			},
+		},
+	}
+
+	for i, test := range tests {
+		p := parser.New()
+		env := environment.NewEnvironment(nil)
+		program, synErr := p.ProduceAST(test.input)
+		if synErr != nil {
+			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
+		}
+		evaluated, runErr := evaluator.Evaluate(program, &env)
+		if runErr != nil {
+			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
+		}
+		if evaluated.Type != test.output.Type {
+			t.Errorf("test %d failed: input=%q, expected type %v, got %v", i, test.input, test.output.Type, evaluated.Type)
+		}
+		if !reflect.DeepEqual(evaluated.Value, test.output.Value) {
+			t.Errorf("test %d failed: input=%q, value mismatch. expected %v, got %v", i, test.input, test.output.Value, evaluated.Value)
+		}
+	}
+}
+func TestArrays(t *testing.T) {
+	tests := []struct {
+		input  string
+		output shared.RuntimeValue
+	}{
+		{
+			input: "let arr = [1, 2, 3]\narr[0]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 1,
+			},
+		},
+		{
+			input: "let arr = [1, 2, 3]\narr[1]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 2,
+			},
+		},
+		{
+			input: "let arr = [1, 2, 3]\narr[2]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 3,
+			},
+		},
+		{
+			input: "let arr = [1, 2, 3]\narr[3]",
+			output: shared.RuntimeValue{
+				Type:  shared.Nil,
+				Value: nil,
+			},
+		},
+		{
+			input: "let arr = [1, 2, 3]\narr[0] = 10\narr[0]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 10,
+			},
+		},
+		{
+			input: "let arr = [1, 2, 3]\narr[1] = 20\narr[1]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 20,
+			},
+		},
+		{
+			input: "let arr = [1, 2, 3]\narr[2] = 30\narr[2]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 30,
+			},
+		},
+		{
+			input: "let arr = [1, 2, 3]\narr[3] = 40\narr[3]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 40,
+			},
+		},
+		{
+			input: "let arr = [1, 2, 3]\narr[4] = 50\narr[4]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 50,
+			},
+		},
+		{
+			input: "let arr = [1, 2, 3]\narr[5] = 60\narr[5]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 60,
+			},
+		},
+	}
+
+	for i, test := range tests {
+		p := parser.New()
+		env := environment.NewEnvironment(nil)
+		program, synErr := p.ProduceAST(test.input)
+		if synErr != nil {
+			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
+		}
+		evaluated, runErr := evaluator.Evaluate(program, &env)
+		if runErr != nil {
+			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
+		}
+		if evaluated.Type != test.output.Type {
+			t.Errorf("test %d failed: input=%q, expected type %v, got %v", i, test.input, test.output.Type, evaluated.Type)
+		}
+		if !reflect.DeepEqual(evaluated.Value, test.output.Value) {
+			t.Errorf("test %d failed: input=%q, value mismatch. expected %v, got %v", i, test.input, test.output.Value, evaluated.Value)
+		}
+	}
+}
