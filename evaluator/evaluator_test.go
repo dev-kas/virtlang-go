@@ -1036,7 +1036,7 @@ func TestTryCatch(t *testing.T) {
 			input: "let error = 'error not triggered'\ntry {let obj = {foo: 'bar'}\nobj.foo()} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot invoke a non-function (attempted to call a 6).",
+				Value: "Runtime Error: Cannot invoke a non-function (attempted to call a string).",
 			},
 		},
 		{
@@ -1050,7 +1050,7 @@ func TestTryCatch(t *testing.T) {
 			input: "let error = 'error not triggered'\ntry {let arr = [1, 2, 3]\narr.foo()} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot invoke a non-function (attempted to call a 0).",
+				Value: "Runtime Error: Cannot invoke a non-function (attempted to call a nil).",
 			},
 		},
 		{

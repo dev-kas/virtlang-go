@@ -53,7 +53,8 @@ func evalMemberExpr_object(node *ast.MemberExpr, env *environment.Environment, o
 		// key = prop.Value.(shared.RuntimeValue).Value.(string)
 		switch v := prop.Value.(type) {
 		case string:
-			key = v[1 : len(v)-1]
+			key = v
+			// key = v[1 : len(v)-1]
 		case int:
 			key = fmt.Sprintf("%v", v)
 		default:
@@ -77,6 +78,13 @@ func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment, ar
 	if err != nil {
 		return nil, err
 	}
+
+	if !node.Computed {
+		return nil, &errors.RuntimeError{
+			Message: "Cannot access property of array by non-number (attempting to access properties by string).",
+		}
+	}
+
 	if val.Type != shared.Number {
 		return nil, &errors.RuntimeError{
 			Message: fmt.Sprintf("Cannot access property of array by non-number (attempting to access properties by %v).", shared.Stringify(val.Type)),
