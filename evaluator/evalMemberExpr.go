@@ -91,9 +91,17 @@ func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment, ar
 		}
 	}
 	index := val.Value.(int)
-	if index < 0 || index >= len(arr.Value.([]shared.RuntimeValue)) {
+
+	updatedArr, err := env.LookupVar(node.Object.(*ast.Identifier).Symbol)
+	if err != nil {
+		return nil, err
+	}
+
+	if index < 0 || index >= len(updatedArr.Value.([]shared.RuntimeValue)) {
 		nilValue := values.MK_NIL()
 		return &nilValue, nil
 	}
-	return &arr.Value.([]shared.RuntimeValue)[index], nil
+
+	result := &updatedArr.Value.([]shared.RuntimeValue)[index]
+	return result, nil
 }

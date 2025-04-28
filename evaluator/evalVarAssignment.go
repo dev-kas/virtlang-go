@@ -7,6 +7,7 @@ import (
 	"github.com/dev-kas/VirtLang-Go/environment"
 	"github.com/dev-kas/VirtLang-Go/errors"
 	"github.com/dev-kas/VirtLang-Go/shared"
+	"github.com/dev-kas/VirtLang-Go/values"
 )
 
 func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
@@ -26,10 +27,59 @@ func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment
 			return nil, err
 		}
 
-		if obj.Type != shared.Object {
+		if obj.Type != shared.Object && obj.Type != shared.Array {
 			return nil, &errors.RuntimeError{
 				Message: fmt.Sprintf("Cannot access property of non-object (attempting to access properties of %v).", shared.Stringify(obj.Type)),
 			}
+		}
+
+		if obj.Type == shared.Array {
+			indexVal, err := Evaluate(memberExpr.Value, env)
+			if err != nil {
+				return nil, err
+			}
+
+			if indexVal.Type != shared.Number {
+				return nil, &errors.RuntimeError{
+					Message: fmt.Sprintf("Cannot assign to array using non-number index (attempted to use %v).", shared.Stringify(indexVal.Type)),
+				}
+			}
+
+			index := indexVal.Value.(int)
+			array := obj.Value.([]shared.RuntimeValue)
+
+			if index < 0 {
+				return nil, &errors.RuntimeError{
+					Message: fmt.Sprintf("Index out of bounds: %d", index),
+				}
+			}
+
+			if index >= len(array) {
+				extendedArray := make([]shared.RuntimeValue, index+1)
+				copy(extendedArray, array)
+				for i := len(array); i <= index; i++ {
+					extendedArray[i] = values.MK_NIL()
+				}
+				obj.Value = extendedArray
+				array = extendedArray
+				obj.Value = array
+			}
+
+			value, err := Evaluate(node.Value, env)
+			if err != nil {
+				return nil, err
+			}
+
+			array[index] = *value
+			obj.Value = array
+
+			varName := memberExpr.Object.(*ast.Identifier).Symbol
+			_, err = env.AssignVar(varName, *obj)
+			if err != nil {
+				return nil, err
+			}
+
+			return value, nil
 		}
 
 		var prop *shared.RuntimeValue

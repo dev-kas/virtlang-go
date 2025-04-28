@@ -68,6 +68,10 @@ func (e *Environment) LookupVar(name string) (*shared.RuntimeValue, *errors.Runt
 		return nil, err
 	}
 	value := env.Variables[name]
+
+	if value.Type == shared.Object || value.Type == shared.Array {
+	}
+
 	return &value, err
 }
 
@@ -86,6 +90,17 @@ func (e *Environment) AssignVar(name string, value shared.RuntimeValue) (*shared
 		}
 	}
 
-	env.Variables[name] = value
+	if value.Type == shared.Array || value.Type == shared.Object {
+		currentValue, exists := env.Variables[name]
+		if exists && (currentValue.Type == shared.Array || currentValue.Type == shared.Object) {
+			currentValue.Value = value.Value
+			env.Variables[name] = currentValue
+		} else {
+			env.Variables[name] = value
+		}
+	} else {
+		env.Variables[name] = value
+	}
+
 	return &value, nil
 }
