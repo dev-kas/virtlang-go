@@ -14,3 +14,8 @@ The VirtLang Project.
 
 # Documentation
 Refer to the [documentation](DOCS.md) for more information.
+
+# Analytics
+<div align="center">
+  <img src="https://repobeats.axiom.co/api/embed/09a765e0d0bf50cf5dcc409272f31b3c66aa4b7c.svg" title="Repobeats analytics image for VirtLang-Go" alt="Repobeats analytics image for VirtLang-Go">
+</div>
