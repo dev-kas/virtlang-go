@@ -74,15 +74,15 @@ func evalMemberExpr_object(node *ast.MemberExpr, env *environment.Environment, o
 }
 
 func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment, arr *shared.RuntimeValue) (*shared.RuntimeValue, *errors.RuntimeError) {
+	if !node.Computed {
+		return nil, &errors.RuntimeError{
+			Message: fmt.Sprintf("Cannot access property of array by non-number (attempting to access properties by %v).", node.Value.GetType()),
+		}
+	}
+
 	val, err := Evaluate(node.Value, env)
 	if err != nil {
 		return nil, err
-	}
-
-	if !node.Computed {
-		return nil, &errors.RuntimeError{
-			Message: "Cannot access property of array by non-number (attempting to access properties by string).",
-		}
 	}
 
 	if val.Type != shared.Number {

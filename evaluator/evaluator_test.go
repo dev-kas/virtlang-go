@@ -1050,7 +1050,7 @@ func TestTryCatch(t *testing.T) {
 			input: "let error = 'error not triggered'\ntry {let arr = [1, 2, 3]\narr.foo()} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot invoke a non-function (attempted to call a nil).",
+				Value: "Runtime Error: Cannot access property of array by non-number (attempting to access properties by Identifier).",
 			},
 		},
 		{
@@ -1602,6 +1602,13 @@ func TestArrays(t *testing.T) {
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
 				Value: 60,
+			},
+		},
+		{
+			input: "let arr = [1, 2, 3]\nlet i = 1\narr[i]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 2,
 			},
 		},
 	}
