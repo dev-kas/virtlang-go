@@ -45,7 +45,7 @@ func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment
 				}
 			}
 
-			index := indexVal.Value.(int)
+			index := int(indexVal.Value.(float64))
 			array := obj.Value.([]shared.RuntimeValue)
 
 			if index < 0 {

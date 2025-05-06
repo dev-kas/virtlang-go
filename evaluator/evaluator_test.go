@@ -22,21 +22,21 @@ func TestNumbers(t *testing.T) {
 			input: "1",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 1,
+				Value: float64(1),
 			},
 		},
 		{
 			input: "123",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 123,
+				Value: float64(123),
 			},
 		},
 		{
 			input: "0",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 0,
+				Value: float64(0),
 			},
 		},
 	}
@@ -192,7 +192,7 @@ func TestObjects(t *testing.T) {
 				Value: map[string]*shared.RuntimeValue{
 					"foo": {
 						Type:  shared.Number,
-						Value: 123,
+						Value: float64(123),
 					},
 				},
 			},
@@ -210,7 +210,7 @@ func TestObjects(t *testing.T) {
 								Value: map[string]*shared.RuntimeValue{
 									"bazz": {
 										Type:  shared.Number,
-										Value: 123,
+										Value: float64(123),
 									},
 								},
 							},
@@ -262,49 +262,49 @@ func TestBinaryExpression(t *testing.T) {
 			input: "1 + 2",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 3,
+				Value: float64(3),
 			},
 		},
 		{
 			input: "1 - 2",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: -1,
+				Value: float64(-1),
 			},
 		},
 		{
 			input: "1 * 2",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 2,
+				Value: float64(2),
 			},
 		},
 		{
 			input: "10/2",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 5,
+				Value: float64(5),
 			},
 		},
 		{
 			input: "10 % 3",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 1,
+				Value: float64(1),
 			},
 		},
 		{
 			input: "3 * (7 + 1)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 24,
+				Value: float64(24),
 			},
 		},
 		{
 			input: "3 * (7 + 1) + 2",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 26,
+				Value: float64(26),
 			},
 		},
 	}
@@ -440,7 +440,7 @@ func TestVariableDeclarationAndAssignment(t *testing.T) {
 			input: "let x = 10\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 10,
+				Value: float64(10),
 			},
 		},
 		{
@@ -454,7 +454,7 @@ func TestVariableDeclarationAndAssignment(t *testing.T) {
 			input: "let x = 10\nx = 20\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 20,
+				Value: float64(20),
 			},
 		},
 		{
@@ -468,91 +468,91 @@ func TestVariableDeclarationAndAssignment(t *testing.T) {
 			input: "let x = 10\nlet y = x + 5\ny",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 15,
+				Value: float64(15),
 			},
 		},
 		{
 			input: "let x = 10\nx = x + 5\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 15,
+				Value: float64(15),
 			},
 		},
 		{
 			input: "let x = 10\nlet y = x\nx = 20\ny",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 10,
+				Value: float64(10),
 			},
 		},
 		{
 			input: "let x = 10\nlet y = x\nx = 20\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 20,
+				Value: float64(20),
 			},
 		},
 		{
 			input: "let x = 10\nlet y = x * 2\nlet z = y + x\nz",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 30,
+				Value: float64(30),
 			},
 		},
 		{
 			input: "let x = {foo: 10}\nx.foo = 20\nx.foo",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 20,
+				Value: float64(20),
 			},
 		},
 		{
 			input: "let x = {foo: {bar: 10}}\nx.foo.bar = 20\nx.foo.bar",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 20,
+				Value: float64(20),
 			},
 		},
 		{
 			input: "let x = 10\nlet y = 20\nlet z = x + y\nz",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 30,
+				Value: float64(30),
 			},
 		},
 		{
 			input: "let x = 10\nlet y = x\nlet z = y\nz",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 10,
+				Value: float64(10),
 			},
 		},
 		{
 			input: "let x = 10\nlet y = x\nx = 20\ny",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 10,
+				Value: float64(10),
 			},
 		},
 		{
 			input: "let x = 10\nlet y = x\nx = 20\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 20,
+				Value: float64(20),
 			},
 		},
 		{
 			input: "let x = 10\nlet y = x + 5\nlet z = y * 2\nz",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 30,
+				Value: float64(30),
 			},
 		},
 		{
 			input: "let x = 10\nlet y = x + 5\nlet z = y * 2\nx + y + z",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 55,
+				Value: float64(55),
 			},
 		},
 	}
@@ -585,42 +585,42 @@ func TestFunctions(t *testing.T) {
 			input: "fn myFunc(arg1, arg2) { arg1 }\nmyFunc(10, 20)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 10,
+				Value: float64(10),
 			},
 		},
 		{
 			input: "fn myFunc(arg1, arg2) { arg2 }\nmyFunc(10, 20)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 20,
+				Value: float64(20),
 			},
 		},
 		{
 			input: "fn myFunc(arg1, arg2) { arg1 + arg2 }\nmyFunc(10, 20)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 30,
+				Value: float64(30),
 			},
 		},
 		{
 			input: "fn myFunc(arg1, arg2) { arg1 * arg2 }\nmyFunc(10, 20)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 200,
+				Value: float64(200),
 			},
 		},
 		{
 			input: "fn myFunc(arg1) { arg1 * 2 }\nmyFunc(15)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 30,
+				Value: float64(30),
 			},
 		},
 		{
 			input: "fn myFunc() { 42 }\nmyFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 42,
+				Value: float64(42),
 			},
 		},
 		{
@@ -634,14 +634,14 @@ func TestFunctions(t *testing.T) {
 			input: "fn myFunc(arg1) { let x = arg1 * 2\nx + 10 }\nmyFunc(5)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 20,
+				Value: float64(20),
 			},
 		},
 		{
 			input: "let myFunc = fn(arg1, arg2) { arg1 + arg2 }\nmyFunc(5, 10)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 15,
+				Value: float64(15),
 			},
 		},
 		{
@@ -655,21 +655,21 @@ func TestFunctions(t *testing.T) {
 			input: "fn outerFunc(arg1) { fn innerFunc(arg2) { arg1 + arg2 } }\nlet inner = outerFunc(10)\ninner(5)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 15,
+				Value: float64(15),
 			},
 		},
 		{
 			input: "fn myFunc(arg1) { let x = arg1 * 2\nx }\nmyFunc(7)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 14,
+				Value: float64(14),
 			},
 		},
 		{
 			input: "fn myFunc(arg1) { let x = {foo: arg1}\nx.foo }\nmyFunc(42)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 42,
+				Value: float64(42),
 			},
 		},
 		{
@@ -683,14 +683,14 @@ func TestFunctions(t *testing.T) {
 			input: "fn myFunc(arg1) { let x = fn() { arg1 * 2 }\nx() }\nmyFunc(8)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 16,
+				Value: float64(16),
 			},
 		},
 		{
 			input: "fn myFunc(arg1, arg2) { let x = arg1 + arg2\nfn() { x * 2 } }\nlet nestedFunc = myFunc(3, 4)\nnestedFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 14,
+				Value: float64(14),
 			},
 		},
 	}
@@ -862,105 +862,105 @@ func TestWhileLoops(t *testing.T) {
 			input: "let x = 0\nwhile (x < 5) { x = x + 1 }\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 5,
+				Value: float64(5),
 			},
 		},
 		{
 			input: "let x = 10\nwhile (x > 0) { x = x - 2 }\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 0,
+				Value: float64(0),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x <= 5) { sum = sum + x\nx = x + 1 }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 15,
+				Value: float64(15),
 			},
 		},
 		{
 			input: "let x = 1\nlet product = 1\nwhile (x <= 4) { product = product * x\nx = x + 1 }\nproduct",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 24,
+				Value: float64(24),
 			},
 		},
 		{
 			input: "let x = 0\nwhile (x < 3) { x = x + 1 }\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 3,
+				Value: float64(3),
 			},
 		},
 		{
 			input: "let x = 0\nlet y = 0\nwhile (x < 3) { y = y + x\nx = x + 1 }\ny",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 3,
+				Value: float64(3),
 			},
 		},
 		{
 			input: "let x = 0\nwhile (x < 0) { x = x + 1 }\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 0,
+				Value: float64(0),
 			},
 		},
 		{
 			input: "let x = 5\nwhile (x > 0) { x = x - 1 }\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 0,
+				Value: float64(0),
 			},
 		},
 		{
 			input: "let x = 0\nlet result = 1\nwhile (x < 4) { result = result * 2\nx = x + 1 }\nresult",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 16,
+				Value: float64(16),
 			},
 		},
 		{
 			input: "let x = 0\nlet y = 0\nwhile (x < 5) { if (x % 2 == 0) { y = y + x }\nx = x + 1 }\ny",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 6,
+				Value: float64(6),
 			},
 		},
 		{
 			input: "let x = 0\nlet y = 1\nwhile (x < 3) { y = y * 2\nx = x + 1 }\ny",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 8,
+				Value: float64(8),
 			},
 		},
 		{
 			input: "let x = 10\nwhile (x > 5) { x = x - 1 }\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 5,
+				Value: float64(5),
 			},
 		},
 		{
 			input: "let x = 0\nlet count = 0\nwhile (x < 10) { if (x % 2 == 0) { count = count + 1 }\nx = x + 1 }\ncount",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 5,
+				Value: float64(5),
 			},
 		},
 		{
 			input: "let x = 0\nlet result = 0\nwhile (x < 5) { result = result + x\nx = x + 1 }\nresult",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 10,
+				Value: float64(10),
 			},
 		},
 		{
 			input: "let x = 0\nwhile (x < 3) { let y = x * 2\nx = x + 1 }\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 3,
+				Value: float64(3),
 			},
 		},
 	}
@@ -1090,7 +1090,7 @@ func TestReturnStatements(t *testing.T) {
 			input: "fn myFunc() { return 42 }\nmyFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 42,
+				Value: float64(42),
 			},
 		},
 		{
@@ -1116,14 +1116,14 @@ func TestReturnStatements(t *testing.T) {
 			input: "fn myFunc() { if (1 == 1) { return 10 } return 20 }\nmyFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 10,
+				Value: float64(10),
 			},
 		},
 		{
 			input: "fn myFunc() { let x = 5\nreturn x * 2 }\nmyFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 10,
+				Value: float64(10),
 			},
 		},
 		{
@@ -1137,21 +1137,21 @@ func TestReturnStatements(t *testing.T) {
 			input: "fn myFunc() { let x = 10\nif (x > 5) { return x + 5 } return x - 5 }\nmyFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 15,
+				Value: float64(15),
 			},
 		},
 		{
 			input: "fn myFunc() { let x = 10\nwhile (x > 0) { return x } }\nmyFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 10,
+				Value: float64(10),
 			},
 		},
 		{
 			input: "fn myFunc() { return fn(arg) { return arg * 2 } }\nlet double = myFunc()\ndouble(5)",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 10,
+				Value: float64(10),
 			},
 		},
 		{
@@ -1191,140 +1191,140 @@ func TestContinueKeyword(t *testing.T) {
 			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { x = x + 1\nif (x == 3) { continue }\nsum = sum + x }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 12,
+				Value: float64(12),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { x = x + 1\nif (x % 2 == 0) { continue }\nsum = sum + x }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 9,
+				Value: float64(9),
 			},
 		},
 		{
 			input: "let x = 0\nlet count = 0\nwhile (x < 10) { x = x + 1\nif (x < 5) { continue }\ncount = count + 1 }\ncount",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 6,
+				Value: float64(6),
 			},
 		},
 		{
 			input: "let x = 0\nlet product = 1\nwhile (x < 5) { x = x + 1\nif (x % 2 == 0) { continue }\nproduct = product * x }\nproduct",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 15,
+				Value: float64(15),
 			},
 		},
 		{
 			input: "let x = 0\nlet result = 0\nwhile (x < 5) { x = x + 1\nif (x == 3) { continue }\nresult = result + x }\nresult",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 12,
+				Value: float64(12),
 			},
 		},
 		{
 			input: "let x = 0\nlet evenSum = 0\nwhile (x < 10) { x = x + 1\nif (x % 2 != 0) { continue }\nevenSum = evenSum + x }\nevenSum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 30,
+				Value: float64(30),
 			},
 		},
 		{
 			input: "let x = 0\nlet y = 0\nwhile (x < 5) { x = x + 1\nif (x == 2) { continue }\ny = y + x }\ny",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 13,
+				Value: float64(13),
 			},
 		},
 		{
 			input: "let x = 0\nlet count = 0\nwhile (x < 7) { x = x + 1\nif (x % 3 == 0) { continue }\ncount = count + 1 }\ncount",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 5,
+				Value: float64(5),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 6) { x = x + 1\nif (x == 4) { continue }\nsum = sum + x }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 17,
+				Value: float64(17),
 			},
 		},
 		{
 			input: "let x = 0\nlet result = 1\nwhile (x < 5) { x = x + 1\nif (x%2 == 1) { continue }\nresult = result * x }\nresult",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 8,
+				Value: float64(8),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 8) { x = x + 1\nif (x % 2 == 1) { continue }\nsum = sum + x }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 20,
+				Value: float64(20),
 			},
 		},
 		{
 			input: "let x = 0\nlet count = 0\nwhile (x < 10) { x = x + 1\nif (x > 7) { continue }\ncount = count + 1 }\ncount",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 7,
+				Value: float64(7),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { x = x + 1\nif (x == 3) { continue }\nsum = sum + x }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 12,
+				Value: float64(12),
 			},
 		},
 		{
 			input: "let x = 0\nlet product = 1\nwhile (x < 6) { x = x + 1\nif (x == 2) { continue }\nif (x == 5) { continue }\nproduct = product * x }\nproduct",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 72,
+				Value: float64(72),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 4) { x = x + 1\nif (x == 2) { continue }\nsum = sum + x }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 8,
+				Value: float64(8),
 			},
 		},
 		{
 			input: "let x = 0\nlet count = 0\nwhile (x < 10) { x = x + 1\nif (x % 2 == 0) { continue }\ncount = count + 1 }\ncount",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 5,
+				Value: float64(5),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 7) { x = x + 1\nif (x == 6) { continue }\nsum = sum + x }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 22,
+				Value: float64(22),
 			},
 		},
 		{
 			input: "let x = 0\nlet result = 1\nwhile (x < 4) { x = x + 1\nif (x == 2) { continue }\nresult = result * x }\nresult",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 12,
+				Value: float64(12),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { x = x + 1\nif (x == 3) { continue }\nsum = sum + x }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 12,
+				Value: float64(12),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { x = x + 1\nif (x == 3) { continue }\nsum = sum + x }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 12,
+				Value: float64(12),
 			},
 		},
 		{
@@ -1365,140 +1365,140 @@ func TestBreakKeyword(t *testing.T) {
 			input: "let x = 0\nwhile (x < 5) { if (x == 3) { break }\nx = x + 1 }\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 3,
+				Value: float64(3),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { if (x == 3) { break }\nsum = sum + x\nx = x + 1 }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 3,
+				Value: float64(3),
 			},
 		},
 		{
 			input: "let x = 0\nwhile (x < 5) { break\nx = x + 1 }\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 0,
+				Value: float64(0),
 			},
 		},
 		{
 			input: "let x = 0\nlet y = 0\nwhile (x < 5) { if (x == 2) { break }\ny = y + x\nx = x + 1 }\ny",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 1,
+				Value: float64(1),
 			},
 		},
 		{
 			input: "let x = 0\nwhile (x < 5) { if (x == 0) { break }\nx = x + 1 }\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 0,
+				Value: float64(0),
 			},
 		},
 		{
 			input: "let x = 0\nlet product = 1\nwhile (x < 5) { if (x == 3) { break }\nproduct = product * (x + 1)\nx = x + 1 }\nproduct",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 6,
+				Value: float64(6),
 			},
 		},
 		{
 			input: "let x = 0\nwhile (x < 5) { if (x == 4) { break }\nx = x + 1 }\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 4,
+				Value: float64(4),
 			},
 		},
 		{
 			input: "let x = 0\nlet count = 0\nwhile (x < 10) { if (x == 5) { break }\ncount = count + 1\nx = x + 1 }\ncount",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 5,
+				Value: float64(5),
 			},
 		},
 		{
 			input: "let x = 0\nlet result = 0\nwhile (x < 5) { if (x == 2) { break }\nresult = result + x\nx = x + 1 }\nresult",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 1,
+				Value: float64(1),
 			},
 		},
 		{
 			input: "let x = 0\nlet evenSum = 0\nwhile (x < 10) { if (x == 6) { break }\nif (x % 2 == 0) { evenSum = evenSum + x }\nx = x + 1 }\nevenSum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 6,
+				Value: float64(6),
 			},
 		},
 		{
 			input: "let x = 0\nlet y = 0\nwhile (x < 5) { if (x == 3) { break }\ny = y + x\nx = x + 1 }\ny",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 3,
+				Value: float64(3),
 			},
 		},
 		{
 			input: "let x = 0\nlet count = 0\nwhile (x < 7) { if (x == 4) { break }\ncount = count + 1\nx = x + 1 }\ncount",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 4,
+				Value: float64(4),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 6) { if (x == 3) { break }\nsum = sum + x\nx = x + 1 }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 3,
+				Value: float64(3),
 			},
 		},
 		{
 			input: "let x = 0\nlet result = 1\nwhile (x < 5) { if (x == 2) { break }\nresult = result * (x + 1)\nx = x + 1 }\nresult",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 2,
+				Value: float64(2),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { if (x == 4) { break }\nsum = sum + x\nx = x + 1 }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 6,
+				Value: float64(6),
 			},
 		},
 		{
 			input: "let x = 0\nlet count = 0\nwhile (x < 10) { if (x == 7) { break }\ncount = count + 1\nx = x + 1 }\ncount",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 7,
+				Value: float64(7),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 5) { if (x == 3) { break }\nsum = sum + x\nx = x + 1 }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 3,
+				Value: float64(3),
 			},
 		},
 		{
 			input: "let x = 0\nlet product = 1\nwhile (x < 6) { if (x == 2) { break }\nproduct = product * (x + 1)\nx = x + 1 }\nproduct",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 2,
+				Value: float64(2),
 			},
 		},
 		{
 			input: "let x = 0\nlet sum = 0\nwhile (x < 4) { if (x == 2) { break }\nsum = sum + x\nx = x + 1 }\nsum",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 1,
+				Value: float64(1),
 			},
 		},
 		{
 			input: "let x = 0\nlet count = 0\nwhile (x < 10) { if (x == 5) { break }\ncount = count + 1\nx = x + 1 }\ncount",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 5,
+				Value: float64(5),
 			},
 		},
 		{
@@ -1538,21 +1538,21 @@ func TestArrays(t *testing.T) {
 			input: "let arr = [1, 2, 3]\narr[0]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 1,
+				Value: float64(1),
 			},
 		},
 		{
 			input: "let arr = [1, 2, 3]\narr[1]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 2,
+				Value: float64(2),
 			},
 		},
 		{
 			input: "let arr = [1, 2, 3]\narr[2]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 3,
+				Value: float64(3),
 			},
 		},
 		{
@@ -1566,49 +1566,49 @@ func TestArrays(t *testing.T) {
 			input: "let arr = [1, 2, 3]\narr[0] = 10\narr[0]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 10,
+				Value: float64(10),
 			},
 		},
 		{
 			input: "let arr = [1, 2, 3]\narr[1] = 20\narr[1]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 20,
+				Value: float64(20),
 			},
 		},
 		{
 			input: "let arr = [1, 2, 3]\narr[2] = 30\narr[2]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 30,
+				Value: float64(30),
 			},
 		},
 		{
 			input: "let arr = [1, 2, 3]\narr[3] = 40\narr[3]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 40,
+				Value: float64(40),
 			},
 		},
 		{
 			input: "let arr = [1, 2, 3]\narr[4] = 50\narr[4]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 50,
+				Value: float64(50),
 			},
 		},
 		{
 			input: "let arr = [1, 2, 3]\narr[5] = 60\narr[5]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 60,
+				Value: float64(60),
 			},
 		},
 		{
 			input: "let arr = [1, 2, 3]\nlet i = 1\narr[i]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
-				Value: 2,
+				Value: float64(2),
 			},
 		},
 	}

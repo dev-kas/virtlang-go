@@ -29,22 +29,22 @@ func evalComEx(expression *ast.CompareExpr, env *environment.Environment) (*shar
 
 	switch expression.Operator {
 	case ast.Equal:
-		result := values.MK_BOOL(lhs.Value.(int) == rhs.Value.(int))
+		result := values.MK_BOOL(lhs.Value.(float64) == rhs.Value.(float64))
 		return &result, nil
 	case ast.NotEqual:
-		result := values.MK_BOOL(lhs.Value.(int) != rhs.Value.(int))
+		result := values.MK_BOOL(lhs.Value.(float64) != rhs.Value.(float64))
 		return &result, nil
 	case ast.LessThan:
-		result := values.MK_BOOL(lhs.Value.(int) < rhs.Value.(int))
+		result := values.MK_BOOL(lhs.Value.(float64) < rhs.Value.(float64))
 		return &result, nil
 	case ast.LessThanEqual:
-		result := values.MK_BOOL(lhs.Value.(int) <= rhs.Value.(int))
+		result := values.MK_BOOL(lhs.Value.(float64) <= rhs.Value.(float64))
 		return &result, nil
 	case ast.GreaterThan:
-		result := values.MK_BOOL(lhs.Value.(int) > rhs.Value.(int))
+		result := values.MK_BOOL(lhs.Value.(float64) > rhs.Value.(float64))
 		return &result, nil
 	case ast.GreaterThanEqual:
-		result := values.MK_BOOL(lhs.Value.(int) >= rhs.Value.(int))
+		result := values.MK_BOOL(lhs.Value.(float64) >= rhs.Value.(float64))
 		return &result, nil
 	default:
 		return nil, &errors.RuntimeError{

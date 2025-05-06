@@ -25,7 +25,7 @@ func evalMemberExpr(node *ast.MemberExpr, env *environment.Environment) (*shared
 	if obj.Type == shared.Object {
 		return evalMemberExpr_object(node, env, obj)
 	} else {
-		return evalMemberExpr_array(node, env, obj)
+		return evalMemberExpr_array(node, env)
 	}
 }
 
@@ -73,7 +73,7 @@ func evalMemberExpr_object(node *ast.MemberExpr, env *environment.Environment, o
 	return obj.Value.(map[string]*shared.RuntimeValue)[key], nil
 }
 
-func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment, arr *shared.RuntimeValue) (*shared.RuntimeValue, *errors.RuntimeError) {
+func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
 	if !node.Computed {
 		return nil, &errors.RuntimeError{
 			Message: fmt.Sprintf("Cannot access property of array by non-number (attempting to access properties by %v).", node.Value.GetType()),
@@ -90,7 +90,7 @@ func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment, ar
 			Message: fmt.Sprintf("Cannot access property of array by non-number (attempting to access properties by %v).", shared.Stringify(val.Type)),
 		}
 	}
-	index := val.Value.(int)
+	index := int(val.Value.(float64))
 
 	updatedArr, err := env.LookupVar(node.Object.(*ast.Identifier).Symbol)
 	if err != nil {

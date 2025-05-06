@@ -23,7 +23,7 @@ func MK_BOOL(value bool) shared.RuntimeValue {
 	}
 }
 
-func MK_NUMBER(value int) shared.RuntimeValue { // TODO: convert to float64 later
+func MK_NUMBER(value float64) shared.RuntimeValue {
 	return shared.RuntimeValue{
 		Type:  shared.Number,
 		Value: value,
