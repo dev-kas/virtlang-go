@@ -333,7 +333,13 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 				if IsNumeric(loopRune) {
 					numStr += loopChar
 					position++
-				} else if loopChar == "." && !hasDecimal {
+				} else if loopChar == "." {
+					if hasDecimal {
+						return nil, &errors.LexerError{
+							Character: '.',
+							Position:  position + 1,
+						}
+					}
 					if position+1 < srcLen && IsNumeric(rune(src[position+1][0])) {
 						numStr += loopChar
 						hasDecimal = true

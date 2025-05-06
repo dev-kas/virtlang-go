@@ -35,7 +35,7 @@ func TestBinaryExpr(t *testing.T) {
 		t.Fatalf("Expected left side of (+) to be NumericLiteral, got %s", left.GetType())
 	}
 	if left.(*ast.NumericLiteral).Value != 1 {
-		t.Fatalf("Expected left side of (+) to be 1, got %d", left.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected left side of (+) to be 1, got %f", left.(*ast.NumericLiteral).Value)
 	}
 
 	divide := add.(*ast.BinaryExpr).RHS
@@ -51,7 +51,7 @@ func TestBinaryExpr(t *testing.T) {
 		t.Fatalf("Expected right side of (/) to be NumericLiteral, got %s", divideRight.GetType())
 	}
 	if divideRight.(*ast.NumericLiteral).Value != 5 {
-		t.Fatalf("Expected right side of (/) to be 5, got %d", divideRight.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (/) to be 5, got %f", divideRight.(*ast.NumericLiteral).Value)
 	}
 
 	multiply := divide.(*ast.BinaryExpr).LHS
@@ -67,7 +67,7 @@ func TestBinaryExpr(t *testing.T) {
 		t.Fatalf("Expected left side of (*) to be NumericLiteral, got %s", multiplyLeft.GetType())
 	}
 	if multiplyLeft.(*ast.NumericLiteral).Value != 2 {
-		t.Fatalf("Expected left side of (*) to be 2, got %d", multiplyLeft.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected left side of (*) to be 2, got %f", multiplyLeft.(*ast.NumericLiteral).Value)
 	}
 
 	subtract := multiply.(*ast.BinaryExpr).RHS
@@ -83,7 +83,7 @@ func TestBinaryExpr(t *testing.T) {
 		t.Fatalf("Expected left side of (-) to be NumericLiteral, got %s", subtractLeft.GetType())
 	}
 	if subtractLeft.(*ast.NumericLiteral).Value != 3 {
-		t.Fatalf("Expected left side of (-) to be 3, got %d", subtractLeft.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected left side of (-) to be 3, got %f", subtractLeft.(*ast.NumericLiteral).Value)
 	}
 
 	subtractRight := subtract.(*ast.BinaryExpr).RHS
@@ -91,7 +91,7 @@ func TestBinaryExpr(t *testing.T) {
 		t.Fatalf("Expected right side of (-) to be NumericLiteral, got %s", subtractRight.GetType())
 	}
 	if subtractRight.(*ast.NumericLiteral).Value != 4 {
-		t.Fatalf("Expected right side of (-) to be 4, got %d", subtractRight.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (-) to be 4, got %f", subtractRight.(*ast.NumericLiteral).Value)
 	}
 
 	// commonly made mistakes
@@ -154,7 +154,7 @@ func TestTryCatchExpr(t *testing.T) {
 		t.Fatalf("Expected left side of (+) to be NumericLiteral, got %s", lhs.GetType())
 	}
 	if lhs.(*ast.NumericLiteral).Value != 2 {
-		t.Fatalf("Expected left side of (+) to be 1, got %d", lhs.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected left side of (+) to be 1, got %f", lhs.(*ast.NumericLiteral).Value)
 	}
 
 	rhs := add.(*ast.BinaryExpr).RHS
@@ -162,7 +162,7 @@ func TestTryCatchExpr(t *testing.T) {
 		t.Fatalf("Expected right side of (+) to be NumericLiteral, got %s", rhs.GetType())
 	}
 	if rhs.(*ast.NumericLiteral).Value != 1 {
-		t.Fatalf("Expected right side of (+) to be 2, got %d", rhs.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (+) to be 2, got %f", rhs.(*ast.NumericLiteral).Value)
 	}
 
 	catchVar := stmt_tc.(*ast.TryCatchStmt).CatchVar
@@ -185,7 +185,7 @@ func TestTryCatchExpr(t *testing.T) {
 		t.Fatalf("Expected left side of (-) to be NumericLiteral, got %s", lhs.GetType())
 	}
 	if lhs.(*ast.NumericLiteral).Value != 4 {
-		t.Fatalf("Expected left side of (-) to be 4, got %d", lhs.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected left side of (-) to be 4, got %f", lhs.(*ast.NumericLiteral).Value)
 	}
 
 	rhs = subtract.(*ast.BinaryExpr).RHS
@@ -193,7 +193,7 @@ func TestTryCatchExpr(t *testing.T) {
 		t.Fatalf("Expected right side of (-) to be NumericLiteral, got %s", rhs.GetType())
 	}
 	if rhs.(*ast.NumericLiteral).Value != 1 {
-		t.Fatalf("Expected right side of (-) to be 1, got %d", rhs.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (-) to be 1, got %f", rhs.(*ast.NumericLiteral).Value)
 	}
 
 	// commonly made mistakes
@@ -247,7 +247,7 @@ func TestVarStuff(t *testing.T) {
 	}
 
 	if stmt.(*ast.VarDeclaration).Value.(*ast.NumericLiteral).Value != 1 {
-		t.Fatalf("Expected value to be 1, got %d", stmt.(*ast.VarDeclaration).Value.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected value to be 1, got %f", stmt.(*ast.VarDeclaration).Value.(*ast.NumericLiteral).Value)
 	}
 
 	srccode = "const b = a + 3"
@@ -295,7 +295,7 @@ func TestVarStuff(t *testing.T) {
 	}
 
 	if stmt.(*ast.VarDeclaration).Value.(*ast.BinaryExpr).RHS.(*ast.NumericLiteral).Value != 3 {
-		t.Fatalf("Expected right side of (+) to be 3, got %d", stmt.(*ast.VarDeclaration).Value.(*ast.BinaryExpr).RHS.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (+) to be 3, got %f", stmt.(*ast.VarDeclaration).Value.(*ast.BinaryExpr).RHS.(*ast.NumericLiteral).Value)
 	}
 
 	srccode = "b = a - 3"
@@ -339,7 +339,7 @@ func TestVarStuff(t *testing.T) {
 	}
 
 	if stmt.(*ast.VarAssignmentExpr).Value.(*ast.BinaryExpr).RHS.(*ast.NumericLiteral).Value != 3 {
-		t.Fatalf("Expected right side of (-) to be 3, got %d", stmt.(*ast.VarAssignmentExpr).Value.(*ast.BinaryExpr).RHS.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (-) to be 3, got %f", stmt.(*ast.VarAssignmentExpr).Value.(*ast.BinaryExpr).RHS.(*ast.NumericLiteral).Value)
 	}
 
 	// Commonly made mistakes
@@ -386,7 +386,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected left side of (<) to be NumericLiteral, got %s", left.GetType())
 	}
 	if left.(*ast.NumericLiteral).Value != 1 {
-		t.Fatalf("Expected left side of (<) to be 1, got %d", left.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected left side of (<) to be 1, got %f", left.(*ast.NumericLiteral).Value)
 	}
 
 	right := stmt.(*ast.CompareExpr).RHS
@@ -394,7 +394,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected right side of (<) to be NumericLiteral, got %s", right.GetType())
 	}
 	if right.(*ast.NumericLiteral).Value != 2 {
-		t.Fatalf("Expected right side of (<) to be 2, got %d", right.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (<) to be 2, got %f", right.(*ast.NumericLiteral).Value)
 	}
 
 	if stmt.(*ast.CompareExpr).Operator != ast.LessThan {
@@ -422,7 +422,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected left side of (<) to be NumericLiteral, got %s", left.GetType())
 	}
 	if left.(*ast.NumericLiteral).Value != 1 {
-		t.Fatalf("Expected left side of (<) to be 1, got %d", left.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected left side of (<) to be 1, got %f", left.(*ast.NumericLiteral).Value)
 	}
 
 	right = stmt.(*ast.CompareExpr).RHS
@@ -430,7 +430,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected right side of (<) to be NumericLiteral, got %s", right.GetType())
 	}
 	if right.(*ast.NumericLiteral).Value != 2 {
-		t.Fatalf("Expected right side of (<) to be 2, got %d", right.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (<) to be 2, got %f", right.(*ast.NumericLiteral).Value)
 	}
 
 	if stmt.(*ast.CompareExpr).Operator != ast.GreaterThan {
@@ -458,7 +458,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected left side of (<) to be NumericLiteral, got %s", left.GetType())
 	}
 	if left.(*ast.NumericLiteral).Value != 1 {
-		t.Fatalf("Expected left side of (<) to be 1, got %d", left.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected left side of (<) to be 1, got %f", left.(*ast.NumericLiteral).Value)
 	}
 
 	right = stmt.(*ast.CompareExpr).RHS
@@ -466,7 +466,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected right side of (<) to be NumericLiteral, got %s", right.GetType())
 	}
 	if right.(*ast.NumericLiteral).Value != 2 {
-		t.Fatalf("Expected right side of (<) to be 2, got %d", right.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (<) to be 2, got %f", right.(*ast.NumericLiteral).Value)
 	}
 
 	if stmt.(*ast.CompareExpr).Operator != ast.Equal {
@@ -494,7 +494,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected left side of (<) to be NumericLiteral, got %s", left.GetType())
 	}
 	if left.(*ast.NumericLiteral).Value != 1 {
-		t.Fatalf("Expected left side of (<) to be 1, got %d", left.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected left side of (<) to be 1, got %f", left.(*ast.NumericLiteral).Value)
 	}
 
 	right = stmt.(*ast.CompareExpr).RHS
@@ -502,7 +502,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected right side of (<) to be NumericLiteral, got %s", right.GetType())
 	}
 	if right.(*ast.NumericLiteral).Value != 2 {
-		t.Fatalf("Expected right side of (<) to be 2, got %d", right.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (<) to be 2, got %f", right.(*ast.NumericLiteral).Value)
 	}
 
 	if stmt.(*ast.CompareExpr).Operator != ast.NotEqual {
@@ -530,7 +530,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected left side of (<) to be NumericLiteral, got %s", left.GetType())
 	}
 	if left.(*ast.NumericLiteral).Value != 1 {
-		t.Fatalf("Expected left side of (<) to be 1, got %d", left.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected left side of (<) to be 1, got %f", left.(*ast.NumericLiteral).Value)
 	}
 
 	right = stmt.(*ast.CompareExpr).RHS
@@ -538,7 +538,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected right side of (<) to be NumericLiteral, got %s", right.GetType())
 	}
 	if right.(*ast.NumericLiteral).Value != 2 {
-		t.Fatalf("Expected right side of (<) to be 2, got %d", right.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (<) to be 2, got %f", right.(*ast.NumericLiteral).Value)
 	}
 
 	if stmt.(*ast.CompareExpr).Operator != ast.LessThanEqual {
@@ -566,7 +566,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected left side of (<) to be NumericLiteral, got %s", left.GetType())
 	}
 	if left.(*ast.NumericLiteral).Value != 1 {
-		t.Fatalf("Expected left side of (<) to be 1, got %d", left.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected left side of (<) to be 1, got %f", left.(*ast.NumericLiteral).Value)
 	}
 
 	right = stmt.(*ast.CompareExpr).RHS
@@ -574,7 +574,7 @@ func TestComparison(t *testing.T) {
 		t.Fatalf("Expected right side of (<) to be NumericLiteral, got %s", right.GetType())
 	}
 	if right.(*ast.NumericLiteral).Value != 2 {
-		t.Fatalf("Expected right side of (<) to be 2, got %d", right.(*ast.NumericLiteral).Value)
+		t.Fatalf("Expected right side of (<) to be 2, got %f", right.(*ast.NumericLiteral).Value)
 	}
 
 	if stmt.(*ast.CompareExpr).Operator != ast.GreaterThanEqual {

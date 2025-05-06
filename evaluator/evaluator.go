@@ -14,7 +14,7 @@ func Evaluate(astNode ast.Stmt, env *environment.Environment) (*shared.RuntimeVa
 	type_ := astNode.GetType()
 	switch type_ {
 	case ast.NumericLiteralNode:
-		result := values.MK_NUMBER(int(astNode.(*ast.NumericLiteral).Value)) // TODO: convert to float64 later
+		result := values.MK_NUMBER(astNode.(*ast.NumericLiteral).Value)
 		return &result, nil
 
 	case ast.StringLiteralNode:

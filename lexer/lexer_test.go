@@ -187,6 +187,59 @@ func TestTokenize(t *testing.T) {
 			want:    nil,
 			wantErr: true,
 		},
+		{
+			name:  "Floating Point Number with Leading Zero",
+			input: "x = 0.123",
+			want: []lexer.Token{
+				lexer.NewToken("x", lexer.Identifier, 1, 1),
+				lexer.NewToken("=", lexer.Equals, 3, 1),
+				lexer.NewToken("0.123", lexer.Number, 5, 5),
+				lexer.NewToken("<EOF>", lexer.EOF, 10, 0),
+			},
+			wantErr: false,
+		},
+		{
+			name:  "Floating Point Number without Leading Zero",
+			input: "y = .456",
+			want: []lexer.Token{
+				lexer.NewToken("y", lexer.Identifier, 1, 1),
+				lexer.NewToken("=", lexer.Equals, 3, 1),
+				lexer.NewToken(".456", lexer.Number, 5, 4),
+				lexer.NewToken("<EOF>", lexer.EOF, 9, 0),
+			},
+			wantErr: false,
+		},
+		{
+			name:  "Floating Point Number with Trailing Dot",
+			input: "z = 789.",
+			want: []lexer.Token{
+				lexer.NewToken("z", lexer.Identifier, 1, 1),
+				lexer.NewToken("=", lexer.Equals, 3, 1),
+				lexer.NewToken("789", lexer.Number, 5, 3),
+				lexer.NewToken(".", lexer.Dot, 8, 1),
+				lexer.NewToken("<EOF>", lexer.EOF, 9, 0),
+			},
+			wantErr: false,
+		},
+		{
+			name:  "Floating Point Number in Expression",
+			input: "a = 1.2 + 3.4",
+			want: []lexer.Token{
+				lexer.NewToken("a", lexer.Identifier, 1, 1),
+				lexer.NewToken("=", lexer.Equals, 3, 1),
+				lexer.NewToken("1.2", lexer.Number, 5, 3),
+				lexer.NewToken("+", lexer.BinOperator, 9, 1),
+				lexer.NewToken("3.4", lexer.Number, 11, 3),
+				lexer.NewToken("<EOF>", lexer.EOF, 14, 0),
+			},
+			wantErr: false,
+		},
+		{
+			name:    "Floating Point Number with Multiple Dots Error",
+			input:   "let b = 1.2.3",
+			want:    nil,
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {
