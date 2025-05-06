@@ -372,7 +372,7 @@ func (n NodeType) String() string
 
 ```go
 type NumericLiteral struct {
-    Value int // TODO: Switch to float64
+    Value float64
 }
 ```
 
@@ -1120,7 +1120,7 @@ import "github.com/dev-kas/VirtLang-Go/values"
 - [func MK\_BOOL\(value bool\) shared.RuntimeValue](<#MK_BOOL>)
 - [func MK\_NATIVE\_FN\(fn NativeFunction\) shared.RuntimeValue](<#MK_NATIVE_FN>)
 - [func MK\_NIL\(\) shared.RuntimeValue](<#MK_NIL>)
-- [func MK\_NUMBER\(value int\) shared.RuntimeValue](<#MK_NUMBER>)
+- [func MK\_NUMBER\(value float64\) shared.RuntimeValue](<#MK_NUMBER>)
 - [func MK\_OBJECT\(value map\[string\]shared.RuntimeValue\) shared.RuntimeValue](<#MK_OBJECT>)
 - [func MK\_STRING\(value string\) shared.RuntimeValue](<#MK_STRING>)
 - [type FunctionValue](<#FunctionValue>)
@@ -1167,7 +1167,7 @@ func MK_NIL() shared.RuntimeValue
 ## func [MK\\\_NUMBER](<https://github.com/dev-kas/VirtLang-Go/blob/master/values/values.go#L26>)
 
 ```go
-func MK_NUMBER(value int) shared.RuntimeValue
+func MK_NUMBER(value float64) shared.RuntimeValue
 ```
 
 
