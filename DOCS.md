@@ -3,7 +3,7 @@
 # ast
 
 ```go
-import "github.com/dev-kas/virtlang-go/ast"
+import "github.com/dev-kas/virtlang-go/v2/ast"
 ```
 
 ## Index
@@ -586,7 +586,7 @@ func (w *WhileLoop) GetType() NodeType
 # environment
 
 ```go
-import "github.com/dev-kas/virtlang-go/environment"
+import "github.com/dev-kas/virtlang-go/v2/environment"
 ```
 
 ## Index
@@ -661,7 +661,7 @@ func (e *Environment) Resolve(varname string) (*Environment, *errors.RuntimeErro
 # errors
 
 ```go
-import "github.com/dev-kas/virtlang-go/errors"
+import "github.com/dev-kas/virtlang-go/v2/errors"
 ```
 
 ## Index
@@ -809,7 +809,7 @@ func (e *SyntaxError) Error() string
 # evaluator
 
 ```go
-import "github.com/dev-kas/virtlang-go/evaluator"
+import "github.com/dev-kas/virtlang-go/v2/evaluator"
 ```
 
 ## Index
@@ -829,7 +829,7 @@ func Evaluate(astNode ast.Stmt, env *environment.Environment) (*shared.RuntimeVa
 # lexer
 
 ```go
-import "github.com/dev-kas/virtlang-go/lexer"
+import "github.com/dev-kas/virtlang-go/v2/lexer"
 ```
 
 ## Index
@@ -1011,7 +1011,7 @@ const (
 # parser
 
 ```go
-import "github.com/dev-kas/virtlang-go/parser"
+import "github.com/dev-kas/virtlang-go/v2/parser"
 ```
 
 ## Index
@@ -1053,7 +1053,7 @@ func (p *Parser) ProduceAST(srcCode string) (*ast.Program, error)
 # shared
 
 ```go
-import "github.com/dev-kas/virtlang-go/shared"
+import "github.com/dev-kas/virtlang-go/v2/shared"
 ```
 
 ## Index
@@ -1111,7 +1111,7 @@ const (
 # values
 
 ```go
-import "github.com/dev-kas/virtlang-go/values"
+import "github.com/dev-kas/virtlang-go/v2/values"
 ```
 
 ## Index

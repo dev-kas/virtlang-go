@@ -3,7 +3,7 @@ package errors_test
 import (
 	"testing"
 
-	"github.com/dev-kas/virtlang-go/errors"
+	"github.com/dev-kas/virtlang-go/v2/errors"
 )
 
 func TestRuntimeError(t *testing.T) {

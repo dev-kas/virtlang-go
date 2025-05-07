@@ -3,8 +3,8 @@ package environment
 import (
 	"fmt"
 
-	"github.com/dev-kas/virtlang-go/errors"
-	"github.com/dev-kas/virtlang-go/shared"
+	"github.com/dev-kas/virtlang-go/v2/errors"
+	"github.com/dev-kas/virtlang-go/v2/shared"
 )
 
 type Environment struct {

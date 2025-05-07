@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/dev-kas/virtlang-go/ast"
-	"github.com/dev-kas/virtlang-go/environment"
-	"github.com/dev-kas/virtlang-go/errors"
-	"github.com/dev-kas/virtlang-go/shared"
-	"github.com/dev-kas/virtlang-go/values"
+	"github.com/dev-kas/virtlang-go/v2/ast"
+	"github.com/dev-kas/virtlang-go/v2/environment"
+	"github.com/dev-kas/virtlang-go/v2/errors"
+	"github.com/dev-kas/virtlang-go/v2/shared"
+	"github.com/dev-kas/virtlang-go/v2/values"
 )
 
 func countDecimalPlaces(f float64) int {

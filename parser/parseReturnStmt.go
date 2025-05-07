@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"github.com/dev-kas/virtlang-go/ast"
-	"github.com/dev-kas/virtlang-go/errors"
+	"github.com/dev-kas/virtlang-go/v2/ast"
+	"github.com/dev-kas/virtlang-go/v2/errors"
 )
 
 func (p *Parser) parseReturnStmt() (ast.Expr, *errors.SyntaxError) {

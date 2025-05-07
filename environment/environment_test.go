@@ -3,8 +3,8 @@ package environment_test
 import (
 	"testing"
 
-	"github.com/dev-kas/virtlang-go/environment"
-	"github.com/dev-kas/virtlang-go/shared"
+	"github.com/dev-kas/virtlang-go/v2/environment"
+	"github.com/dev-kas/virtlang-go/v2/shared"
 )
 
 func TestNewEnvironment(t *testing.T) {
