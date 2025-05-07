@@ -39,6 +39,20 @@ func TestNumbers(t *testing.T) {
 				Value: float64(0),
 			},
 		},
+		{
+			input: "0.1",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(0.1),
+			},
+		},
+		{
+			input: "3.14159",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(3.14159),
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -48,7 +62,7 @@ func TestNumbers(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("expected no error, got %v", synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program.Stmts[0], &env)
+		evaluated, runErr := evaluator.Evaluate(program, &env)
 		if runErr != nil {
 			t.Errorf("expected no error, got %v", runErr)
 		}
@@ -132,7 +146,7 @@ func TestStrings(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("expected no error, got %v", synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program.Stmts[0], &env)
+		evaluated, runErr := evaluator.Evaluate(program, &env)
 		if runErr != nil {
 			t.Errorf("expected no error, got %v", runErr)
 		}
@@ -240,7 +254,7 @@ func TestObjects(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("expected no error, got %v", synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program.Stmts[0], &env)
+		evaluated, runErr := evaluator.Evaluate(program, &env)
 		if runErr != nil {
 			t.Errorf("expected no error, got %v", runErr)
 		}
@@ -280,7 +294,7 @@ func TestBinaryExpression(t *testing.T) {
 			},
 		},
 		{
-			input: "10/2",
+			input: "10 / 2",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
 				Value: float64(5),
@@ -307,24 +321,80 @@ func TestBinaryExpression(t *testing.T) {
 				Value: float64(26),
 			},
 		},
+		{
+			input: "1.5 + 2.5",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(4.0),
+			},
+		},
+		{
+			input: "5.5 - 2.2",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(3.3),
+			},
+		},
+		{
+			input: "3.3 * 2.0",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(6.6),
+			},
+		},
+		{
+			input: "7.5 / 2.5",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(3.0),
+			},
+		},
+		{
+			input: "let x = 1.1 let y = 2.2 x + y",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(3.3),
+			},
+		},
+		{
+			input: "2.5 * (1.5 + 2.5)",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(10.0),
+			},
+		},
+		{
+			input: "10.0 - 3.5",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(6.5),
+			},
+		},
+		{
+			input: "4.4 / 2.2",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(2.0),
+			},
+		},
 	}
 
-	for _, test := range tests {
+	for i, test := range tests {
 		p := parser.New()
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
-			t.Errorf("expected no error, got %v", synErr)
+			t.Errorf("[%d] expected no error, got %v", i+1, synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program.Stmts[0], &env)
+		evaluated, runErr := evaluator.Evaluate(program, &env)
 		if runErr != nil {
-			t.Errorf("expected no error, got %v", runErr)
+			t.Errorf("[%d] expected no error, got %v", i+1, runErr)
 		}
 		if evaluated.Type != test.output.Type {
-			t.Errorf("expected %v, got %v", test.output.Type, evaluated.Type)
+			t.Errorf("[%d] expected %v, got %v", i+1, test.output.Type, evaluated.Type)
 		}
 		if evaluated.Value != test.output.Value {
-			t.Errorf("expected %v, got %v", test.output.Value, evaluated.Value)
+			t.Errorf("[%d] expected %v, got %v", i+1, test.output.Value, evaluated.Value)
 		}
 	}
 }
@@ -419,7 +489,7 @@ func TestComparisonOperators(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("expected no error, got %v", synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program.Stmts[0], &env)
+		evaluated, runErr := evaluator.Evaluate(program, &env)
 		if runErr != nil {
 			t.Errorf("expected no error, got %v", runErr)
 		}
