@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/dev-kas/VirtLang-Go/environment"
-	"github.com/dev-kas/VirtLang-Go/evaluator"
-	"github.com/dev-kas/VirtLang-Go/parser"
-	"github.com/dev-kas/VirtLang-Go/shared"
+	"github.com/dev-kas/virtlang-go/environment"
+	"github.com/dev-kas/virtlang-go/evaluator"
+	"github.com/dev-kas/virtlang-go/parser"
+	"github.com/dev-kas/virtlang-go/shared"
 
-	// "github.com/dev-kas/VirtLang-Go/values"
+	// "github.com/dev-kas/virtlang-go/values"
 	"testing"
 )
 

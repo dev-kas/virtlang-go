@@ -1,11 +1,11 @@
 <div align="center">
 <!-- TEST_BADGE --><img alt="Project Tests Failing" src="https://img.shields.io/badge/tests%20-%20failing%20-%20%23ad4c45?style=for-the-badge&logo=textpattern&logoColor=%23ffffff&logoSize=32&label=tests&labelColor=%23732d28&color=%23ad4c45&cacheSeconds=600"><!-- END_TEST_BADGE -->
 &nbsp;
-<img src="https://img.shields.io/github/license/dev-kas/VirtLang-Go?style=for-the-badge&logo=2fas&logoColor=%23ffffff&logoSize=64&labelColor=%23701e25&color=%23ab3841&cacheSeconds=6000" alt="Project License">
+<img src="https://img.shields.io/github/license/dev-kas/virtlang-go?style=for-the-badge&logo=2fas&logoColor=%23ffffff&logoSize=64&labelColor=%23701e25&color=%23ab3841&cacheSeconds=6000" alt="Project License">
 &nbsp;
-<img src="https://img.shields.io/github/stars/dev-kas/VirtLang-Go?style=for-the-badge&logo=github&logoSize=64&labelColor=%231d6791&color=%233894c9" alt="GitHub Repo stars">
+<img src="https://img.shields.io/github/stars/dev-kas/virtlang-go?style=for-the-badge&logo=github&logoSize=64&labelColor=%231d6791&color=%233894c9" alt="GitHub Repo stars">
 &nbsp;
-<img src="https://img.shields.io/github/v/release/dev-kas/VirtLang-Go?sort=semver&display_name=release&style=for-the-badge&logo=verizon&labelColor=%23347039&color=%234dab55&cacheSeconds=600" alt="GitHub Release">
+<img src="https://img.shields.io/github/v/release/dev-kas/virtlang-go?sort=semver&display_name=release&style=for-the-badge&logo=verizon&labelColor=%23347039&color=%234dab55&cacheSeconds=600" alt="GitHub Release">
 </div>
 
 # VirtLang
@@ -48,9 +48,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/dev-kas/VirtLang-Go/environment"
-	"github.com/dev-kas/VirtLang-Go/evaluator"
-	"github.com/dev-kas/VirtLang-Go/parser"
+	"github.com/dev-kas/virtlang-go/environment"
+	"github.com/dev-kas/virtlang-go/evaluator"
+	"github.com/dev-kas/virtlang-go/parser"
 )
 
 func main() {
@@ -86,7 +86,7 @@ n // output: 18`
 ## 📚 Documentation
 
 * Auto-generated Go package docs: [`DOCS.md`](DOCS.md)
-* Full design write-up and architecture: [VirtLang Wiki](https://deepwiki.com/dev-kas/VirtLang-Go)
+* Full design write-up and architecture: [VirtLang Wiki](https://deepwiki.com/dev-kas/virtlang-go)
 
 ## 🤝 Contributing
 
@@ -95,5 +95,5 @@ Found a bug? Want to add a feature? See [`CONTRIBUTING.md`](CONTRIBUTING.md) for
 ## 📊 Analytics
 
 <div align="center">
-  <img src="https://repobeats.axiom.co/api/embed/09a765e0d0bf50cf5dcc409272f31b3c66aa4b7c.svg" title="Repobeats analytics image for VirtLang-Go" alt="Repobeats analytics image for VirtLang-Go">
+  <img src="https://repobeats.axiom.co/api/embed/09a765e0d0bf50cf5dcc409272f31b3c66aa4b7c.svg" title="Repobeats analytics image for virtlang-go" alt="Repobeats analytics image for virtlang-go">
 </div>

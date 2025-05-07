@@ -3,7 +3,7 @@ package ast_test
 import (
 	"testing"
 
-	"github.com/dev-kas/VirtLang-Go/ast"
+	"github.com/dev-kas/virtlang-go/ast"
 )
 
 func TestNodeType_String(t *testing.T) {

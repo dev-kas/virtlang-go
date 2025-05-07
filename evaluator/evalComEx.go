@@ -3,11 +3,11 @@ package evaluator
 import (
 	"fmt"
 
-	"github.com/dev-kas/VirtLang-Go/ast"
-	"github.com/dev-kas/VirtLang-Go/environment"
-	"github.com/dev-kas/VirtLang-Go/errors"
-	"github.com/dev-kas/VirtLang-Go/shared"
-	"github.com/dev-kas/VirtLang-Go/values"
+	"github.com/dev-kas/virtlang-go/ast"
+	"github.com/dev-kas/virtlang-go/environment"
+	"github.com/dev-kas/virtlang-go/errors"
+	"github.com/dev-kas/virtlang-go/shared"
+	"github.com/dev-kas/virtlang-go/values"
 )
 
 func evalComEx(expression *ast.CompareExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {

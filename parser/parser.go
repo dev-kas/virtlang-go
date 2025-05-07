@@ -1,6 +1,6 @@
 package parser
 
-import "github.com/dev-kas/VirtLang-Go/lexer"
+import "github.com/dev-kas/virtlang-go/lexer"
 
 // type Parser interface {
 // 	at() lexer.Token

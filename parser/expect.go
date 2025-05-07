@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"github.com/dev-kas/VirtLang-Go/errors"
-	"github.com/dev-kas/VirtLang-Go/lexer"
+	"github.com/dev-kas/virtlang-go/errors"
+	"github.com/dev-kas/virtlang-go/lexer"
 )
 
 func (p *Parser) expect(type_ lexer.TokenType) (*lexer.Token, *errors.SyntaxError) {

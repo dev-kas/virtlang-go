@@ -3,8 +3,8 @@ package parser_test
 import (
 	"testing"
 
-	"github.com/dev-kas/VirtLang-Go/ast"
-	"github.com/dev-kas/VirtLang-Go/parser"
+	"github.com/dev-kas/virtlang-go/ast"
+	"github.com/dev-kas/virtlang-go/parser"
 )
 
 func TestBinaryExpr(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/dev-kas/VirtLang-Go/errors"
+	"github.com/dev-kas/virtlang-go/errors"
 )
 
 type TokenType int

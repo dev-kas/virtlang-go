@@ -3,10 +3,10 @@ package evaluator
 import (
 	"fmt"
 
-	"github.com/dev-kas/VirtLang-Go/ast"
-	"github.com/dev-kas/VirtLang-Go/environment"
-	"github.com/dev-kas/VirtLang-Go/errors"
-	"github.com/dev-kas/VirtLang-Go/shared"
+	"github.com/dev-kas/virtlang-go/ast"
+	"github.com/dev-kas/virtlang-go/environment"
+	"github.com/dev-kas/virtlang-go/errors"
+	"github.com/dev-kas/virtlang-go/shared"
 )
 
 func evalIdentifier(identifier *ast.Identifier, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {

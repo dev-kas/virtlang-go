@@ -3,7 +3,7 @@ package errors
 import (
 	"fmt"
 
-	"github.com/dev-kas/VirtLang-Go/shared"
+	"github.com/dev-kas/virtlang-go/shared"
 )
 
 // InternalCommunicationProtocol
