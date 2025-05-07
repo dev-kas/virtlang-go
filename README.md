@@ -55,10 +55,10 @@ import (
 
 func main() {
 	code := `let n = 1
-while (n < 18) {
+while (n < 10) {
 	n = n + 1
 }
-n // output: 18`
+n // output: 10`
 
 	// Set up parser and global environment
 	p := parser.New()
