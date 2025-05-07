@@ -1,3 +1,3 @@
-module github.com/dev-kas/VirtLang-Go
+module github.com/dev-kas/virtlang-go
 
 go 1.23.2
