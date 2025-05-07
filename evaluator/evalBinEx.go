@@ -32,7 +32,6 @@ func countDecimalPlaces(f float64) int {
 	return maxDecimalPlaces
 }
 
-
 func evalBinEx(binOp *ast.BinaryExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
 	lhs, err := Evaluate(binOp.LHS, env)
 	if err != nil {
@@ -180,7 +179,7 @@ func modulo(lhs, rhs *shared.RuntimeValue) (*shared.RuntimeValue, *errors.Runtim
 
 	// Formula applied:
 	// modulo(a, b) = a - floor(a/b) * b
-	r = lhsValue - math.Floor(lhsValue / rhsValue) * rhsValue
+	r = lhsValue - math.Floor(lhsValue/rhsValue)*rhsValue
 
 	r = r / scalingFactor
 
