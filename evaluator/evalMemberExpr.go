@@ -92,9 +92,17 @@ func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment) (*
 	}
 	index := int(val.Value.(float64))
 
-	updatedArr, err := env.LookupVar(node.Object.(*ast.Identifier).Symbol)
+	var updatedArr *shared.RuntimeValue
+
+	updatedArr, err = Evaluate(node.Object, env)
 	if err != nil {
 		return nil, err
+	}
+
+	if updatedArr.Type != shared.Array {
+		return nil, &errors.RuntimeError{
+			Message: fmt.Sprintf("Cannot access property of non-array (attempting to access properties of %v).", shared.Stringify(updatedArr.Type)),
+		}
 	}
 
 	if index < 0 || index >= len(updatedArr.Value.([]shared.RuntimeValue)) {

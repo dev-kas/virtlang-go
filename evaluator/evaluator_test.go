@@ -1681,6 +1681,48 @@ func TestArrays(t *testing.T) {
 				Value: float64(2),
 			},
 		},
+		{
+			input: "let arr = [1, 2, 3]\nlet i = 2\narr[i]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(3),
+			},
+		},
+		{
+			input: "[1, 2, 3][2]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(3),
+			},
+		},
+		{
+			input: "let obj = {arr: [1, 2, 3]}\nobj.arr[2]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(3),
+			},
+		},
+		/*
+			Expressions like f()[2] and (f())[2] are evaluated differently due to explicit grouping rules.
+			Without parentheses, f()[2] is parsed as two separate expressions: a function call f() followed by a standalone array literal [2].
+			Since they are not syntactically connected, the array does not operate on the function result.
+			To index into the result of a function, parentheses must be used to group the call expression: (f())[2].
+			This ensures the function is evaluated first, and the result is then indexed as expected.
+		*/
+		{
+			input: "fn foo() { return [1, 2, 3] }\n(foo())[2]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(3),
+			},
+		},
+		{
+			input: "let obj = {arr: [1, 2, 3]}\nlet foo = fn() { return obj.arr }\n(foo())[2]",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(3),
+			},
+		},
 	}
 
 	for i, test := range tests {
