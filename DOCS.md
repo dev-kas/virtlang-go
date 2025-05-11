@@ -17,6 +17,12 @@ import "github.com/dev-kas/virtlang-go/v2/ast"
   - [func \(r \*BreakStmt\) GetType\(\) NodeType](<#BreakStmt.GetType>)
 - [type CallExpr](<#CallExpr>)
   - [func \(c \*CallExpr\) GetType\(\) NodeType](<#CallExpr.GetType>)
+- [type Class](<#Class>)
+  - [func \(c \*Class\) GetType\(\) NodeType](<#Class.GetType>)
+- [type ClassMethod](<#ClassMethod>)
+  - [func \(c \*ClassMethod\) GetType\(\) NodeType](<#ClassMethod.GetType>)
+- [type ClassProperty](<#ClassProperty>)
+  - [func \(c \*ClassProperty\) GetType\(\) NodeType](<#ClassProperty.GetType>)
 - [type CompareExpr](<#CompareExpr>)
   - [func \(c \*CompareExpr\) GetType\(\) NodeType](<#CompareExpr.GetType>)
 - [type CompareOperator](<#CompareOperator>)
@@ -57,7 +63,7 @@ import "github.com/dev-kas/virtlang-go/v2/ast"
 
 
 <a name="ArrayLiteral"></a>
-## type [ArrayLiteral](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L235-L237>)
+## type [ArrayLiteral](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L268-L270>)
 
 
 
@@ -68,7 +74,7 @@ type ArrayLiteral struct {
 ```
 
 <a name="ArrayLiteral.GetType"></a>
-### func \(\*ArrayLiteral\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L239>)
+### func \(\*ArrayLiteral\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L272>)
 
 ```go
 func (o *ArrayLiteral) GetType() NodeType
@@ -77,7 +83,7 @@ func (o *ArrayLiteral) GetType() NodeType
 
 
 <a name="BinaryExpr"></a>
-## type [BinaryExpr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L173-L177>)
+## type [BinaryExpr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L206-L210>)
 
 
 
@@ -90,7 +96,7 @@ type BinaryExpr struct {
 ```
 
 <a name="BinaryExpr.GetType"></a>
-### func \(\*BinaryExpr\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L179>)
+### func \(\*BinaryExpr\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L212>)
 
 ```go
 func (b *BinaryExpr) GetType() NodeType
@@ -99,7 +105,7 @@ func (b *BinaryExpr) GetType() NodeType
 
 
 <a name="BinaryOperator"></a>
-## type [BinaryOperator](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L82>)
+## type [BinaryOperator](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L91>)
 
 
 
@@ -120,7 +126,7 @@ const (
 ```
 
 <a name="BreakStmt"></a>
-## type [BreakStmt](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L156>)
+## type [BreakStmt](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L189>)
 
 
 
@@ -129,7 +135,7 @@ type BreakStmt struct{}
 ```
 
 <a name="BreakStmt.GetType"></a>
-### func \(\*BreakStmt\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L158>)
+### func \(\*BreakStmt\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L191>)
 
 ```go
 func (r *BreakStmt) GetType() NodeType
@@ -138,7 +144,7 @@ func (r *BreakStmt) GetType() NodeType
 
 
 <a name="CallExpr"></a>
-## type [CallExpr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L189-L192>)
+## type [CallExpr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L222-L225>)
 
 
 
@@ -150,7 +156,7 @@ type CallExpr struct {
 ```
 
 <a name="CallExpr.GetType"></a>
-### func \(\*CallExpr\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L194>)
+### func \(\*CallExpr\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L227>)
 
 ```go
 func (c *CallExpr) GetType() NodeType
@@ -158,8 +164,75 @@ func (c *CallExpr) GetType() NodeType
 
 
 
+<a name="Class"></a>
+## type [Class](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L151-L155>)
+
+
+
+```go
+type Class struct {
+    Name        string
+    Body        []Stmt
+    Constructor *ClassMethod
+}
+```
+
+<a name="Class.GetType"></a>
+### func \(\*Class\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L157>)
+
+```go
+func (c *Class) GetType() NodeType
+```
+
+
+
+<a name="ClassMethod"></a>
+## type [ClassMethod](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L159-L164>)
+
+
+
+```go
+type ClassMethod struct {
+    Name     string
+    Body     []Stmt
+    Params   []string
+    IsPublic bool
+}
+```
+
+<a name="ClassMethod.GetType"></a>
+### func \(\*ClassMethod\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L166>)
+
+```go
+func (c *ClassMethod) GetType() NodeType
+```
+
+
+
+<a name="ClassProperty"></a>
+## type [ClassProperty](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L168-L172>)
+
+
+
+```go
+type ClassProperty struct {
+    Name     string
+    Value    Expr
+    IsPublic bool
+}
+```
+
+<a name="ClassProperty.GetType"></a>
+### func \(\*ClassProperty\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L174>)
+
+```go
+func (c *ClassProperty) GetType() NodeType
+```
+
+
+
 <a name="CompareExpr"></a>
-## type [CompareExpr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L181-L185>)
+## type [CompareExpr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L214-L218>)
 
 
 
@@ -172,7 +245,7 @@ type CompareExpr struct {
 ```
 
 <a name="CompareExpr.GetType"></a>
-### func \(\*CompareExpr\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L187>)
+### func \(\*CompareExpr\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L220>)
 
 ```go
 func (c *CompareExpr) GetType() NodeType
@@ -181,7 +254,7 @@ func (c *CompareExpr) GetType() NodeType
 
 
 <a name="CompareOperator"></a>
-## type [CompareOperator](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L71>)
+## type [CompareOperator](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L80>)
 
 
 
@@ -203,7 +276,7 @@ const (
 ```
 
 <a name="ContinueStmt"></a>
-## type [ContinueStmt](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L160>)
+## type [ContinueStmt](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L193>)
 
 
 
@@ -212,7 +285,7 @@ type ContinueStmt struct{}
 ```
 
 <a name="ContinueStmt.GetType"></a>
-### func \(\*ContinueStmt\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L162>)
+### func \(\*ContinueStmt\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L195>)
 
 ```go
 func (r *ContinueStmt) GetType() NodeType
@@ -221,7 +294,7 @@ func (r *ContinueStmt) GetType() NodeType
 
 
 <a name="Expr"></a>
-## type [Expr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L96-L98>)
+## type [Expr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L105-L107>)
 
 
 
@@ -232,7 +305,7 @@ type Expr interface {
 ```
 
 <a name="FnDeclaration"></a>
-## type [FnDeclaration](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L124-L130>)
+## type [FnDeclaration](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L133-L138>)
 
 
 
@@ -241,13 +314,12 @@ type FnDeclaration struct {
     Params    []string
     Name      string
     Body      []Stmt
-    Async     bool
     Anonymous bool
 }
 ```
 
 <a name="FnDeclaration.GetType"></a>
-### func \(\*FnDeclaration\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L132>)
+### func \(\*FnDeclaration\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L140>)
 
 ```go
 func (f *FnDeclaration) GetType() NodeType
@@ -256,7 +328,7 @@ func (f *FnDeclaration) GetType() NodeType
 
 
 <a name="Identifier"></a>
-## type [Identifier](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L204-L206>)
+## type [Identifier](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L237-L239>)
 
 
 
@@ -267,7 +339,7 @@ type Identifier struct {
 ```
 
 <a name="Identifier.GetType"></a>
-### func \(\*Identifier\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L208>)
+### func \(\*Identifier\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L241>)
 
 ```go
 func (i *Identifier) GetType() NodeType
@@ -276,7 +348,7 @@ func (i *Identifier) GetType() NodeType
 
 
 <a name="IfStatement"></a>
-## type [IfStatement](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L134-L139>)
+## type [IfStatement](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L142-L147>)
 
 
 
@@ -290,7 +362,7 @@ type IfStatement struct {
 ```
 
 <a name="IfStatement.GetType"></a>
-### func \(\*IfStatement\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L141>)
+### func \(\*IfStatement\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L149>)
 
 ```go
 func (i *IfStatement) GetType() NodeType
@@ -299,7 +371,7 @@ func (i *IfStatement) GetType() NodeType
 
 
 <a name="MemberExpr"></a>
-## type [MemberExpr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L196-L200>)
+## type [MemberExpr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L229-L233>)
 
 
 
@@ -312,7 +384,7 @@ type MemberExpr struct {
 ```
 
 <a name="MemberExpr.GetType"></a>
-### func \(\*MemberExpr\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L202>)
+### func \(\*MemberExpr\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L235>)
 
 ```go
 func (m *MemberExpr) GetType() NodeType
@@ -337,6 +409,9 @@ const (
     VarDeclarationNode
     FnDeclarationNode
     IfStatementNode
+    ClassNode
+    ClassMethodNode
+    ClassPropertyNode
     WhileLoopNode
     VarAssignmentExprNode
     TryCatchStmtNode
@@ -357,7 +432,7 @@ const (
 ```
 
 <a name="NodeType.String"></a>
-### func \(NodeType\) [String](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L28>)
+### func \(NodeType\) [String](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L31>)
 
 ```go
 func (n NodeType) String() string
@@ -366,7 +441,7 @@ func (n NodeType) String() string
 
 
 <a name="NumericLiteral"></a>
-## type [NumericLiteral](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L210-L212>)
+## type [NumericLiteral](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L243-L245>)
 
 
 
@@ -377,7 +452,7 @@ type NumericLiteral struct {
 ```
 
 <a name="NumericLiteral.GetType"></a>
-### func \(\*NumericLiteral\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L214>)
+### func \(\*NumericLiteral\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L247>)
 
 ```go
 func (n *NumericLiteral) GetType() NodeType
@@ -386,7 +461,7 @@ func (n *NumericLiteral) GetType() NodeType
 
 
 <a name="ObjectLiteral"></a>
-## type [ObjectLiteral](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L229-L231>)
+## type [ObjectLiteral](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L262-L264>)
 
 
 
@@ -397,7 +472,7 @@ type ObjectLiteral struct {
 ```
 
 <a name="ObjectLiteral.GetType"></a>
-### func \(\*ObjectLiteral\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L233>)
+### func \(\*ObjectLiteral\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L266>)
 
 ```go
 func (o *ObjectLiteral) GetType() NodeType
@@ -406,7 +481,7 @@ func (o *ObjectLiteral) GetType() NodeType
 
 
 <a name="Program"></a>
-## type [Program](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L102-L104>)
+## type [Program](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L111-L113>)
 
 
 
@@ -417,7 +492,7 @@ type Program struct {
 ```
 
 <a name="Program.GetType"></a>
-### func \(\*Program\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L106>)
+### func \(\*Program\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L115>)
 
 ```go
 func (p *Program) GetType() NodeType
@@ -426,7 +501,7 @@ func (p *Program) GetType() NodeType
 
 
 <a name="Property"></a>
-## type [Property](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L222-L225>)
+## type [Property](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L255-L258>)
 
 
 
@@ -438,7 +513,7 @@ type Property struct {
 ```
 
 <a name="Property.GetType"></a>
-### func \(\*Property\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L227>)
+### func \(\*Property\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L260>)
 
 ```go
 func (p *Property) GetType() NodeType
@@ -447,7 +522,7 @@ func (p *Property) GetType() NodeType
 
 
 <a name="ReturnStmt"></a>
-## type [ReturnStmt](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L150-L152>)
+## type [ReturnStmt](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L183-L185>)
 
 
 
@@ -458,7 +533,7 @@ type ReturnStmt struct {
 ```
 
 <a name="ReturnStmt.GetType"></a>
-### func \(\*ReturnStmt\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L154>)
+### func \(\*ReturnStmt\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L187>)
 
 ```go
 func (r *ReturnStmt) GetType() NodeType
@@ -467,7 +542,7 @@ func (r *ReturnStmt) GetType() NodeType
 
 
 <a name="Stmt"></a>
-## type [Stmt](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L92-L94>)
+## type [Stmt](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L101-L103>)
 
 
 
@@ -478,7 +553,7 @@ type Stmt interface {
 ```
 
 <a name="StringLiteral"></a>
-## type [StringLiteral](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L216-L218>)
+## type [StringLiteral](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L249-L251>)
 
 
 
@@ -489,7 +564,7 @@ type StringLiteral struct {
 ```
 
 <a name="StringLiteral.GetType"></a>
-### func \(\*StringLiteral\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L220>)
+### func \(\*StringLiteral\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L253>)
 
 ```go
 func (s *StringLiteral) GetType() NodeType
@@ -498,7 +573,7 @@ func (s *StringLiteral) GetType() NodeType
 
 
 <a name="TryCatchStmt"></a>
-## type [TryCatchStmt](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L116-L120>)
+## type [TryCatchStmt](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L125-L129>)
 
 
 
@@ -511,7 +586,7 @@ type TryCatchStmt struct {
 ```
 
 <a name="TryCatchStmt.GetType"></a>
-### func \(\*TryCatchStmt\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L122>)
+### func \(\*TryCatchStmt\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L131>)
 
 ```go
 func (t *TryCatchStmt) GetType() NodeType
@@ -520,7 +595,7 @@ func (t *TryCatchStmt) GetType() NodeType
 
 
 <a name="VarAssignmentExpr"></a>
-## type [VarAssignmentExpr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L166-L169>)
+## type [VarAssignmentExpr](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L199-L202>)
 
 
 
@@ -532,7 +607,7 @@ type VarAssignmentExpr struct {
 ```
 
 <a name="VarAssignmentExpr.GetType"></a>
-### func \(\*VarAssignmentExpr\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L171>)
+### func \(\*VarAssignmentExpr\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L204>)
 
 ```go
 func (v *VarAssignmentExpr) GetType() NodeType
@@ -541,7 +616,7 @@ func (v *VarAssignmentExpr) GetType() NodeType
 
 
 <a name="VarDeclaration"></a>
-## type [VarDeclaration](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L108-L112>)
+## type [VarDeclaration](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L117-L121>)
 
 
 
@@ -554,7 +629,7 @@ type VarDeclaration struct {
 ```
 
 <a name="VarDeclaration.GetType"></a>
-### func \(\*VarDeclaration\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L114>)
+### func \(\*VarDeclaration\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L123>)
 
 ```go
 func (v *VarDeclaration) GetType() NodeType
@@ -563,7 +638,7 @@ func (v *VarDeclaration) GetType() NodeType
 
 
 <a name="WhileLoop"></a>
-## type [WhileLoop](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L143-L146>)
+## type [WhileLoop](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L176-L179>)
 
 
 
@@ -575,7 +650,7 @@ type WhileLoop struct {
 ```
 
 <a name="WhileLoop.GetType"></a>
-### func \(\*WhileLoop\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L148>)
+### func \(\*WhileLoop\) [GetType](<https://github.com/dev-kas/virtlang-go/blob/master/ast/ast.go#L181>)
 
 ```go
 func (w *WhileLoop) GetType() NodeType
@@ -865,11 +940,14 @@ var KEYWORDS = map[string]TokenType{
     "return":   Return,
     "break":    Break,
     "continue": Continue,
+    "class":    Class,
+    "public":   Public,
+    "private":  Private,
 }
 ```
 
 <a name="IsAlpha"></a>
-## func [IsAlpha](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L139>)
+## func [IsAlpha](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L151>)
 
 ```go
 func IsAlpha(r rune) bool
@@ -878,7 +956,7 @@ func IsAlpha(r rune) bool
 
 
 <a name="IsAlphaNumeric"></a>
-## func [IsAlphaNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L147>)
+## func [IsAlphaNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L159>)
 
 ```go
 func IsAlphaNumeric(r rune) bool
@@ -887,7 +965,7 @@ func IsAlphaNumeric(r rune) bool
 
 
 <a name="IsBinaryOperator"></a>
-## func [IsBinaryOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L160>)
+## func [IsBinaryOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L172>)
 
 ```go
 func IsBinaryOperator(r rune) bool
@@ -896,7 +974,7 @@ func IsBinaryOperator(r rune) bool
 
 
 <a name="IsComparisonOperator"></a>
-## func [IsComparisonOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L169>)
+## func [IsComparisonOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L181>)
 
 ```go
 func IsComparisonOperator(r string) bool
@@ -905,7 +983,7 @@ func IsComparisonOperator(r string) bool
 
 
 <a name="IsNumeric"></a>
-## func [IsNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L143>)
+## func [IsNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L155>)
 
 ```go
 func IsNumeric(r rune) bool
@@ -914,7 +992,7 @@ func IsNumeric(r rune) bool
 
 
 <a name="IsSkippable"></a>
-## func [IsSkippable](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L151>)
+## func [IsSkippable](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L163>)
 
 ```go
 func IsSkippable(r rune) bool
@@ -923,7 +1001,7 @@ func IsSkippable(r rune) bool
 
 
 <a name="Stringify"></a>
-## func [Stringify](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L44>)
+## func [Stringify](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L47>)
 
 ```go
 func Stringify(t TokenType) string
@@ -932,7 +1010,7 @@ func Stringify(t TokenType) string
 
 
 <a name="Token"></a>
-## type [Token](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L123-L128>)
+## type [Token](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L135-L140>)
 
 
 
@@ -946,7 +1024,7 @@ type Token struct {
 ```
 
 <a name="NewToken"></a>
-### func [NewToken](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L130>)
+### func [NewToken](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L142>)
 
 ```go
 func NewToken(value string, tokenType TokenType, start, diff int) Token
@@ -955,7 +1033,7 @@ func NewToken(value string, tokenType TokenType, start, diff int) Token
 
 
 <a name="Tokenize"></a>
-### func [Tokenize](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L178>)
+### func [Tokenize](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L190>)
 
 ```go
 func Tokenize(srcCode string) ([]Token, *errors.LexerError)
@@ -1004,6 +1082,9 @@ const (
     Return                       // return
     Break                        // break
     Continue                     // continue
+    Class                        // class
+    Public                       // public
+    Private                      // private
     EOF                          // end of file
 )
 ```
@@ -1022,7 +1103,7 @@ import "github.com/dev-kas/virtlang-go/v2/parser"
 
 
 <a name="Parser"></a>
-## type [Parser](<https://github.com/dev-kas/virtlang-go/blob/master/parser/parser.go#L33-L35>)
+## type [Parser](<https://github.com/dev-kas/virtlang-go/blob/master/parser/parser.go#L5-L7>)
 
 
 
@@ -1033,7 +1114,7 @@ type Parser struct {
 ```
 
 <a name="New"></a>
-### func [New](<https://github.com/dev-kas/virtlang-go/blob/master/parser/parser.go#L37>)
+### func [New](<https://github.com/dev-kas/virtlang-go/blob/master/parser/parser.go#L9>)
 
 ```go
 func New() *Parser
@@ -1064,7 +1145,7 @@ import "github.com/dev-kas/virtlang-go/v2/shared"
 
 
 <a name="Stringify"></a>
-## func [Stringify](<https://github.com/dev-kas/virtlang-go/blob/master/shared/shared.go#L21>)
+## func [Stringify](<https://github.com/dev-kas/virtlang-go/blob/master/shared/shared.go#L23>)
 
 ```go
 func Stringify(v ValueType) string
@@ -1073,7 +1154,7 @@ func Stringify(v ValueType) string
 
 
 <a name="RuntimeValue"></a>
-## type [RuntimeValue](<https://github.com/dev-kas/virtlang-go/blob/master/shared/shared.go#L16-L19>)
+## type [RuntimeValue](<https://github.com/dev-kas/virtlang-go/blob/master/shared/shared.go#L18-L21>)
 
 
 
@@ -1105,6 +1186,8 @@ const (
     NativeFN
     Function
     String
+    Class
+    ClassInstance
 )
 ```
 
@@ -1118,11 +1201,15 @@ import "github.com/dev-kas/virtlang-go/v2/values"
 
 - [func MK\_ARRAY\(value \[\]shared.RuntimeValue\) shared.RuntimeValue](<#MK_ARRAY>)
 - [func MK\_BOOL\(value bool\) shared.RuntimeValue](<#MK_BOOL>)
+- [func MK\_CLASS\(name string, body \[\]ast.Stmt, constructor \*ast.ClassMethod, declarationEnv \*environment.Environment\) shared.RuntimeValue](<#MK_CLASS>)
+- [func MK\_CLASS\_INSTANCE\(class \*ClassValue, publics map\[string\]bool, data \*environment.Environment\) shared.RuntimeValue](<#MK_CLASS_INSTANCE>)
 - [func MK\_NATIVE\_FN\(fn NativeFunction\) shared.RuntimeValue](<#MK_NATIVE_FN>)
 - [func MK\_NIL\(\) shared.RuntimeValue](<#MK_NIL>)
 - [func MK\_NUMBER\(value float64\) shared.RuntimeValue](<#MK_NUMBER>)
-- [func MK\_OBJECT\(value map\[string\]shared.RuntimeValue\) shared.RuntimeValue](<#MK_OBJECT>)
+- [func MK\_OBJECT\(value map\[string\]\*shared.RuntimeValue\) shared.RuntimeValue](<#MK_OBJECT>)
 - [func MK\_STRING\(value string\) shared.RuntimeValue](<#MK_STRING>)
+- [type ClassInstanceValue](<#ClassInstanceValue>)
+- [type ClassValue](<#ClassValue>)
 - [type FunctionValue](<#FunctionValue>)
 - [type NativeFunction](<#NativeFunction>)
 
@@ -1141,6 +1228,24 @@ func MK_ARRAY(value []shared.RuntimeValue) shared.RuntimeValue
 
 ```go
 func MK_BOOL(value bool) shared.RuntimeValue
+```
+
+
+
+<a name="MK_CLASS"></a>
+## func [MK\\\_CLASS](<https://github.com/dev-kas/virtlang-go/blob/master/values/values.go#L87>)
+
+```go
+func MK_CLASS(name string, body []ast.Stmt, constructor *ast.ClassMethod, declarationEnv *environment.Environment) shared.RuntimeValue
+```
+
+
+
+<a name="MK_CLASS_INSTANCE"></a>
+## func [MK\\\_CLASS\\\_INSTANCE](<https://github.com/dev-kas/virtlang-go/blob/master/values/values.go#L108>)
+
+```go
+func MK_CLASS_INSTANCE(class *ClassValue, publics map[string]bool, data *environment.Environment) shared.RuntimeValue
 ```
 
 
@@ -1176,7 +1281,7 @@ func MK_NUMBER(value float64) shared.RuntimeValue
 ## func [MK\\\_OBJECT](<https://github.com/dev-kas/virtlang-go/blob/master/values/values.go#L40>)
 
 ```go
-func MK_OBJECT(value map[string]shared.RuntimeValue) shared.RuntimeValue
+func MK_OBJECT(value map[string]*shared.RuntimeValue) shared.RuntimeValue
 ```
 
 
@@ -1189,6 +1294,36 @@ func MK_STRING(value string) shared.RuntimeValue
 ```
 
 
+
+<a name="ClassInstanceValue"></a>
+## type [ClassInstanceValue](<https://github.com/dev-kas/virtlang-go/blob/master/values/values.go#L101-L106>)
+
+
+
+```go
+type ClassInstanceValue struct {
+    Type    shared.ValueType
+    Class   ClassValue
+    Publics map[string]bool
+    Data    *environment.Environment
+}
+```
+
+<a name="ClassValue"></a>
+## type [ClassValue](<https://github.com/dev-kas/virtlang-go/blob/master/values/values.go#L78-L85>)
+
+
+
+```go
+type ClassValue struct {
+    Type           shared.ValueType
+    Value          any
+    Name           string
+    Body           []ast.Stmt
+    DeclarationEnv *environment.Environment
+    Constructor    *ast.ClassMethod
+}
+```
 
 <a name="FunctionValue"></a>
 ## type [FunctionValue](<https://github.com/dev-kas/virtlang-go/blob/master/values/values.go#L62-L69>)
