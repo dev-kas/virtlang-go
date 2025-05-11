@@ -37,8 +37,8 @@ func MK_STRING(value string) shared.RuntimeValue {
 	}
 }
 
-func MK_OBJECT(value map[string]shared.RuntimeValue) shared.RuntimeValue {
-	properties := map[string]shared.RuntimeValue{}
+func MK_OBJECT(value map[string]*shared.RuntimeValue) shared.RuntimeValue {
+	properties := map[string]*shared.RuntimeValue{}
 
 	for key, val := range value {
 		properties[key] = val
@@ -72,5 +72,47 @@ func MK_ARRAY(value []shared.RuntimeValue) shared.RuntimeValue {
 	return shared.RuntimeValue{
 		Type:  shared.Array,
 		Value: value,
+	}
+}
+
+type ClassValue struct {
+	Type           shared.ValueType
+	Value          any
+	Name           string
+	Body           []ast.Stmt
+	DeclarationEnv *environment.Environment
+	Constructor    *ast.ClassMethod
+}
+
+func MK_CLASS(name string, body []ast.Stmt, constructor *ast.ClassMethod, declarationEnv *environment.Environment) shared.RuntimeValue {
+	return shared.RuntimeValue{
+		Type: shared.Class,
+		Value: ClassValue{
+			Type:           shared.Class,
+			Value:          nil,
+			Name:           name,
+			Body:           body,
+			DeclarationEnv: declarationEnv,
+			Constructor:    constructor,
+		},
+	}
+}
+
+type ClassInstanceValue struct {
+	Type    shared.ValueType
+	Class   ClassValue
+	Publics map[string]bool
+	Data    *environment.Environment
+}
+
+func MK_CLASS_INSTANCE(class *ClassValue, publics map[string]bool, data *environment.Environment) shared.RuntimeValue {
+	return shared.RuntimeValue{
+		Type: shared.ClassInstance,
+		Value: ClassInstanceValue{
+			Type:    shared.ClassInstance,
+			Class:   *class,
+			Publics: publics,
+			Data:    data,
+		},
 	}
 }

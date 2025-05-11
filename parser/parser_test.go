@@ -696,10 +696,6 @@ func TestFnDecl(t *testing.T) {
 		t.Fatalf("Expected right side of (+) to be b, got %s", stmt.(*ast.FnDeclaration).Body[0].(*ast.BinaryExpr).RHS.(*ast.Identifier).Symbol)
 	}
 
-	if stmt.(*ast.FnDeclaration).Async {
-		t.Fatalf("Expected async to be false, got true")
-	}
-
 	if stmt.(*ast.FnDeclaration).Anonymous {
 		t.Fatalf("Expected anonymous to be false, got true")
 	}

@@ -66,6 +66,65 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment) (*shared.Run
 		}
 
 		return &result, nil
+	} else if fn.Type == shared.Class {
+		classVal := fn.Value.(values.ClassValue)
+		// forkedEnv := environment.NewEnvironment(classVal.DeclarationEnv)
+		// instance := &values.ClassInstanceValue{
+		// 	Class: &classVal,
+		// 	Env:   &forkedEnv,
+		// }
+
+		if classVal.Constructor == nil {
+			return nil, &errors.RuntimeError{
+				Message: "Class has no constructor.",
+			}
+		}
+
+		classScope := environment.NewEnvironment(classVal.DeclarationEnv)
+		publics := map[string]bool{}
+		for _, stmt := range classVal.Body {
+			if stmt.GetType() == ast.ClassMethodNode {
+				method := stmt.(*ast.ClassMethod)
+				_, err := evalClassMethod(method, &classScope)
+				if err != nil {
+					return nil, err
+				}
+				if method.IsPublic {
+					publics[method.Name] = true
+				}
+			} else if stmt.GetType() == ast.ClassPropertyNode {
+				property := stmt.(*ast.ClassProperty)
+				_, err := evalClassProperty(property, &classScope)
+				if err != nil {
+					return nil, err
+				}
+				if property.IsPublic {
+					publics[property.Name] = true
+				}
+			}
+		}
+
+		constructor := classVal.Constructor
+		constructorScope := environment.NewEnvironment(&classScope)
+		for i, param := range constructor.Params {
+			// TODO: check bounds and arity of fn
+			constructorScope.DeclareVar(param, *args[i], true)
+		}
+
+		for _, stmt := range constructor.Body {
+			_, err := Evaluate(stmt, &constructorScope)
+			if err != nil {
+				if err.InternalCommunicationProtocol != nil && err.InternalCommunicationProtocol.Type == errors.ICP_Return {
+					return nil, &errors.RuntimeError{
+						Message: "Constructor cannot return a value.",
+					}
+				}
+				return nil, err
+			}
+		}
+
+		retVal := values.MK_CLASS_INSTANCE(&classVal, publics, &classScope)
+		return &retVal, nil
 	} else {
 		return nil, &errors.RuntimeError{
 			Message: fmt.Sprintf("Cannot invoke a non-function (attempted to call a %s).", shared.Stringify(fn.Type)),

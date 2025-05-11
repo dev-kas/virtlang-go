@@ -1,0 +1,52 @@
+package parser
+
+import (
+	"github.com/dev-kas/virtlang-go/v2/ast"
+	"github.com/dev-kas/virtlang-go/v2/errors"
+	"github.com/dev-kas/virtlang-go/v2/lexer"
+)
+
+func (p *Parser) parseClass() (*ast.Class, *errors.SyntaxError) {
+	p.advance() // class
+
+	ident, err := p.expect(lexer.Identifier)
+	if err != nil {
+		return nil, err
+	}
+
+	name := ident.Literal
+	// TODO: Implement class inheritance
+	_, err = p.expect(lexer.OBrace)
+	if err != nil {
+		return nil, err
+	}
+
+	body := []ast.Stmt{}
+	constructor := &ast.ClassMethod{
+		Name: "constructor",
+		Body: []ast.Stmt{},
+	}
+
+	for !p.isEOF() && p.at().Type != lexer.CBrace {
+		stmt, err := p.parseClassStmt()
+		if err != nil {
+			return nil, err
+		}
+		if stmt.GetType() == ast.ClassMethodNode && stmt.(*ast.ClassMethod).Name == "constructor" {
+			constructor = stmt.(*ast.ClassMethod)
+		} else {
+			body = append(body, stmt)
+		}
+	}
+
+	_, err = p.expect(lexer.CBrace)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ast.Class{
+		Name:        name,
+		Body:        body,
+		Constructor: constructor,
+	}, nil
+}

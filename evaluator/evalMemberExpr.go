@@ -16,7 +16,7 @@ func evalMemberExpr(node *ast.MemberExpr, env *environment.Environment) (*shared
 		return nil, err
 	}
 
-	if obj.Type != shared.Object && obj.Type != shared.Array {
+	if obj.Type != shared.Object && obj.Type != shared.Array && obj.Type != shared.ClassInstance {
 		return nil, &errors.RuntimeError{
 			Message: fmt.Sprintf("Cannot access property of non-object or non-array (attempting to access properties of %v).", shared.Stringify(obj.Type)),
 		}
@@ -24,8 +24,10 @@ func evalMemberExpr(node *ast.MemberExpr, env *environment.Environment) (*shared
 
 	if obj.Type == shared.Object {
 		return evalMemberExpr_object(node, env, obj)
-	} else {
+	} else if obj.Type == shared.Array {
 		return evalMemberExpr_array(node, env)
+	} else {
+		return evalMemberExpr_class(node, env)
 	}
 }
 
@@ -112,4 +114,53 @@ func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment) (*
 
 	result := &updatedArr.Value.([]shared.RuntimeValue)[index]
 	return result, nil
+}
+
+func evalMemberExpr_class(node *ast.MemberExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
+	obj, err := Evaluate(node.Object, env)
+	if err != nil {
+		return nil, err
+	}
+
+	if obj.Type != shared.ClassInstance {
+		return nil, &errors.RuntimeError{
+			Message: fmt.Sprintf("Cannot access property of non-class instance (attempting to access properties of %v).", shared.Stringify(obj.Type)),
+		}
+	}
+
+	instance := obj.Value.(values.ClassInstanceValue)
+	var key string
+
+	if node.Computed {
+		val, err := Evaluate(node.Value, env)
+		if err != nil {
+			return nil, err
+		}
+		if val.Type != shared.String {
+			return nil, &errors.RuntimeError{
+				Message: fmt.Sprintf("Cannot access property of class instance by non-string (attempting to access properties by %v).", shared.Stringify(val.Type)),
+			}
+		}
+		key = val.Value.(string)
+		key = key[1 : len(key)-1]
+	} else {
+		key = node.Value.(*ast.Identifier).Symbol
+	}
+
+	// Access control
+	if !instance.Publics[key] {
+		nilValue := values.MK_NIL()
+		return &nilValue, nil
+	}
+
+	// Lookup
+	value, err := instance.Data.LookupVar(key)
+	if err != nil {
+		return nil, err
+	}
+	if value == nil {
+		nilValue := values.MK_NIL()
+		return &nilValue, nil
+	}
+	return value, nil
 }

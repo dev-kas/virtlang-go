@@ -11,6 +11,8 @@ const (
 	NativeFN
 	Function
 	String
+	Class
+	ClassInstance
 )
 
 type RuntimeValue struct {
@@ -36,6 +38,10 @@ func Stringify(v ValueType) string {
 		return "function"
 	case String:
 		return "string"
+	case Class:
+		return "class"
+	case ClassInstance:
+		return "class-instance"
 	default:
 		return "unknown"
 	}

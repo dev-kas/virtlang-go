@@ -72,6 +72,15 @@ func Evaluate(astNode ast.Stmt, env *environment.Environment) (*shared.RuntimeVa
 	case ast.ContinueStmtNode:
 		return evalContinueStmt(astNode.(*ast.ContinueStmt), env)
 
+	case ast.ClassNode:
+		return evalClass(astNode.(*ast.Class), env)
+
+	case ast.ClassMethodNode:
+		return evalClassMethod(astNode.(*ast.ClassMethod), env)
+
+	case ast.ClassPropertyNode:
+		return evalClassProperty(astNode.(*ast.ClassProperty), env)
+
 	default:
 		return nil, &errors.RuntimeError{
 			Message: fmt.Sprintf("Unknown node type: %s", type_),

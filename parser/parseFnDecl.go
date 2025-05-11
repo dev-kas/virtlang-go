@@ -65,6 +65,5 @@ func (p *Parser) parseFnDecl() (*ast.FnDeclaration, *errors.SyntaxError) {
 		Name:      fname,
 		Body:      body,
 		Anonymous: isAnonymous,
-		Async:     false, // TODO: Implement async
 	}, nil
 }

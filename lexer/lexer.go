@@ -38,6 +38,9 @@ const (
 	Return                       // return
 	Break                        // break
 	Continue                     // continue
+	Class                        // class
+	Public                       // public
+	Private                      // private
 	EOF                          // end of file
 )
 
@@ -99,6 +102,12 @@ func Stringify(t TokenType) string {
 		return "Break"
 	case Continue:
 		return "Continue"
+	case Class:
+		return "Class"
+	case Public:
+		return "Public"
+	case Private:
+		return "Private"
 	case EOF:
 		return "EOF"
 	default:
@@ -118,6 +127,9 @@ var KEYWORDS = map[string]TokenType{
 	"return":   Return,
 	"break":    Break,
 	"continue": Continue,
+	"class":    Class,
+	"public":   Public,
+	"private":  Private,
 }
 
 type Token struct {

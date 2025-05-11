@@ -8,8 +8,6 @@ import (
 	"github.com/dev-kas/virtlang-go/v2/evaluator"
 	"github.com/dev-kas/virtlang-go/v2/parser"
 	"github.com/dev-kas/virtlang-go/v2/shared"
-
-	// "github.com/dev-kas/virtlang-go/v2/values"
 	"testing"
 )
 
@@ -1735,6 +1733,310 @@ func TestArrays(t *testing.T) {
 		evaluated, runErr := evaluator.Evaluate(program, &env)
 		if runErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
+		}
+		if evaluated.Type != test.output.Type {
+			t.Errorf("test %d failed: input=%q, expected type %v, got %v", i, test.input, test.output.Type, evaluated.Type)
+		}
+		if !reflect.DeepEqual(evaluated.Value, test.output.Value) {
+			t.Errorf("test %d failed: input=%q, value mismatch. expected %v, got %v", i, test.input, test.output.Value, evaluated.Value)
+		}
+	}
+}
+
+func TestClasses(t *testing.T) {
+	tests := []struct {
+		input  string
+		output shared.RuntimeValue
+	}{
+		{
+			input: `
+				let i = 1
+				class Person {
+					public name
+					public age
+					private id
+					public constructor(n, a) {
+						name = n
+						age = a
+						id = i
+						i = i + 1
+					}
+				
+					private joinStrings(str1, str2) {
+						return str1 + ": " + str2
+					}
+
+					public speak(str) {
+						return joinStrings(name, str)
+					}
+				}
+
+				let john = Person("John", 30)
+				john.speak("Hello World!")
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.String,
+				Value: "\"John: Hello World!\"",
+			},
+		},
+		{
+			input: `
+				let i = 1
+				class Person {
+					public name
+					public age
+					private id
+					public constructor(n, a) {
+						name = n
+						age = a
+						id = i
+						i = i + 1
+					}
+				}
+				let john = Person("John", 30)
+				john.id
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.Nil,
+				Value: nil,
+			},
+		},
+		{
+			input: `
+				let i = 1
+				class Person {
+					public name
+					public age
+					private id
+					public constructor(n, a) {
+						name = n
+						age = a
+						id = i
+						i = i + 1
+					}
+					public test() { name = "Jedi" }
+					public getName() { return name }
+				}
+				let john = Person("John", 30)
+				john.getName()
+				john.test()
+				john.getName()
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.String,
+				Value: "\"Jedi\"",
+			},
+		},
+		{
+			input: `
+				let i = 1
+				class Person {
+					public name
+					public age
+					private id
+					public constructor(n, a) {
+						name = n
+						age = a
+						id = i
+						i = i + 1
+					}
+				}
+				let john = Person("John", 30)
+				john.name
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.String,
+				Value: "\"John\"",
+			},
+		},
+		{
+			input: `
+				class Test {
+					private secret() { return "shhh" }
+				}
+				let t = Test()
+				t.secret
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.Nil,
+				Value: nil,
+			},
+		},
+		{
+			input: `
+				class Data {
+					public value
+					public constructor(v) { value = v }
+				}
+				let d = Data(42)
+				d["value"]
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 42.0,
+			},
+		},
+		{
+			input: `
+				class Data {
+					private hidden
+					public constructor() { hidden = 999 }
+				}
+				let d = Data()
+				let key = "hidden"
+				d[key]
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.Nil,
+				Value: nil,
+			},
+		},
+		{
+			input: `
+				class Chain {
+					public one() { return two() }
+					public two() { return "called two" }
+				}
+				let c = Chain()
+				c.one()
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.String,
+				Value: "\"called two\"",
+			},
+		},
+		{
+			input: `
+				class Mutate {
+					public val
+					public constructor() { val = 5 }
+					public inc() { val = val + 1 }
+					public get() { return val }
+				}
+				let m = Mutate()
+				m.inc()
+				m.inc()
+				m.get()
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 7.0,
+			},
+		},
+		{
+			input: `
+				class Mathy {
+					public double
+					public constructor(x) {
+						double = x * 2
+					}
+				}
+				let m = Mathy(4)
+				m.double
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 8.0,
+			},
+		},
+		{
+			input: `
+				class Weird {
+					public prop = fn (){"This is a function property!"}
+					public constructor() {}
+				}
+				let weirdObj = Weird()
+				weirdObj.prop()
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.String,
+				Value: "\"This is a function property!\"",
+			},
+		},
+		{
+			input: `
+				class Foo {
+					public bar
+					public constructor() {
+						bar = 42
+					}
+				}
+				class Baz {
+					public foo
+					public constructor() {
+						foo = Foo()
+					}
+				}
+				let baz = Baz()
+				baz.foo.bar
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(42),
+			},
+		},
+		{
+			input: `
+				class Factorial {
+					public compute(n) {
+						if (n == 0) {
+							return 1
+						}
+						return n * compute(n - 1)
+					}
+				}
+				let fact = Factorial()
+				fact.compute(5)
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(120),
+			},
+		},
+		{
+			input: `
+				class Secret {
+					private secret() { return "This is private!" }
+				}
+				let s = Secret()
+				s.secret
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.Nil,
+				Value: nil,
+			},
+		},
+		{
+			input: `
+				class Transformer {
+					public value
+					public transform = fn () { value = "Transformed" }
+					public constructor() {
+						value = "Original"
+					}
+				}
+				let obj = Transformer()
+				obj.transform()
+				obj.value
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.String,
+				Value: "\"Transformed\"",
+			},
+		},
+	}
+
+	for i, test := range tests {
+		p := parser.New()
+		env := environment.NewEnvironment(nil)
+		program, synErr := p.ProduceAST(test.input)
+		if synErr != nil {
+			t.Fatalf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
+		}
+
+		evaluated, runErr := evaluator.Evaluate(program, &env)
+		if runErr != nil {
+			t.Fatalf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
 		}
 		if evaluated.Type != test.output.Type {
 			t.Errorf("test %d failed: input=%q, expected type %v, got %v", i, test.input, test.output.Type, evaluated.Type)

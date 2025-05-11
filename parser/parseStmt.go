@@ -14,6 +14,8 @@ func (p *Parser) parseStmt() (ast.Stmt, *errors.SyntaxError) {
 		return p.parseFnDecl()
 	case lexer.If:
 		return p.parseIfStmt()
+	case lexer.Class:
+		return p.parseClass()
 	default:
 		return p.parseExpr()
 	}

@@ -7,6 +7,9 @@ const (
 	VarDeclarationNode
 	FnDeclarationNode
 	IfStatementNode
+	ClassNode
+	ClassMethodNode
+	ClassPropertyNode
 	WhileLoopNode
 	VarAssignmentExprNode
 	TryCatchStmtNode
@@ -63,6 +66,12 @@ func (n NodeType) String() string {
 		return "CompareExpr"
 	case BinaryExprNode:
 		return "BinaryExpr"
+	case ClassNode:
+		return "Class"
+	case ClassMethodNode:
+		return "ClassMethod"
+	case ClassPropertyNode:
+		return "ClassProperty"
 	default:
 		return "UnknownNodeType"
 	}
@@ -125,7 +134,6 @@ type FnDeclaration struct {
 	Params    []string
 	Name      string
 	Body      []Stmt
-	Async     bool
 	Anonymous bool
 }
 
@@ -139,6 +147,31 @@ type IfStatement struct {
 }
 
 func (i *IfStatement) GetType() NodeType { return IfStatementNode }
+
+type Class struct {
+	Name        string
+	Body        []Stmt
+	Constructor *ClassMethod
+}
+
+func (c *Class) GetType() NodeType { return ClassNode }
+
+type ClassMethod struct {
+	Name     string
+	Body     []Stmt
+	Params   []string
+	IsPublic bool
+}
+
+func (c *ClassMethod) GetType() NodeType { return ClassMethodNode }
+
+type ClassProperty struct {
+	Name     string
+	Value    Expr
+	IsPublic bool
+}
+
+func (c *ClassProperty) GetType() NodeType { return ClassPropertyNode }
 
 type WhileLoop struct {
 	Body      []Stmt
