@@ -4,30 +4,45 @@ import (
 	"github.com/dev-kas/virtlang-go/v2/ast"
 	"github.com/dev-kas/virtlang-go/v2/environment"
 	"github.com/dev-kas/virtlang-go/v2/errors"
+	"github.com/dev-kas/virtlang-go/v2/helpers"
 	"github.com/dev-kas/virtlang-go/v2/shared"
 	"github.com/dev-kas/virtlang-go/v2/values"
 )
 
 func evalIfStmt(statement *ast.IfStatement, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
-	ifStmt := ast.IfStatement{
-		Body:      statement.Body,
-		Condition: statement.Condition,
-	}
-
-	conditionSatisfied, err := Evaluate(ifStmt.Condition, env)
+	cond, err := Evaluate(statement.Condition, env)
 	if err != nil {
 		return nil, err
 	}
 
-	if conditionSatisfied.Type == shared.Boolean && conditionSatisfied.Value.(bool) {
-		for _, stmt := range ifStmt.Body {
-			_, err := Evaluate(stmt, env)
-			if err != nil {
+	// Main `if` branch
+	if helpers.IsTruthy(cond) {
+		for _, stmt := range statement.Body {
+			if _, err := Evaluate(stmt, env); err != nil {
 				return nil, err
 			}
 		}
+		nilVal := values.MK_NIL()
+		return &nilVal, nil
 	}
 
-	retValue := values.MK_NIL()
-	return &retValue, nil
+	// Else-if branches
+	if len(statement.ElseIf) > 0 {
+		// We only evaluate the first `else if` branch in the array
+		// this is because I observed the parser that it does not create multiple
+		// elements in array, but just one array that's deeply nested
+		// and i thought it;s already a good option,
+		// so we just evaluate the first element
+		return evalIfStmt(statement.ElseIf[0], env)
+	}
+
+	// Else branch
+	for _, stmt := range statement.Else {
+		if _, err := Evaluate(stmt, env); err != nil {
+			return nil, err
+		}
+	}
+
+	nilVal := values.MK_NIL()
+	return &nilVal, nil
 }

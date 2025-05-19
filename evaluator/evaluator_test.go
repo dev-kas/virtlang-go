@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"reflect"
 
+	"testing"
+
 	"github.com/dev-kas/virtlang-go/v2/environment"
 	"github.com/dev-kas/virtlang-go/v2/evaluator"
 	"github.com/dev-kas/virtlang-go/v2/parser"
 	"github.com/dev-kas/virtlang-go/v2/shared"
-	"testing"
 )
 
 func TestNumbers(t *testing.T) {
@@ -898,6 +899,79 @@ func TestIfStatements(t *testing.T) {
 			output: shared.RuntimeValue{
 				Type:  shared.Boolean,
 				Value: false,
+			},
+		},
+		// Tests for if+else block
+		{
+			input: "let didExecute = 1!=1\nif (1==1) {didExecute=1==1} else {didExecute=1!=1}\ndidExecute",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "let didExecute = 1!=1\nif (1!=1) {didExecute=1==1} else {didExecute=1!=1}\ndidExecute",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		// Tests for if+elseif block
+		{
+			input: "let num = 43\nlet didExecute = 1!=1\nif (num > 50) {didExecute=1==1} else if (num < 50) {didExecute=1!=1}\ndidExecute",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "let num = 79\nlet didExecute = 1!=1\nif (num > 50) {didExecute=1==1} else if (num < 50) {didExecute=1!=1}\ndidExecute",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "let num = 50\nlet output = 0\nif (num < 30) {output = 1}\nelse if (num < 60) {output = 2}\nelse if (num < 90) {output = 3}\noutput",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(2),
+			},
+		},
+		// Tests for if+elseif+else block
+		{
+			input: "let num = 120\nlet output = 0\nif (num < 30) {output = 1}\nelse if (num < 60) {output = 2}\nelse if (num < 90) {output = 3}\nelse {output = 4}\noutput",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(4),
+			},
+		},
+		{
+			input: "let x = 2\nif (x == 1) {x = 10}\nelse if (x == 2) {x = 20}\nelse if (x == 3) {x = 30}\nelse {x = 40}\nx",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(20),
+			},
+		},
+		{
+			input: "let x = 3\nif (x == 1) {x = 10}\nelse if (x == 2) {x = 20}\nelse if (x == 3) {x = 30}\nelse {x = 40}\nx",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(30),
+			},
+		},
+		{
+			input: "let x = 4\nif (x == 1) {x = 10}\nelse if (x == 2) {x = 20}\nelse if (x == 3) {x = 30}\nelse {x = 40}\nx",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(40),
+			},
+		},
+		{
+			input: "let x = 5\nif (x == 1) {x = 10}\nelse if (x == 2) {x = 20}\nelse if (x == 3) {x = 30}\nelse {x = 40}\nx",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: float64(40),
 			},
 		},
 	}
