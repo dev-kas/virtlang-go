@@ -901,6 +901,28 @@ func Evaluate(astNode ast.Stmt, env *environment.Environment) (*shared.RuntimeVa
 
 
 
+# helpers
+
+```go
+import "github.com/dev-kas/virtlang-go/v2/helpers"
+```
+
+## Index
+
+- [func IsTruthy\(value \*shared.RuntimeValue\) bool](<#IsTruthy>)
+
+
+<a name="IsTruthy"></a>
+## func [IsTruthy](<https://github.com/dev-kas/virtlang-go/blob/master/helpers/isTruthy.go#L22>)
+
+```go
+func IsTruthy(value *shared.RuntimeValue) bool
+```
+
+IsTruthy determines whether a VirtLang RuntimeValue should be considered "truthy" in boolean contexts \(like if statements and while loops\).
+
+Truthiness rules: \- Boolean: true is truthy, false is falsy \- Number: non\-zero is truthy, zero is falsy \- String: non\-empty is truthy, empty is falsy \- Nil: always falsy \- Object: always truthy \(even empty objects\) \- Array: always truthy \(even empty arrays\) \- Function: always truthy \- NativeFN: always truthy \- ClassInstance: always truthy \- Class: always truthy \- Unknown: always truthy
+
 # lexer
 
 ```go
