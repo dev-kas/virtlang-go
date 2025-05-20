@@ -1,6 +1,7 @@
 package debugger
 
 import (
+	"github.com/dev-kas/virtlang-go/v3/ast"
 	"github.com/dev-kas/virtlang-go/v3/environment"
 )
 
@@ -30,6 +31,31 @@ func NewDebugger(env *environment.Environment) *Debugger {
 
 func (d *Debugger) ShouldStop(line string, col int) bool {
 	return d.BreakpointManager.Has(line, col)
+}
+
+func (d *Debugger) IsDebuggable(astNode ast.Stmt) bool {
+	debuggables := map[ast.NodeType]struct{}{
+		ast.VarDeclarationNode:    {},
+		ast.VarAssignmentExprNode: {},
+		ast.IfStatementNode:       {},
+		ast.WhileLoopNode:         {},
+		ast.ReturnStmtNode:        {},
+		ast.ContinueStmtNode:      {},
+		ast.BreakStmtNode:         {},
+		ast.TryCatchStmtNode:      {},
+		ast.CallExprNode:          {},
+		ast.FnDeclarationNode:     {},
+		ast.ClassNode:             {},
+		ast.ClassMethodNode:       {},
+		ast.ClassPropertyNode:     {},
+		ast.ProgramNode:           {},
+	}
+
+	nodeType := astNode.GetType()
+
+	_, isDebuggable := debuggables[nodeType]
+
+	return isDebuggable
 }
 
 // End user API

@@ -3,6 +3,7 @@ package debugger_test
 import (
 	"testing"
 
+	"github.com/dev-kas/virtlang-go/v3/ast"
 	"github.com/dev-kas/virtlang-go/v3/debugger"
 	"github.com/dev-kas/virtlang-go/v3/environment"
 	"github.com/dev-kas/virtlang-go/v3/shared"
@@ -131,4 +132,55 @@ func TestInterfaceCompleteness(t *testing.T) {
 		Continue() error
 		ShouldStop(string, int) bool
 	} = dbg
+}
+
+// TestIsDebuggable tests the IsDebuggable method
+func TestIsDebuggable(t *testing.T) {
+	env := environment.NewEnvironment(nil)
+	dbg := debugger.NewDebugger(&env)
+
+	// Test debuggable node types
+	debuggableNodes := []ast.Stmt{
+		&ast.VarDeclaration{},
+		&ast.VarAssignmentExpr{},
+		&ast.IfStatement{},
+		&ast.WhileLoop{},
+		&ast.ReturnStmt{},
+		&ast.ContinueStmt{},
+		&ast.BreakStmt{},
+		&ast.TryCatchStmt{},
+		&ast.CallExpr{},
+		&ast.FnDeclaration{},
+		&ast.Class{},
+		&ast.ClassMethod{},
+		&ast.ClassProperty{},
+		&ast.Program{},
+	}
+
+	for _, node := range debuggableNodes {
+		nodeType := node.GetType().String()
+		t.Run("should be debuggable: "+nodeType, func(t *testing.T) {
+			if !dbg.IsDebuggable(node) {
+				t.Errorf("Expected node type %s to be debuggable", nodeType)
+			}
+		})
+	}
+
+	// Test non-debuggable node types (just a few examples)
+	nonDebuggableNodes := []ast.Stmt{
+		&ast.BinaryExpr{},
+		&ast.CompareExpr{},
+		&ast.Identifier{},
+		&ast.NumericLiteral{},
+		&ast.StringLiteral{},
+	}
+
+	for _, node := range nonDebuggableNodes {
+		nodeType := node.GetType().String()
+		t.Run("should not be debuggable: "+nodeType, func(t *testing.T) {
+			if dbg.IsDebuggable(node) {
+				t.Errorf("Expected node type %s to not be debuggable", nodeType)
+			}
+		})
+	}
 }
