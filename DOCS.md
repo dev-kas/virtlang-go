@@ -707,6 +707,7 @@ import "github.com/dev-kas/virtlang-go/v3/debugger"
 
 ## Index
 
+- [Variables](<#variables>)
 - [type BreakpointManager](<#BreakpointManager>)
   - [func NewBreakpointManager\(\) \*BreakpointManager](<#NewBreakpointManager>)
   - [func \(bm \*BreakpointManager\) Clear\(\)](<#BreakpointManager.Clear>)
@@ -726,6 +727,29 @@ import "github.com/dev-kas/virtlang-go/v3/debugger"
   - [func \(d \*Debugger\) Stop\(\) error](<#Debugger.Stop>)
 - [type State](<#State>)
 
+
+## Variables
+
+<a name="Debuggables"></a>Define what can be debugged
+
+```go
+var Debuggables = map[ast.NodeType]struct{}{
+    ast.VarDeclarationNode:    {},
+    ast.VarAssignmentExprNode: {},
+    ast.IfStatementNode:       {},
+    ast.WhileLoopNode:         {},
+    ast.ReturnStmtNode:        {},
+    ast.ContinueStmtNode:      {},
+    ast.BreakStmtNode:         {},
+    ast.TryCatchStmtNode:      {},
+    ast.CallExprNode:          {},
+    ast.FnDeclarationNode:     {},
+    ast.ClassNode:             {},
+    ast.ClassMethodNode:       {},
+    ast.ClassPropertyNode:     {},
+    ast.ProgramNode:           {},
+}
+```
 
 <a name="BreakpointManager"></a>
 ## type [BreakpointManager](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/breakpoint.go#L5-L7>)
@@ -806,7 +830,7 @@ func NewDebugger(env *environment.Environment) *Debugger
 
 
 <a name="Debugger.Continue"></a>
-### func \(\*Debugger\) [Continue](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L63>)
+### func \(\*Debugger\) [Continue](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L62>)
 
 ```go
 func (d *Debugger) Continue() error
@@ -815,7 +839,7 @@ func (d *Debugger) Continue() error
 
 
 <a name="Debugger.IsDebuggable"></a>
-### func \(\*Debugger\) [IsDebuggable](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L36>)
+### func \(\*Debugger\) [IsDebuggable](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L54>)
 
 ```go
 func (d *Debugger) IsDebuggable(astNode ast.Stmt) bool
@@ -824,7 +848,7 @@ func (d *Debugger) IsDebuggable(astNode ast.Stmt) bool
 
 
 <a name="Debugger.Pause"></a>
-### func \(\*Debugger\) [Pause](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L86>)
+### func \(\*Debugger\) [Pause](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L85>)
 
 ```go
 func (d *Debugger) Pause() error
@@ -833,7 +857,7 @@ func (d *Debugger) Pause() error
 
 
 <a name="Debugger.Run"></a>
-### func \(\*Debugger\) [Run](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L81>)
+### func \(\*Debugger\) [Run](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L80>)
 
 ```go
 func (d *Debugger) Run() error
@@ -842,7 +866,7 @@ func (d *Debugger) Run() error
 
 
 <a name="Debugger.ShouldStop"></a>
-### func \(\*Debugger\) [ShouldStop](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L32>)
+### func \(\*Debugger\) [ShouldStop](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L50>)
 
 ```go
 func (d *Debugger) ShouldStop(line string, col int) bool
@@ -851,7 +875,7 @@ func (d *Debugger) ShouldStop(line string, col int) bool
 
 
 <a name="Debugger.Step"></a>
-### func \(\*Debugger\) [Step](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L68>)
+### func \(\*Debugger\) [Step](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L67>)
 
 ```go
 func (d *Debugger) Step() error
@@ -860,7 +884,7 @@ func (d *Debugger) Step() error
 
 
 <a name="Debugger.StepInto"></a>
-### func \(\*Debugger\) [StepInto](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L77>)
+### func \(\*Debugger\) [StepInto](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L76>)
 
 ```go
 func (d *Debugger) StepInto() error
@@ -869,7 +893,7 @@ func (d *Debugger) StepInto() error
 
 
 <a name="Debugger.StepOut"></a>
-### func \(\*Debugger\) [StepOut](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L73>)
+### func \(\*Debugger\) [StepOut](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L72>)
 
 ```go
 func (d *Debugger) StepOut() error
@@ -878,7 +902,7 @@ func (d *Debugger) StepOut() error
 
 
 <a name="Debugger.Stop"></a>
-### func \(\*Debugger\) [Stop](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L91>)
+### func \(\*Debugger\) [Stop](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L90>)
 
 ```go
 func (d *Debugger) Stop() error
