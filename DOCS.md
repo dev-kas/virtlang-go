@@ -699,6 +699,212 @@ func (w *WhileLoop) GetType() NodeType
 
 
 
+# debugger
+
+```go
+import "github.com/dev-kas/virtlang-go/v3/debugger"
+```
+
+## Index
+
+- [type BreakpointManager](<#BreakpointManager>)
+  - [func NewBreakpointManager\(\) \*BreakpointManager](<#NewBreakpointManager>)
+  - [func \(bm \*BreakpointManager\) Clear\(\)](<#BreakpointManager.Clear>)
+  - [func \(bm \*BreakpointManager\) Has\(file string, line int\) bool](<#BreakpointManager.Has>)
+  - [func \(bm \*BreakpointManager\) Remove\(file string, line int\)](<#BreakpointManager.Remove>)
+  - [func \(bm \*BreakpointManager\) Set\(file string, line int\)](<#BreakpointManager.Set>)
+- [type Debugger](<#Debugger>)
+  - [func NewDebugger\(env \*environment.Environment\) \*Debugger](<#NewDebugger>)
+  - [func \(d \*Debugger\) Continue\(\) error](<#Debugger.Continue>)
+  - [func \(d \*Debugger\) IsDebuggable\(astNode ast.Stmt\) bool](<#Debugger.IsDebuggable>)
+  - [func \(d \*Debugger\) Pause\(\) error](<#Debugger.Pause>)
+  - [func \(d \*Debugger\) Run\(\) error](<#Debugger.Run>)
+  - [func \(d \*Debugger\) ShouldStop\(line string, col int\) bool](<#Debugger.ShouldStop>)
+  - [func \(d \*Debugger\) Step\(\) error](<#Debugger.Step>)
+  - [func \(d \*Debugger\) StepInto\(\) error](<#Debugger.StepInto>)
+  - [func \(d \*Debugger\) StepOut\(\) error](<#Debugger.StepOut>)
+  - [func \(d \*Debugger\) Stop\(\) error](<#Debugger.Stop>)
+- [type State](<#State>)
+
+
+<a name="BreakpointManager"></a>
+## type [BreakpointManager](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/breakpoint.go#L5-L7>)
+
+
+
+```go
+type BreakpointManager struct {
+    Breakpoints map[string]bool
+}
+```
+
+<a name="NewBreakpointManager"></a>
+### func [NewBreakpointManager](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/breakpoint.go#L9>)
+
+```go
+func NewBreakpointManager() *BreakpointManager
+```
+
+
+
+<a name="BreakpointManager.Clear"></a>
+### func \(\*BreakpointManager\) [Clear](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/breakpoint.go#L25>)
+
+```go
+func (bm *BreakpointManager) Clear()
+```
+
+
+
+<a name="BreakpointManager.Has"></a>
+### func \(\*BreakpointManager\) [Has](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/breakpoint.go#L29>)
+
+```go
+func (bm *BreakpointManager) Has(file string, line int) bool
+```
+
+
+
+<a name="BreakpointManager.Remove"></a>
+### func \(\*BreakpointManager\) [Remove](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/breakpoint.go#L20>)
+
+```go
+func (bm *BreakpointManager) Remove(file string, line int)
+```
+
+
+
+<a name="BreakpointManager.Set"></a>
+### func \(\*BreakpointManager\) [Set](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/breakpoint.go#L15>)
+
+```go
+func (bm *BreakpointManager) Set(file string, line int)
+```
+
+
+
+<a name="Debugger"></a>
+## type [Debugger](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L16-L20>)
+
+
+
+```go
+type Debugger struct {
+    BreakpointManager BreakpointManager
+    Environment       *environment.Environment
+    State             State
+}
+```
+
+<a name="NewDebugger"></a>
+### func [NewDebugger](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L22>)
+
+```go
+func NewDebugger(env *environment.Environment) *Debugger
+```
+
+
+
+<a name="Debugger.Continue"></a>
+### func \(\*Debugger\) [Continue](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L63>)
+
+```go
+func (d *Debugger) Continue() error
+```
+
+
+
+<a name="Debugger.IsDebuggable"></a>
+### func \(\*Debugger\) [IsDebuggable](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L36>)
+
+```go
+func (d *Debugger) IsDebuggable(astNode ast.Stmt) bool
+```
+
+
+
+<a name="Debugger.Pause"></a>
+### func \(\*Debugger\) [Pause](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L86>)
+
+```go
+func (d *Debugger) Pause() error
+```
+
+
+
+<a name="Debugger.Run"></a>
+### func \(\*Debugger\) [Run](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L81>)
+
+```go
+func (d *Debugger) Run() error
+```
+
+
+
+<a name="Debugger.ShouldStop"></a>
+### func \(\*Debugger\) [ShouldStop](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L32>)
+
+```go
+func (d *Debugger) ShouldStop(line string, col int) bool
+```
+
+
+
+<a name="Debugger.Step"></a>
+### func \(\*Debugger\) [Step](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L68>)
+
+```go
+func (d *Debugger) Step() error
+```
+
+
+
+<a name="Debugger.StepInto"></a>
+### func \(\*Debugger\) [StepInto](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L77>)
+
+```go
+func (d *Debugger) StepInto() error
+```
+
+
+
+<a name="Debugger.StepOut"></a>
+### func \(\*Debugger\) [StepOut](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L73>)
+
+```go
+func (d *Debugger) StepOut() error
+```
+
+
+
+<a name="Debugger.Stop"></a>
+### func \(\*Debugger\) [Stop](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L91>)
+
+```go
+func (d *Debugger) Stop() error
+```
+
+
+
+<a name="State"></a>
+## type [State](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L8>)
+
+
+
+```go
+type State string
+```
+
+<a name="RunningState"></a>
+
+```go
+const (
+    RunningState  State = "running"
+    PausedState   State = "paused"
+    SteppingState State = "stepping"
+)
+```
+
 # environment
 
 ```go
