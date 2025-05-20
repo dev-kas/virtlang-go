@@ -7,6 +7,7 @@ import (
 )
 
 func (p *Parser) parseAssignmentExpr() (ast.Expr, *errors.SyntaxError) {
+	start := p.at()
 	lhs, err := p.parseComparisonExpr()
 	if err != nil {
 		return nil, err
@@ -21,6 +22,13 @@ func (p *Parser) parseAssignmentExpr() (ast.Expr, *errors.SyntaxError) {
 		return &ast.VarAssignmentExpr{
 			Value:    value,
 			Assignee: lhs,
+			SourceMetadata: ast.SourceMetadata{
+				Filename:    p.filename,
+				StartLine:   start.StartLine,
+				StartColumn: start.StartCol,
+				EndLine:     p.at().EndLine,
+				EndColumn:   p.at().EndCol,
+			},
 		}, nil
 	}
 

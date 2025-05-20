@@ -18,8 +18,8 @@ func (p *Parser) ProduceAST(srcCode string) (*ast.Program, error) {
 		Stmts: []ast.Stmt{},
 		SourceMetadata: ast.SourceMetadata{
 			Filename:    p.filename,
-			StartLine:   1,
-			StartColumn: 1,
+			StartLine:   tokens[0].StartLine,
+			StartColumn: tokens[0].StartCol,
 			EndLine:     tokens[len(tokens)-1].EndLine,
 			EndColumn:   tokens[len(tokens)-1].EndCol,
 		},

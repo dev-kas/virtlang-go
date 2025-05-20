@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Parser) parseClass() (*ast.Class, *errors.SyntaxError) {
-	p.advance() // class
+	start := p.advance() // class
 
 	ident, err := p.expect(lexer.Identifier)
 	if err != nil {
@@ -48,5 +48,12 @@ func (p *Parser) parseClass() (*ast.Class, *errors.SyntaxError) {
 		Name:        name,
 		Body:        body,
 		Constructor: constructor,
+		SourceMetadata: ast.SourceMetadata{
+			Filename:    p.filename,
+			StartLine:   start.StartLine,
+			StartColumn: start.StartCol,
+			EndLine:     p.at().EndLine,
+			EndColumn:   p.at().EndCol,
+		},
 	}, nil
 }

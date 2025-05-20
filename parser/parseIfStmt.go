@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Parser) parseIfStmt() (*ast.IfStatement, *errors.SyntaxError) {
-	p.advance() // if
+	start := p.advance() // if
 
 	if _, err := p.expect(lexer.OParen); err != nil {
 		return nil, err
@@ -44,6 +44,13 @@ func (p *Parser) parseIfStmt() (*ast.IfStatement, *errors.SyntaxError) {
 		Condition: condition,
 		Body:      body,
 		ElseIf:    []*ast.IfStatement{}, // Initialize ElseIf as an empty slice
+		SourceMetadata: ast.SourceMetadata{
+			Filename:    p.filename,
+			StartLine:   start.StartLine,
+			StartColumn: start.StartCol,
+			EndLine:     p.at().EndLine,
+			EndColumn:   p.at().EndCol,
+		},
 	}
 
 	// Check for else or else if

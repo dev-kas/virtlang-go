@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Parser) parseFnDecl() (*ast.FnDeclaration, *errors.SyntaxError) {
-	p.advance() // fn
+	start := p.advance() // fn
 
 	var name *lexer.Token
 
@@ -65,5 +65,12 @@ func (p *Parser) parseFnDecl() (*ast.FnDeclaration, *errors.SyntaxError) {
 		Name:      fname,
 		Body:      body,
 		Anonymous: isAnonymous,
+		SourceMetadata: ast.SourceMetadata{
+			Filename:    p.filename,
+			StartLine:   start.StartLine,
+			StartColumn: start.StartCol,
+			EndLine:     p.at().EndLine,
+			EndColumn:   p.at().EndCol,
+		},
 	}, nil
 }
