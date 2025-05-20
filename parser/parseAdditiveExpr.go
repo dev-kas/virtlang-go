@@ -6,6 +6,7 @@ import (
 )
 
 func (p *Parser) parseAdditiveExpr() (ast.Expr, *errors.SyntaxError) {
+	start := p.at()
 	lhs, err := p.parseMultiplicativeExpr()
 	if err != nil {
 		return nil, err
@@ -35,6 +36,13 @@ func (p *Parser) parseAdditiveExpr() (ast.Expr, *errors.SyntaxError) {
 			Operator: operator,
 			LHS:      lhs,
 			RHS:      rhs,
+			SourceMetadata: ast.SourceMetadata{
+				Filename:    p.filename,
+				StartLine:   start.StartLine,
+				StartColumn: start.StartCol,
+				EndLine:     p.at().EndLine,
+				EndColumn:   p.at().EndCol,
+			},
 		}
 	}
 

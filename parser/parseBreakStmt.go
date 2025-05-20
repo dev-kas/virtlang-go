@@ -6,7 +6,15 @@ import (
 )
 
 func (p *Parser) parseBreakStmt() (ast.Expr, *errors.SyntaxError) {
-	p.advance() // break
+	start := p.advance() // break
 
-	return &ast.BreakStmt{}, nil
+	return &ast.BreakStmt{
+		SourceMetadata: ast.SourceMetadata{
+			Filename:    p.filename,
+			StartLine:   start.StartLine,
+			StartColumn: start.StartCol,
+			EndLine:     p.at().EndLine,
+			EndColumn:   p.at().EndCol,
+		},
+	}, nil
 }

@@ -6,7 +6,7 @@ import (
 )
 
 func (p *Parser) parseReturnStmt() (ast.Expr, *errors.SyntaxError) {
-	p.advance() // return
+	start := p.advance() // return
 	var value ast.Expr
 
 	if p.isEOF() {
@@ -21,5 +21,12 @@ func (p *Parser) parseReturnStmt() (ast.Expr, *errors.SyntaxError) {
 
 	return &ast.ReturnStmt{
 		Value: value,
+		SourceMetadata: ast.SourceMetadata{
+			Filename:    p.filename,
+			StartLine:   start.StartLine,
+			StartColumn: start.StartCol,
+			EndLine:     p.at().EndLine,
+			EndColumn:   p.at().EndCol,
+		},
 	}, nil
 }

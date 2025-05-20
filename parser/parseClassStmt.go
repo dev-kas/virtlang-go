@@ -7,6 +7,7 @@ import (
 )
 
 func (p *Parser) parseClassStmt() (ast.Stmt, *errors.SyntaxError) {
+	start := p.at()
 	isPrivate := p.at().Type == lexer.Private
 	if isPrivate {
 		p.advance()
@@ -65,6 +66,13 @@ func (p *Parser) parseClassStmt() (ast.Stmt, *errors.SyntaxError) {
 			Body:     body,
 			Params:   params,
 			IsPublic: !isPrivate,
+			SourceMetadata: ast.SourceMetadata{
+				Filename:    p.filename,
+				StartLine:   start.StartLine,
+				StartColumn: start.StartCol,
+				EndLine:     p.at().EndLine,
+				EndColumn:   p.at().EndCol,
+			},
 		}, nil
 	} else {
 		at := p.at()
@@ -84,6 +92,13 @@ func (p *Parser) parseClassStmt() (ast.Stmt, *errors.SyntaxError) {
 			Name:     name,
 			Value:    value,
 			IsPublic: !isPrivate,
+			SourceMetadata: ast.SourceMetadata{
+				Filename:    p.filename,
+				StartLine:   start.StartLine,
+				StartColumn: start.StartCol,
+				EndLine:     p.at().EndLine,
+				EndColumn:   p.at().EndCol,
+			},
 		}, nil
 	}
 }

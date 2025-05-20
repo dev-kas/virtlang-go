@@ -7,7 +7,8 @@ import (
 )
 
 func (p *Parser) parseObjectExpr() (ast.Expr, *errors.SyntaxError) {
-	if p.at().Type != lexer.OBrace {
+	start := p.at()
+	if start.Type != lexer.OBrace {
 		return p.parseAdditiveExpr()
 	}
 
@@ -67,5 +68,12 @@ func (p *Parser) parseObjectExpr() (ast.Expr, *errors.SyntaxError) {
 
 	return &ast.ObjectLiteral{
 		Properties: properties,
+		SourceMetadata: ast.SourceMetadata{
+			Filename:    p.filename,
+			StartLine:   start.StartLine,
+			StartColumn: start.StartCol,
+			EndLine:     p.at().EndLine,
+			EndColumn:   p.at().EndCol,
+		},
 	}, nil
 }

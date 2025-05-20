@@ -7,6 +7,7 @@ import (
 )
 
 func (p *Parser) parseCallExpr(callee ast.Expr) (*ast.CallExpr, *errors.SyntaxError) {
+	start := p.at()
 	args, err := p.parseArgs()
 	if err != nil {
 		return nil, err
@@ -15,6 +16,13 @@ func (p *Parser) parseCallExpr(callee ast.Expr) (*ast.CallExpr, *errors.SyntaxEr
 	callExpr := &ast.CallExpr{
 		Callee: callee,
 		Args:   args,
+		SourceMetadata: ast.SourceMetadata{
+			Filename:    p.filename,
+			StartLine:   start.StartLine,
+			StartColumn: start.StartCol,
+			EndLine:     p.at().EndLine,
+			EndColumn:   p.at().EndCol,
+		},
 	}
 
 	if p.at().Type == lexer.OParen {

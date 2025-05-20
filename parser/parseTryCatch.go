@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Parser) parseTryCatch() (ast.Expr, *errors.SyntaxError) {
-	p.advance() // try
+	start := p.advance() // try
 	if _, err := p.expect(lexer.OBrace); err != nil {
 		return nil, err
 	}
@@ -56,5 +56,12 @@ func (p *Parser) parseTryCatch() (ast.Expr, *errors.SyntaxError) {
 		Try:      tryBody,
 		CatchVar: cVar.Literal,
 		Catch:    catchBody,
+		SourceMetadata: ast.SourceMetadata{
+			Filename:    p.filename,
+			StartLine:   start.StartLine,
+			StartColumn: start.StartCol,
+			EndLine:     p.at().EndLine,
+			EndColumn:   p.at().EndCol,
+		},
 	}, nil
 }

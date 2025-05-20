@@ -7,6 +7,7 @@ import (
 )
 
 func (p *Parser) parseComparisonExpr() (ast.Expr, *errors.SyntaxError) {
+	start := p.at()
 	lhs, err := p.parseObjectExpr()
 	if err != nil {
 		return nil, err
@@ -47,6 +48,13 @@ func (p *Parser) parseComparisonExpr() (ast.Expr, *errors.SyntaxError) {
 			LHS:      lhs,
 			RHS:      rhs,
 			Operator: operator,
+			SourceMetadata: ast.SourceMetadata{
+				Filename:    p.filename,
+				StartLine:   start.StartLine,
+				StartColumn: start.StartCol,
+				EndLine:     p.at().EndLine,
+				EndColumn:   p.at().EndCol,
+			},
 		}, nil
 	}
 

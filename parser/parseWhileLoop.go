@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Parser) parseWhileLoop() (ast.Expr, *errors.SyntaxError) {
-	p.advance() // while
+	start := p.advance() // while
 
 	if _, err := p.expect(lexer.OParen); err != nil {
 		return nil, err
@@ -40,5 +40,12 @@ func (p *Parser) parseWhileLoop() (ast.Expr, *errors.SyntaxError) {
 	return &ast.WhileLoop{
 		Condition: condition,
 		Body:      body,
+		SourceMetadata: ast.SourceMetadata{
+			Filename:    p.filename,
+			StartLine:   start.StartLine,
+			StartColumn: start.StartCol,
+			EndLine:     p.at().EndLine,
+			EndColumn:   p.at().EndCol,
+		},
 	}, nil
 }

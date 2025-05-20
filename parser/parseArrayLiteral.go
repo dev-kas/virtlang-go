@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Parser) parseArrayLiteral() (ast.Expr, *errors.SyntaxError) {
-	p.advance() // [
+	start := p.advance() // [
 
 	elements := []ast.Expr{}
 
@@ -40,5 +40,12 @@ func (p *Parser) parseArrayLiteral() (ast.Expr, *errors.SyntaxError) {
 
 	return &ast.ArrayLiteral{
 		Elements: elements,
+		SourceMetadata: ast.SourceMetadata{
+			Filename:    p.filename,
+			StartLine:   start.StartLine,
+			StartColumn: start.StartCol,
+			EndLine:     p.at().EndLine,
+			EndColumn:   p.at().EndCol,
+		},
 	}, nil
 }

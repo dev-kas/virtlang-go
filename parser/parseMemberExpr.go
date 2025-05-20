@@ -7,6 +7,7 @@ import (
 )
 
 func (p *Parser) parseMemberExpr() (ast.Expr, *errors.SyntaxError) {
+	start := p.at()
 	obj, err := p.parsePrimaryExpr()
 	if err != nil {
 		return nil, err
@@ -39,13 +40,23 @@ func (p *Parser) parseMemberExpr() (ast.Expr, *errors.SyntaxError) {
 				return nil, err
 			}
 
-			p.expect(lexer.CBracket)
+			_, err = p.expect(lexer.CBracket)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		obj = &ast.MemberExpr{
 			Object:   obj,
 			Value:    property,
 			Computed: computed,
+			SourceMetadata: ast.SourceMetadata{
+				Filename:    p.filename,
+				StartLine:   start.StartLine,
+				StartColumn: start.StartCol,
+				EndLine:     p.at().EndLine,
+				EndColumn:   p.at().EndCol,
+			},
 		}
 	}
 

@@ -12,6 +12,7 @@ func (p *Parser) parseMultiplicativeExpr() (ast.Expr, *errors.SyntaxError) {
 	}
 
 	for p.at().Literal == "*" || p.at().Literal == "/" || p.at().Literal == "%" {
+		start := p.at()
 		operatorLiteral := p.advance().Literal
 		var operator ast.BinaryOperator
 		switch operatorLiteral {
@@ -38,6 +39,13 @@ func (p *Parser) parseMultiplicativeExpr() (ast.Expr, *errors.SyntaxError) {
 			Operator: operator,
 			LHS:      lhs,
 			RHS:      rhs,
+			SourceMetadata: ast.SourceMetadata{
+				Filename:    p.filename,
+				StartLine:   start.StartLine,
+				StartColumn: start.StartCol,
+				EndLine:     p.at().EndLine,
+				EndColumn:   p.at().EndCol,
+			},
 		}
 	}
 

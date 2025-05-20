@@ -9,13 +9,21 @@ import (
 )
 
 func (p *Parser) parsePrimaryExpr() (ast.Expr, *errors.SyntaxError) {
-	tk := p.at().Type
+	start := p.at()
+	tk := start.Type
 	var value interface{}
 
 	switch tk {
 	case lexer.Identifier:
 		return &ast.Identifier{
 			Symbol: p.advance().Literal,
+			SourceMetadata: ast.SourceMetadata{
+				Filename:    p.filename,
+				StartLine:   start.StartLine,
+				StartColumn: start.StartCol,
+				EndLine:     p.at().EndLine,
+				EndColumn:   p.at().EndCol,
+			},
 		}, nil
 
 	case lexer.Number:
@@ -31,6 +39,13 @@ func (p *Parser) parsePrimaryExpr() (ast.Expr, *errors.SyntaxError) {
 		}
 		return &ast.NumericLiteral{
 			Value: parsedValue,
+			SourceMetadata: ast.SourceMetadata{
+				Filename:    p.filename,
+				StartLine:   start.StartLine,
+				StartColumn: start.StartCol,
+				EndLine:     p.at().EndLine,
+				EndColumn:   p.at().EndCol,
+			},
 		}, nil
 
 	case lexer.OParen:
@@ -49,6 +64,13 @@ func (p *Parser) parsePrimaryExpr() (ast.Expr, *errors.SyntaxError) {
 		value = p.advance().Literal
 		return &ast.StringLiteral{
 			Value: value.(string),
+			SourceMetadata: ast.SourceMetadata{
+				Filename:    p.filename,
+				StartLine:   start.StartLine,
+				StartColumn: start.StartCol,
+				EndLine:     p.at().EndLine,
+				EndColumn:   p.at().EndCol,
+			},
 		}, nil
 
 	case lexer.WhileLoop:
