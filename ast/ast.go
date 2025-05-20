@@ -99,11 +99,11 @@ const (
 )
 
 type SourceMetadata struct {
-	StartLine     int
-	StartColumn   int
-	EndLine       int
-	EndColumn     int
-	Filename      string
+	StartLine   int
+	StartColumn int
+	EndLine     int
+	EndColumn   int
+	Filename    string
 }
 
 type Stmt interface {
