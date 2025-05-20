@@ -946,17 +946,22 @@ import "github.com/dev-kas/virtlang-go/v3/debugger"
   - [func \(bm \*BreakpointManager\) Has\(file string, line int\) bool](<#BreakpointManager.Has>)
   - [func \(bm \*BreakpointManager\) Remove\(file string, line int\)](<#BreakpointManager.Remove>)
   - [func \(bm \*BreakpointManager\) Set\(file string, line int\)](<#BreakpointManager.Set>)
+- [type CallStack](<#CallStack>)
 - [type Debugger](<#Debugger>)
   - [func NewDebugger\(env \*environment.Environment\) \*Debugger](<#NewDebugger>)
   - [func \(d \*Debugger\) Continue\(\) error](<#Debugger.Continue>)
   - [func \(d \*Debugger\) IsDebuggable\(nodeType ast.NodeType\) bool](<#Debugger.IsDebuggable>)
   - [func \(d \*Debugger\) Pause\(\) error](<#Debugger.Pause>)
+  - [func \(d \*Debugger\) PopFrame\(\)](<#Debugger.PopFrame>)
+  - [func \(d \*Debugger\) PushFrame\(frame StackFrame\)](<#Debugger.PushFrame>)
   - [func \(d \*Debugger\) ShouldStop\(filename string, line int\) bool](<#Debugger.ShouldStop>)
-  - [func \(d \*Debugger\) Step\(\) error](<#Debugger.Step>)
   - [func \(d \*Debugger\) StepInto\(\) error](<#Debugger.StepInto>)
   - [func \(d \*Debugger\) StepOut\(\) error](<#Debugger.StepOut>)
-  - [func \(d \*Debugger\) WaitIfPaused\(\)](<#Debugger.WaitIfPaused>)
+  - [func \(d \*Debugger\) StepOver\(\) error](<#Debugger.StepOver>)
+  - [func \(d \*Debugger\) WaitIfPaused\(nodeType ast.NodeType\)](<#Debugger.WaitIfPaused>)
+- [type StackFrame](<#StackFrame>)
 - [type State](<#State>)
+- [type StepType](<#StepType>)
 
 
 ## Variables
@@ -1038,8 +1043,17 @@ func (bm *BreakpointManager) Set(file string, line int)
 
 
 
+<a name="CallStack"></a>
+## type [CallStack](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/stackFrame.go#L9>)
+
+
+
+```go
+type CallStack []StackFrame
+```
+
 <a name="Debugger"></a>
-## type [Debugger](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L18-L26>)
+## type [Debugger](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L26-L37>)
 
 
 
@@ -1050,12 +1064,13 @@ type Debugger struct {
     State             State
     CurrentFile       string
     CurrentLine       int
+    CallStack         CallStack
     // contains filtered or unexported fields
 }
 ```
 
 <a name="NewDebugger"></a>
-### func [NewDebugger](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L28>)
+### func [NewDebugger](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L39>)
 
 ```go
 func NewDebugger(env *environment.Environment) *Debugger
@@ -1064,7 +1079,7 @@ func NewDebugger(env *environment.Environment) *Debugger
 
 
 <a name="Debugger.Continue"></a>
-### func \(\*Debugger\) [Continue](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L82>)
+### func \(\*Debugger\) [Continue](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L135>)
 
 ```go
 func (d *Debugger) Continue() error
@@ -1073,7 +1088,7 @@ func (d *Debugger) Continue() error
 
 
 <a name="Debugger.IsDebuggable"></a>
-### func \(\*Debugger\) [IsDebuggable](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L63>)
+### func \(\*Debugger\) [IsDebuggable](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L77>)
 
 ```go
 func (d *Debugger) IsDebuggable(nodeType ast.NodeType) bool
@@ -1082,7 +1097,7 @@ func (d *Debugger) IsDebuggable(nodeType ast.NodeType) bool
 
 
 <a name="Debugger.Pause"></a>
-### func \(\*Debugger\) [Pause](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L116>)
+### func \(\*Debugger\) [Pause](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L173>)
 
 ```go
 func (d *Debugger) Pause() error
@@ -1090,8 +1105,26 @@ func (d *Debugger) Pause() error
 
 
 
+<a name="Debugger.PopFrame"></a>
+### func \(\*Debugger\) [PopFrame](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L124>)
+
+```go
+func (d *Debugger) PopFrame()
+```
+
+
+
+<a name="Debugger.PushFrame"></a>
+### func \(\*Debugger\) [PushFrame](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L118>)
+
+```go
+func (d *Debugger) PushFrame(frame StackFrame)
+```
+
+
+
 <a name="Debugger.ShouldStop"></a>
-### func \(\*Debugger\) [ShouldStop](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L59>)
+### func \(\*Debugger\) [ShouldStop](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L73>)
 
 ```go
 func (d *Debugger) ShouldStop(filename string, line int) bool
@@ -1099,17 +1132,8 @@ func (d *Debugger) ShouldStop(filename string, line int) bool
 
 
 
-<a name="Debugger.Step"></a>
-### func \(\*Debugger\) [Step](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L90>)
-
-```go
-func (d *Debugger) Step() error
-```
-
-
-
 <a name="Debugger.StepInto"></a>
-### func \(\*Debugger\) [StepInto](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L107>)
+### func \(\*Debugger\) [StepInto](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L143>)
 
 ```go
 func (d *Debugger) StepInto() error
@@ -1118,7 +1142,7 @@ func (d *Debugger) StepInto() error
 
 
 <a name="Debugger.StepOut"></a>
-### func \(\*Debugger\) [StepOut](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L98>)
+### func \(\*Debugger\) [StepOut](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L163>)
 
 ```go
 func (d *Debugger) StepOut() error
@@ -1126,14 +1150,36 @@ func (d *Debugger) StepOut() error
 
 
 
-<a name="Debugger.WaitIfPaused"></a>
-### func \(\*Debugger\) [WaitIfPaused](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L68>)
+<a name="Debugger.StepOver"></a>
+### func \(\*Debugger\) [StepOver](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L153>)
 
 ```go
-func (d *Debugger) WaitIfPaused()
+func (d *Debugger) StepOver() error
 ```
 
 
+
+<a name="Debugger.WaitIfPaused"></a>
+### func \(\*Debugger\) [WaitIfPaused](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L82>)
+
+```go
+func (d *Debugger) WaitIfPaused(nodeType ast.NodeType)
+```
+
+
+
+<a name="StackFrame"></a>
+## type [StackFrame](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/stackFrame.go#L3-L7>)
+
+
+
+```go
+type StackFrame struct {
+    Name     string
+    Filename string
+    Line     int
+}
+```
 
 <a name="State"></a>
 ## type [State](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L10>)
@@ -1151,6 +1197,25 @@ const (
     RunningState  State = "running"
     PausedState   State = "paused"
     SteppingState State = "stepping"
+)
+```
+
+<a name="StepType"></a>
+## type [StepType](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L18>)
+
+
+
+```go
+type StepType string
+```
+
+<a name="StepInto"></a>
+
+```go
+const (
+    StepInto StepType = "step_into"
+    StepOver StepType = "step_over"
+    StepOut  StepType = "step_out"
 )
 ```
 
