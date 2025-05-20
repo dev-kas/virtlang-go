@@ -7,6 +7,7 @@ import (
 )
 
 func (p *Parser) parseVarDecl() (*ast.VarDeclaration, *errors.SyntaxError) {
+	start := p.at()
 	isConstant := p.advance().Type == lexer.Const
 	ident, err := p.expect(lexer.Identifier)
 	if err != nil {
@@ -28,5 +29,12 @@ func (p *Parser) parseVarDecl() (*ast.VarDeclaration, *errors.SyntaxError) {
 		Identifier: name,
 		Value:      value,
 		Constant:   isConstant,
+		SourceMetadata: ast.SourceMetadata{
+			Filename:    p.filename,
+			StartLine:   start.StartLine,
+			StartColumn: start.StartCol,
+			EndLine:     p.at().EndLine,
+			EndColumn:   p.at().EndCol,
+		},
 	}, nil
 }

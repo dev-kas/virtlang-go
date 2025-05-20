@@ -9,7 +9,7 @@ import (
 
 func TestBinaryExpr(t *testing.T) {
 	srccode := "1 + 2 * (3 - 4) / 5"
-	p := parser.New()
+	p := parser.New("test")
 	prog, err := p.ProduceAST(srccode)
 	if err != nil {
 		t.Fatal(err)
@@ -123,7 +123,7 @@ func TestTryCatchExpr(t *testing.T) {
 	4 - 1
 	}`
 
-	p := parser.New()
+	p := parser.New("test")
 
 	prog, err := p.ProduceAST(srccode)
 	if err != nil {
@@ -218,7 +218,7 @@ func TestTryCatchExpr(t *testing.T) {
 func TestVarStuff(t *testing.T) {
 	srccode := "let a = 1"
 
-	p := parser.New()
+	p := parser.New("test")
 
 	prog, err := p.ProduceAST(srccode)
 	if err != nil {
@@ -365,7 +365,7 @@ func TestVarStuff(t *testing.T) {
 
 func TestComparison(t *testing.T) {
 	srccode := "1 < 2"
-	p := parser.New()
+	p := parser.New("test")
 	prog, err := p.ProduceAST(srccode)
 	if err != nil {
 		t.Fatal(err)
@@ -644,7 +644,7 @@ func TestFnDecl(t *testing.T) {
 		a + b
 	}`
 
-	p := parser.New()
+	p := parser.New("test")
 	prog, err := p.ProduceAST(srccode)
 	if err != nil {
 		t.Fatal(err)
@@ -727,7 +727,7 @@ func TestFnDecl(t *testing.T) {
 func TestIfStmt(t *testing.T) {
 	// Test basic if statement
 	srccode := `if (3+1 > 3) {myFunction()}`
-	p := parser.New()
+	p := parser.New("test")
 	prog, err := p.ProduceAST(srccode)
 	if err != nil {
 		t.Fatal(err)

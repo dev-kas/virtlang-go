@@ -17,11 +17,11 @@ func (p *Parser) ProduceAST(srcCode string) (*ast.Program, error) {
 	program := ast.Program{
 		Stmts: []ast.Stmt{},
 		SourceMetadata: ast.SourceMetadata{
-			Filename: srcCode,
-			StartLine: 1,
+			Filename:    p.filename,
+			StartLine:   1,
 			StartColumn: 1,
-			EndLine: tokens[len(tokens)-1].EndLine,
-			EndColumn: tokens[len(tokens)-1].EndCol,
+			EndLine:     tokens[len(tokens)-1].EndLine,
+			EndColumn:   tokens[len(tokens)-1].EndCol,
 		},
 	}
 

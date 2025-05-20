@@ -55,7 +55,7 @@ func TestNumbers(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -139,7 +139,7 @@ func TestStrings(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -247,7 +247,7 @@ func TestObjects(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -379,7 +379,7 @@ func TestBinaryExpression(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -482,7 +482,7 @@ func TestComparisonOperators(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -626,7 +626,7 @@ func TestVariableDeclarationAndAssignment(t *testing.T) {
 		},
 	}
 	for i, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -765,7 +765,7 @@ func TestFunctions(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -977,7 +977,7 @@ func TestIfStatements(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -1108,7 +1108,7 @@ func TestWhileLoops(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -1205,7 +1205,7 @@ func TestTryCatch(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -1306,7 +1306,7 @@ func TestReturnStatements(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -1479,7 +1479,7 @@ func TestContinueKeyword(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -1653,7 +1653,7 @@ func TestBreakKeyword(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -1798,7 +1798,7 @@ func TestArrays(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
@@ -2101,7 +2101,7 @@ func TestClasses(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		p := parser.New()
+		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
