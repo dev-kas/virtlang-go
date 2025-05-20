@@ -27,6 +27,24 @@ func NewDebugger(env *environment.Environment) *Debugger {
 	}
 }
 
+// Define what can be debugged
+var Debuggables = map[ast.NodeType]struct{}{
+	ast.VarDeclarationNode:    {},
+	ast.VarAssignmentExprNode: {},
+	ast.IfStatementNode:       {},
+	ast.WhileLoopNode:         {},
+	ast.ReturnStmtNode:        {},
+	ast.ContinueStmtNode:      {},
+	ast.BreakStmtNode:         {},
+	ast.TryCatchStmtNode:      {},
+	ast.CallExprNode:          {},
+	ast.FnDeclarationNode:     {},
+	ast.ClassNode:             {},
+	ast.ClassMethodNode:       {},
+	ast.ClassPropertyNode:     {},
+	ast.ProgramNode:           {},
+}
+
 // Internal API
 
 func (d *Debugger) ShouldStop(line string, col int) bool {
@@ -34,27 +52,8 @@ func (d *Debugger) ShouldStop(line string, col int) bool {
 }
 
 func (d *Debugger) IsDebuggable(astNode ast.Stmt) bool {
-	debuggables := map[ast.NodeType]struct{}{
-		ast.VarDeclarationNode:    {},
-		ast.VarAssignmentExprNode: {},
-		ast.IfStatementNode:       {},
-		ast.WhileLoopNode:         {},
-		ast.ReturnStmtNode:        {},
-		ast.ContinueStmtNode:      {},
-		ast.BreakStmtNode:         {},
-		ast.TryCatchStmtNode:      {},
-		ast.CallExprNode:          {},
-		ast.FnDeclarationNode:     {},
-		ast.ClassNode:             {},
-		ast.ClassMethodNode:       {},
-		ast.ClassPropertyNode:     {},
-		ast.ProgramNode:           {},
-	}
-
 	nodeType := astNode.GetType()
-
-	_, isDebuggable := debuggables[nodeType]
-
+	_, isDebuggable := Debuggables[nodeType]
 	return isDebuggable
 }
 
