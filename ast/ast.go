@@ -98,6 +98,14 @@ const (
 	Modulo   BinaryOperator = "%"
 )
 
+type SourceMetadata struct {
+	StartLine     int
+	StartColumn   int
+	EndLine       int
+	EndColumn     int
+	Filename      string
+}
+
 type Stmt interface {
 	GetType() NodeType
 }
@@ -110,6 +118,7 @@ type Expr interface {
 
 type Program struct {
 	Stmts []Stmt
+	SourceMetadata
 }
 
 func (p *Program) GetType() NodeType { return ProgramNode }
@@ -118,6 +127,7 @@ type VarDeclaration struct {
 	Constant   bool
 	Identifier string
 	Value      Expr
+	SourceMetadata
 }
 
 func (v *VarDeclaration) GetType() NodeType { return VarDeclarationNode }
@@ -126,6 +136,7 @@ type TryCatchStmt struct {
 	Try      []Stmt
 	Catch    []Stmt
 	CatchVar string
+	SourceMetadata
 }
 
 func (t *TryCatchStmt) GetType() NodeType { return TryCatchStmtNode }
@@ -135,6 +146,7 @@ type FnDeclaration struct {
 	Name      string
 	Body      []Stmt
 	Anonymous bool
+	SourceMetadata
 }
 
 func (f *FnDeclaration) GetType() NodeType { return FnDeclarationNode }
@@ -144,6 +156,7 @@ type IfStatement struct {
 	Condition Expr
 	Else      []Stmt         // Optional else block
 	ElseIf    []*IfStatement // Optional else-if branches
+	SourceMetadata
 }
 
 func (i *IfStatement) GetType() NodeType { return IfStatementNode }
@@ -152,6 +165,7 @@ type Class struct {
 	Name        string
 	Body        []Stmt
 	Constructor *ClassMethod
+	SourceMetadata
 }
 
 func (c *Class) GetType() NodeType { return ClassNode }
@@ -161,6 +175,7 @@ type ClassMethod struct {
 	Body     []Stmt
 	Params   []string
 	IsPublic bool
+	SourceMetadata
 }
 
 func (c *ClassMethod) GetType() NodeType { return ClassMethodNode }
@@ -169,6 +184,7 @@ type ClassProperty struct {
 	Name     string
 	Value    Expr
 	IsPublic bool
+	SourceMetadata
 }
 
 func (c *ClassProperty) GetType() NodeType { return ClassPropertyNode }
@@ -176,21 +192,27 @@ func (c *ClassProperty) GetType() NodeType { return ClassPropertyNode }
 type WhileLoop struct {
 	Body      []Stmt
 	Condition Expr
+	SourceMetadata
 }
 
 func (w *WhileLoop) GetType() NodeType { return WhileLoopNode }
 
 type ReturnStmt struct {
 	Value Expr
+	SourceMetadata
 }
 
 func (r *ReturnStmt) GetType() NodeType { return ReturnStmtNode }
 
-type BreakStmt struct{}
+type BreakStmt struct {
+	SourceMetadata
+}
 
 func (r *BreakStmt) GetType() NodeType { return BreakStmtNode }
 
-type ContinueStmt struct{}
+type ContinueStmt struct {
+	SourceMetadata
+}
 
 func (r *ContinueStmt) GetType() NodeType { return ContinueStmtNode }
 
@@ -199,6 +221,7 @@ func (r *ContinueStmt) GetType() NodeType { return ContinueStmtNode }
 type VarAssignmentExpr struct {
 	Assignee Expr
 	Value    Expr
+	SourceMetadata
 }
 
 func (v *VarAssignmentExpr) GetType() NodeType { return VarAssignmentExprNode }
@@ -207,6 +230,7 @@ type BinaryExpr struct {
 	LHS      Expr
 	RHS      Expr
 	Operator BinaryOperator
+	SourceMetadata
 }
 
 func (b *BinaryExpr) GetType() NodeType { return BinaryExprNode }
@@ -215,6 +239,7 @@ type CompareExpr struct {
 	LHS      Expr
 	RHS      Expr
 	Operator CompareOperator
+	SourceMetadata
 }
 
 func (c *CompareExpr) GetType() NodeType { return CompareExprNode }
@@ -222,6 +247,7 @@ func (c *CompareExpr) GetType() NodeType { return CompareExprNode }
 type CallExpr struct {
 	Args   []Expr
 	Callee Expr
+	SourceMetadata
 }
 
 func (c *CallExpr) GetType() NodeType { return CallExprNode }
@@ -230,24 +256,28 @@ type MemberExpr struct {
 	Object   Expr
 	Value    Expr
 	Computed bool
+	SourceMetadata
 }
 
 func (m *MemberExpr) GetType() NodeType { return MemberExprNode }
 
 type Identifier struct {
 	Symbol string
+	SourceMetadata
 }
 
 func (i *Identifier) GetType() NodeType { return IdentifierNode }
 
 type NumericLiteral struct {
 	Value float64
+	SourceMetadata
 }
 
 func (n *NumericLiteral) GetType() NodeType { return NumericLiteralNode }
 
 type StringLiteral struct {
 	Value string
+	SourceMetadata
 }
 
 func (s *StringLiteral) GetType() NodeType { return StringLiteralNode }
@@ -255,18 +285,21 @@ func (s *StringLiteral) GetType() NodeType { return StringLiteralNode }
 type Property struct {
 	Key   string
 	Value Expr
+	SourceMetadata
 }
 
 func (p *Property) GetType() NodeType { return PropertyNode }
 
 type ObjectLiteral struct {
 	Properties []Property
+	SourceMetadata
 }
 
 func (o *ObjectLiteral) GetType() NodeType { return ObjectLiteralNode }
 
 type ArrayLiteral struct {
 	Elements []Expr
+	SourceMetadata
 }
 
 func (o *ArrayLiteral) GetType() NodeType { return ArrayLiteralNode }
