@@ -744,18 +744,24 @@ import "github.com/dev-kas/virtlang-go/v2/errors"
 - [type InternalCommunicationProtocol](<#InternalCommunicationProtocol>)
 - [type InternalCommunicationProtocolTypes](<#InternalCommunicationProtocolTypes>)
 - [type LexerError](<#LexerError>)
+  - [func NewLexerError\(char rune, pos Position\) \*LexerError](<#NewLexerError>)
+  - [func NewLexerErrorf\(pos Position, charForContext rune, format string, args ...interface\{\}\) \*LexerError](<#NewLexerErrorf>)
   - [func \(e \*LexerError\) Error\(\) string](<#LexerError.Error>)
 - [type ParserError](<#ParserError>)
+  - [func NewParserError\(tokenLiteral string, start, end Position\) \*ParserError](<#NewParserError>)
+  - [func NewParserErrorf\(start, end Position, format string, args ...interface\{\}\) \*ParserError](<#NewParserErrorf>)
   - [func \(e \*ParserError\) Error\(\) string](<#ParserError.Error>)
+- [type Position](<#Position>)
 - [type RuntimeError](<#RuntimeError>)
   - [func \(e \*RuntimeError\) Error\(\) string](<#RuntimeError.Error>)
 - [type SyntaxError](<#SyntaxError>)
-  - [func NewSyntaxError\(expected, got string, start, difference int\) \*SyntaxError](<#NewSyntaxError>)
+  - [func NewSyntaxError\(expected string, gotLiteral string, start, end Position\) \*SyntaxError](<#NewSyntaxError>)
+  - [func NewSyntaxErrorf\(start, end Position, format string, args ...interface\{\}\) \*SyntaxError](<#NewSyntaxErrorf>)
   - [func \(e \*SyntaxError\) Error\(\) string](<#SyntaxError.Error>)
 
 
 <a name="InternalCommunicationProtocol"></a>
-## type [InternalCommunicationProtocol](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L18-L21>)
+## type [InternalCommunicationProtocol](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L23-L26>)
 
 
 
@@ -767,9 +773,9 @@ type InternalCommunicationProtocol struct {
 ```
 
 <a name="InternalCommunicationProtocolTypes"></a>
-## type [InternalCommunicationProtocolTypes](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L10>)
+## type [InternalCommunicationProtocolTypes](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L15>)
 
-InternalCommunicationProtocol
+\-\-\- InternalCommunicationProtocol \-\-\-
 
 ```go
 type InternalCommunicationProtocolTypes int
@@ -786,19 +792,38 @@ const (
 ```
 
 <a name="LexerError"></a>
-## type [LexerError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L153-L156>)
+## type [LexerError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L141-L145>)
 
-LexerError
+\-\-\- LexerError \-\-\-
 
 ```go
 type LexerError struct {
-    Character rune
-    Position  int
+    Character rune     // The problematic character
+    Pos       Position // Position (Line/Col) of the character
+    Message   string   // Optional: for specific messages like "unclosed comment"
 }
 ```
 
+<a name="NewLexerError"></a>
+### func [NewLexerError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L156>)
+
+```go
+func NewLexerError(char rune, pos Position) *LexerError
+```
+
+NewLexerError creates a new LexerError for an unexpected character \(Message will be empty\).
+
+<a name="NewLexerErrorf"></a>
+### func [NewLexerErrorf](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L163>)
+
+```go
+func NewLexerErrorf(pos Position, charForContext rune, format string, args ...interface{}) *LexerError
+```
+
+NewLexerErrorf creates a new LexerError with a custom message. 'charForContext' can be the opening delimiter \(e.g., '/' for unclosed comment\) or 0 if not relevant. The Message field will be populated by the formatted string.
+
 <a name="LexerError.Error"></a>
-### func \(\*LexerError\) [Error](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L158>)
+### func \(\*LexerError\) [Error](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L147>)
 
 ```go
 func (e *LexerError) Error() string
@@ -807,20 +832,39 @@ func (e *LexerError) Error() string
 
 
 <a name="ParserError"></a>
-## type [ParserError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L103-L107>)
+## type [ParserError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L96-L101>)
 
-ParserError
+\-\-\- ParserError \-\-\- Often, ParserError is very similar to SyntaxError.
 
 ```go
 type ParserError struct {
-    Token      string
-    Start      int
-    Difference int
+    Token   string   // The literal of the unexpected token
+    Start   Position // Start position of the token
+    End     Position // End position of the token
+    Message string   // Optional: More specific message about why it's an error
 }
 ```
 
+<a name="NewParserError"></a>
+### func [NewParserError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L123>)
+
+```go
+func NewParserError(tokenLiteral string, start, end Position) *ParserError
+```
+
+NewParserError creates a new ParserError for an unexpected token.
+
+<a name="NewParserErrorf"></a>
+### func [NewParserErrorf](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L132>)
+
+```go
+func NewParserErrorf(start, end Position, format string, args ...interface{}) *ParserError
+```
+
+NewParserErrorf creates a new ParserError with a custom formatted message.
+
 <a name="ParserError.Error"></a>
-### func \(\*ParserError\) [Error](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L109>)
+### func \(\*ParserError\) [Error](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L103>)
 
 ```go
 func (e *ParserError) Error() string
@@ -828,10 +872,22 @@ func (e *ParserError) Error() string
 
 
 
-<a name="RuntimeError"></a>
-## type [RuntimeError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L24-L27>)
+<a name="Position"></a>
+## type [Position](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L9-L12>)
 
-RuntimeError
+
+
+```go
+type Position struct {
+    Line int // 1-based line number
+    Col  int // 1-based column number
+}
+```
+
+<a name="RuntimeError"></a>
+## type [RuntimeError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L29-L32>)
+
+\-\-\- RuntimeError \-\-\-
 
 ```go
 type RuntimeError struct {
@@ -841,7 +897,7 @@ type RuntimeError struct {
 ```
 
 <a name="RuntimeError.Error"></a>
-### func \(\*RuntimeError\) [Error](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L29>)
+### func \(\*RuntimeError\) [Error](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L34>)
 
 ```go
 func (e *RuntimeError) Error() string
@@ -850,30 +906,40 @@ func (e *RuntimeError) Error() string
 
 
 <a name="SyntaxError"></a>
-## type [SyntaxError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L41-L46>)
+## type [SyntaxError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L42-L48>)
 
-SyntaxError
+\-\-\- SyntaxError \-\-\-
 
 ```go
 type SyntaxError struct {
-    Expected   string
-    Got        string
-    Start      int
-    Difference int
+    Expected string   // What was expected
+    Got      string   // What was actually found (e.g., token literal or type)
+    Start    Position // Start position of the problematic syntax
+    End      Position // End position of the problematic syntax
+    Message  string   // Optional additional message
 }
 ```
 
 <a name="NewSyntaxError"></a>
-### func [NewSyntaxError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L93>)
+### func [NewSyntaxError](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L76>)
 
 ```go
-func NewSyntaxError(expected, got string, start, difference int) *SyntaxError
+func NewSyntaxError(expected string, gotLiteral string, start, end Position) *SyntaxError
 ```
 
+NewSyntaxError creates a new SyntaxError. 'gotLiteral' is often the token.Literal that caused the error. 'start' and 'end' define the span of the problematic token/syntax.
 
+<a name="NewSyntaxErrorf"></a>
+### func [NewSyntaxErrorf](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L86>)
+
+```go
+func NewSyntaxErrorf(start, end Position, format string, args ...interface{}) *SyntaxError
+```
+
+NewSyntaxErrorf creates a new SyntaxError with a custom message.
 
 <a name="SyntaxError.Error"></a>
-### func \(\*SyntaxError\) [Error](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L48>)
+### func \(\*SyntaxError\) [Error](<https://github.com/dev-kas/virtlang-go/blob/master/errors/errors.go#L50>)
 
 ```go
 func (e *SyntaxError) Error() string
@@ -940,7 +1006,7 @@ import "github.com/dev-kas/virtlang-go/v2/lexer"
 - [func IsSkippable\(r rune\) bool](<#IsSkippable>)
 - [func Stringify\(t TokenType\) string](<#Stringify>)
 - [type Token](<#Token>)
-  - [func NewToken\(value string, tokenType TokenType, start, diff int\) Token](<#NewToken>)
+  - [func NewToken\(value string, tokenType TokenType, startLine, startCol, endLine, endCol int\) Token](<#NewToken>)
   - [func Tokenize\(srcCode string\) \(\[\]Token, \*errors.LexerError\)](<#Tokenize>)
 - [type TokenType](<#TokenType>)
 
@@ -969,7 +1035,7 @@ var KEYWORDS = map[string]TokenType{
 ```
 
 <a name="IsAlpha"></a>
-## func [IsAlpha](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L151>)
+## func [IsAlpha](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L155>)
 
 ```go
 func IsAlpha(r rune) bool
@@ -978,7 +1044,7 @@ func IsAlpha(r rune) bool
 
 
 <a name="IsAlphaNumeric"></a>
-## func [IsAlphaNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L159>)
+## func [IsAlphaNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L163>)
 
 ```go
 func IsAlphaNumeric(r rune) bool
@@ -987,7 +1053,7 @@ func IsAlphaNumeric(r rune) bool
 
 
 <a name="IsBinaryOperator"></a>
-## func [IsBinaryOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L172>)
+## func [IsBinaryOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L176>)
 
 ```go
 func IsBinaryOperator(r rune) bool
@@ -996,7 +1062,7 @@ func IsBinaryOperator(r rune) bool
 
 
 <a name="IsComparisonOperator"></a>
-## func [IsComparisonOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L181>)
+## func [IsComparisonOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L185>)
 
 ```go
 func IsComparisonOperator(r string) bool
@@ -1005,7 +1071,7 @@ func IsComparisonOperator(r string) bool
 
 
 <a name="IsNumeric"></a>
-## func [IsNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L155>)
+## func [IsNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L159>)
 
 ```go
 func IsNumeric(r rune) bool
@@ -1014,7 +1080,7 @@ func IsNumeric(r rune) bool
 
 
 <a name="IsSkippable"></a>
-## func [IsSkippable](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L163>)
+## func [IsSkippable](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L167>)
 
 ```go
 func IsSkippable(r rune) bool
@@ -1032,30 +1098,32 @@ func Stringify(t TokenType) string
 
 
 <a name="Token"></a>
-## type [Token](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L135-L140>)
+## type [Token](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L135-L142>)
 
 
 
 ```go
 type Token struct {
-    Type       TokenType
-    Literal    string
-    Start      int
-    Difference int
+    Type      TokenType
+    Literal   string
+    StartLine int
+    StartCol  int
+    EndLine   int
+    EndCol    int
 }
 ```
 
 <a name="NewToken"></a>
-### func [NewToken](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L142>)
+### func [NewToken](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L144>)
 
 ```go
-func NewToken(value string, tokenType TokenType, start, diff int) Token
+func NewToken(value string, tokenType TokenType, startLine, startCol, endLine, endCol int) Token
 ```
 
 
 
 <a name="Tokenize"></a>
-### func [Tokenize](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L190>)
+### func [Tokenize](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L194>)
 
 ```go
 func Tokenize(srcCode string) ([]Token, *errors.LexerError)
@@ -1093,12 +1161,12 @@ const (
     CBracket                     // ]
     Dot                          // .
     Fn                           // fn
-    ComOperator                  // < == > != <= =>
+    ComOperator                  // < == > != <= >=
     If                           // if
     Else                         // else
     String                       // '...' "..."
     WhileLoop                    // while
-    Comment                      // --<...>-- -->...
+    Comment                      // /*...*/ //...
     Try                          // try
     Catch                        // catch
     Return                       // return
