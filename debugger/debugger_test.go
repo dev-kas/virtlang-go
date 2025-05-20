@@ -140,45 +140,43 @@ func TestIsDebuggable(t *testing.T) {
 	dbg := debugger.NewDebugger(&env)
 
 	// Test debuggable node types
-	debuggableNodes := []ast.Stmt{
-		&ast.VarDeclaration{},
-		&ast.VarAssignmentExpr{},
-		&ast.IfStatement{},
-		&ast.WhileLoop{},
-		&ast.ReturnStmt{},
-		&ast.ContinueStmt{},
-		&ast.BreakStmt{},
-		&ast.TryCatchStmt{},
-		&ast.CallExpr{},
-		&ast.FnDeclaration{},
-		&ast.Class{},
-		&ast.ClassMethod{},
-		&ast.ClassProperty{},
-		&ast.Program{},
+	debuggableNodeTypes := []ast.NodeType{
+		ast.VarDeclarationNode,
+		ast.VarAssignmentExprNode,
+		ast.IfStatementNode,
+		ast.WhileLoopNode,
+		ast.ReturnStmtNode,
+		ast.ContinueStmtNode,
+		ast.BreakStmtNode,
+		ast.TryCatchStmtNode,
+		ast.CallExprNode,
+		ast.FnDeclarationNode,
+		ast.ClassNode,
+		ast.ClassMethodNode,
+		ast.ClassPropertyNode,
+		ast.ProgramNode,
 	}
 
-	for _, node := range debuggableNodes {
-		nodeType := node.GetType().String()
-		t.Run("should be debuggable: "+nodeType, func(t *testing.T) {
-			if !dbg.IsDebuggable(node) {
+	for _, nodeType := range debuggableNodeTypes {
+		t.Run("should be debuggable: "+nodeType.String(), func(t *testing.T) {
+			if !dbg.IsDebuggable(nodeType) {
 				t.Errorf("Expected node type %s to be debuggable", nodeType)
 			}
 		})
 	}
 
 	// Test non-debuggable node types (just a few examples)
-	nonDebuggableNodes := []ast.Stmt{
-		&ast.BinaryExpr{},
-		&ast.CompareExpr{},
-		&ast.Identifier{},
-		&ast.NumericLiteral{},
-		&ast.StringLiteral{},
+	nonDebuggableNodeTypes := []ast.NodeType{
+		ast.BinaryExprNode,
+		ast.CompareExprNode,
+		ast.IdentifierNode,
+		ast.NumericLiteralNode,
+		ast.StringLiteralNode,
 	}
 
-	for _, node := range nonDebuggableNodes {
-		nodeType := node.GetType().String()
-		t.Run("should not be debuggable: "+nodeType, func(t *testing.T) {
-			if dbg.IsDebuggable(node) {
+	for _, nodeType := range nonDebuggableNodeTypes {
+		t.Run("should not be debuggable: "+nodeType.String(), func(t *testing.T) {
+			if dbg.IsDebuggable(nodeType) {
 				t.Errorf("Expected node type %s to not be debuggable", nodeType)
 			}
 		})

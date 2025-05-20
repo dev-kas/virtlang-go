@@ -51,8 +51,7 @@ func (d *Debugger) ShouldStop(filename string, line int) bool {
 	return d.BreakpointManager.Has(filename, line)
 }
 
-func (d *Debugger) IsDebuggable(astNode ast.Stmt) bool {
-	nodeType := astNode.GetType()
+func (d *Debugger) IsDebuggable(nodeType ast.NodeType) bool {
 	_, isDebuggable := Debuggables[nodeType]
 	return isDebuggable
 }
