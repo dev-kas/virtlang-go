@@ -47,8 +47,8 @@ var Debuggables = map[ast.NodeType]struct{}{
 
 // Internal API
 
-func (d *Debugger) ShouldStop(line string, col int) bool {
-	return d.BreakpointManager.Has(line, col)
+func (d *Debugger) ShouldStop(filename string, line int) bool {
+	return d.BreakpointManager.Has(filename, line)
 }
 
 func (d *Debugger) IsDebuggable(astNode ast.Stmt) bool {
