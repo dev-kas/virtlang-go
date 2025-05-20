@@ -2,12 +2,13 @@ package evaluator
 
 import (
 	"github.com/dev-kas/virtlang-go/v3/ast"
+	"github.com/dev-kas/virtlang-go/v3/debugger"
 	"github.com/dev-kas/virtlang-go/v3/environment"
 	"github.com/dev-kas/virtlang-go/v3/errors"
 	"github.com/dev-kas/virtlang-go/v3/shared"
 )
 
-func evalObjectExpr(o *ast.ObjectLiteral, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
+func evalObjectExpr(o *ast.ObjectLiteral, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
 	obj := &shared.RuntimeValue{
 		Type:  shared.Object,
 		Value: map[string]*shared.RuntimeValue{},
@@ -24,7 +25,7 @@ func evalObjectExpr(o *ast.ObjectLiteral, env *environment.Environment) (*shared
 
 			runtimeVal = *val
 		} else {
-			val, err := Evaluate(property.Value, env)
+			val, err := Evaluate(property.Value, env, dbgr)
 			if err != nil {
 				return nil, err
 			}

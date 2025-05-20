@@ -4,19 +4,20 @@ import (
 	"fmt"
 
 	"github.com/dev-kas/virtlang-go/v3/ast"
+	"github.com/dev-kas/virtlang-go/v3/debugger"
 	"github.com/dev-kas/virtlang-go/v3/environment"
 	"github.com/dev-kas/virtlang-go/v3/errors"
 	"github.com/dev-kas/virtlang-go/v3/shared"
 	"github.com/dev-kas/virtlang-go/v3/values"
 )
 
-func evalComEx(expression *ast.CompareExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
-	lhs, err := Evaluate(expression.LHS, env)
+func evalComEx(expression *ast.CompareExpr, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
+	lhs, err := Evaluate(expression.LHS, env, dbgr)
 	if err != nil {
 		return nil, err
 	}
 
-	rhs, err := Evaluate(expression.RHS, env)
+	rhs, err := Evaluate(expression.RHS, env, dbgr)
 	if err != nil {
 		return nil, err
 	}

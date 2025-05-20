@@ -4,23 +4,24 @@ import (
 	"fmt"
 
 	"github.com/dev-kas/virtlang-go/v3/ast"
+	"github.com/dev-kas/virtlang-go/v3/debugger"
 	"github.com/dev-kas/virtlang-go/v3/environment"
 	"github.com/dev-kas/virtlang-go/v3/errors"
 	"github.com/dev-kas/virtlang-go/v3/shared"
 	"github.com/dev-kas/virtlang-go/v3/values"
 )
 
-func evalCallExpr(node *ast.CallExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
+func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
 	args := make([]*shared.RuntimeValue, len(node.Args))
 	for i, arg := range node.Args {
-		evaluatedArg, err := Evaluate(arg, env)
+		evaluatedArg, err := Evaluate(arg, env, dbgr)
 		if err != nil {
 			return nil, err
 		}
 		args[i] = evaluatedArg
 	}
 
-	fn, err := Evaluate(node.Callee, env)
+	fn, err := Evaluate(node.Callee, env, dbgr)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +56,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment) (*shared.Run
 		for _, stmt := range fnVal.Body {
 			var err *errors.RuntimeError
 			var res *shared.RuntimeValue
-			res, err = Evaluate(stmt, &scope)
+			res, err = Evaluate(stmt, &scope, dbgr)
 			if err != nil {
 				if err.InternalCommunicationProtocol != nil && err.InternalCommunicationProtocol.Type == errors.ICP_Return {
 					return err.InternalCommunicationProtocol.RValue, nil
@@ -94,7 +95,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment) (*shared.Run
 				}
 			} else if stmt.GetType() == ast.ClassPropertyNode {
 				property := stmt.(*ast.ClassProperty)
-				_, err := evalClassProperty(property, &classScope)
+				_, err := evalClassProperty(property, &classScope, dbgr)
 				if err != nil {
 					return nil, err
 				}
@@ -112,7 +113,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment) (*shared.Run
 		}
 
 		for _, stmt := range constructor.Body {
-			_, err := Evaluate(stmt, &constructorScope)
+			_, err := Evaluate(stmt, &constructorScope, dbgr)
 			if err != nil {
 				if err.InternalCommunicationProtocol != nil && err.InternalCommunicationProtocol.Type == errors.ICP_Return {
 					return nil, &errors.RuntimeError{

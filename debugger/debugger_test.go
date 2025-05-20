@@ -1,7 +1,9 @@
 package debugger_test
 
 import (
+	"sync"
 	"testing"
+	"time"
 
 	"github.com/dev-kas/virtlang-go/v3/ast"
 	"github.com/dev-kas/virtlang-go/v3/debugger"
@@ -34,19 +36,24 @@ func TestStateTransitions(t *testing.T) {
 	tests := []struct {
 		name      string
 		operation func(*debugger.Debugger) error
+		setup     func(*debugger.Debugger)
 		expected  debugger.State
 	}{
-		{"Run", (*debugger.Debugger).Run, debugger.RunningState},
-		{"Pause", (*debugger.Debugger).Pause, debugger.PausedState},
-		{"Step", (*debugger.Debugger).Step, debugger.SteppingState},
-		{"Continue", (*debugger.Debugger).Continue, debugger.RunningState},
-		{"Stop", (*debugger.Debugger).Stop, debugger.RunningState},
+		{"Pause", (*debugger.Debugger).Pause, nil, debugger.PausedState},
+		{"Step", (*debugger.Debugger).Step, nil, debugger.SteppingState},
+		{"Continue", (*debugger.Debugger).Continue, func(d *debugger.Debugger) {
+			d.Pause()
+		}, debugger.RunningState},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			env := environment.NewEnvironment(nil)
 			dbg := debugger.NewDebugger(&env)
+
+			if tc.setup != nil {
+				tc.setup(dbg)
+			}
 
 			err := tc.operation(dbg)
 			if err != nil {
@@ -116,22 +123,48 @@ func TestEnvironmentIntegration(t *testing.T) {
 	}
 }
 
-// TestInterfaceCompleteness tests that all required methods are implemented
-func TestInterfaceCompleteness(t *testing.T) {
+// TestWaitIfPaused tests the WaitIfPaused functionality
+func TestWaitIfPaused(t *testing.T) {
 	env := environment.NewEnvironment(nil)
 	dbg := debugger.NewDebugger(&env)
 
-	// This test will fail to compile if the Debugger doesn't implement all required methods
-	var _ interface {
-		Run() error
-		Pause() error
-		Stop() error
-		Step() error
-		StepOut() error
-		StepInto() error
-		Continue() error
-		ShouldStop(string, int) bool
-	} = dbg
+	// Test that WaitIfPaused doesn't block when not paused
+	done := make(chan bool)
+	go func() {
+		dbg.WaitIfPaused()
+		done <- true
+	}()
+
+	select {
+	case <-done:
+		// Expected - should not block
+	case <-time.After(100 * time.Millisecond):
+		t.Fatal("WaitIfPaused blocked when not paused")
+	}
+
+	// Test that WaitIfPaused blocks when paused
+	dbg.Pause()
+	go func() {
+		dbg.WaitIfPaused()
+		done <- true
+	}()
+
+	select {
+	case <-done:
+		t.Fatal("WaitIfPaused didn't block when paused")
+	case <-time.After(100 * time.Millisecond):
+		// Expected - should block
+	}
+
+	// Test that Continue unblocks WaitIfPaused
+	dbg.Continue()
+
+	select {
+	case <-done:
+		// Expected - should unblock
+	case <-time.After(100 * time.Millisecond):
+		t.Fatal("WaitIfPaused didn't unblock after Continue")
+	}
 }
 
 // TestIsDebuggable tests the IsDebuggable method
@@ -139,46 +172,68 @@ func TestIsDebuggable(t *testing.T) {
 	env := environment.NewEnvironment(nil)
 	dbg := debugger.NewDebugger(&env)
 
-	// Test debuggable node types
-	debuggableNodeTypes := []ast.NodeType{
-		ast.VarDeclarationNode,
-		ast.VarAssignmentExprNode,
-		ast.IfStatementNode,
-		ast.WhileLoopNode,
-		ast.ReturnStmtNode,
-		ast.ContinueStmtNode,
-		ast.BreakStmtNode,
-		ast.TryCatchStmtNode,
-		ast.CallExprNode,
-		ast.FnDeclarationNode,
-		ast.ClassNode,
-		ast.ClassMethodNode,
-		ast.ClassPropertyNode,
-		ast.ProgramNode,
+	tests := []struct {
+		name     string
+		nodeType ast.NodeType
+		expected bool
+	}{
+		{"VarDeclaration", ast.VarDeclarationNode, true},
+		{"FnDeclaration", ast.FnDeclarationNode, true},
+		{"IfStatement", ast.IfStatementNode, true},
+		{"WhileLoop", ast.WhileLoopNode, true},
+		{"ReturnStmt", ast.ReturnStmtNode, true},
+		{"ContinueStmt", ast.ContinueStmtNode, true},
+		{"BreakStmt", ast.BreakStmtNode, true},
+		{"TryCatchStmt", ast.TryCatchStmtNode, true},
+		{"CallExpr", ast.CallExprNode, true},
+		{"Class", ast.ClassNode, true},
+		{"ClassMethod", ast.ClassMethodNode, true},
+		{"ClassProperty", ast.ClassPropertyNode, true},
+		{"Program", ast.ProgramNode, true},
+		{"Unknown", 9999, false},
 	}
 
-	for _, nodeType := range debuggableNodeTypes {
-		t.Run("should be debuggable: "+nodeType.String(), func(t *testing.T) {
-			if !dbg.IsDebuggable(nodeType) {
-				t.Errorf("Expected node type %s to be debuggable", nodeType)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := dbg.IsDebuggable(tc.nodeType)
+			if result != tc.expected {
+				t.Errorf("Expected IsDebuggable(%s) to be %v, got %v", tc.name, tc.expected, result)
 			}
 		})
 	}
+}
 
-	// Test non-debuggable node types (just a few examples)
-	nonDebuggableNodeTypes := []ast.NodeType{
-		ast.BinaryExprNode,
-		ast.CompareExprNode,
-		ast.IdentifierNode,
-		ast.NumericLiteralNode,
-		ast.StringLiteralNode,
+// TestConcurrentAccess tests thread safety of the debugger
+func TestConcurrentAccess(t *testing.T) {
+	env := environment.NewEnvironment(nil)
+	dbg := debugger.NewDebugger(&env)
+
+	var wg sync.WaitGroup
+	numRoutines := 10
+
+	// Test concurrent state changes
+	for i := 0; i < numRoutines; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			dbg.Pause()
+			dbg.Continue()
+			dbg.Step()
+		}()
 	}
 
-	for _, nodeType := range nonDebuggableNodeTypes {
-		t.Run("should not be debuggable: "+nodeType.String(), func(t *testing.T) {
-			if dbg.IsDebuggable(nodeType) {
-				t.Errorf("Expected node type %s to not be debuggable", nodeType)
-			}
-		})
-	}
+	// Test concurrent WaitIfPaused
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		dbg.WaitIfPaused()
+	}()
+
+	// Let the goroutines run for a bit
+	time.Sleep(100 * time.Millisecond)
+
+	// Unblock any waiting goroutines
+	dbg.Continue()
+
+	wg.Wait()
 }

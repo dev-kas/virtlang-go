@@ -2,17 +2,18 @@ package evaluator
 
 import (
 	"github.com/dev-kas/virtlang-go/v3/ast"
+	"github.com/dev-kas/virtlang-go/v3/debugger"
 	"github.com/dev-kas/virtlang-go/v3/environment"
 	"github.com/dev-kas/virtlang-go/v3/errors"
 	"github.com/dev-kas/virtlang-go/v3/shared"
 	"github.com/dev-kas/virtlang-go/v3/values"
 )
 
-func evalTryCatch(node *ast.TryCatchStmt, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
+func evalTryCatch(node *ast.TryCatchStmt, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
 	scope := environment.NewEnvironment(env)
 
 	for _, stmt := range node.Try {
-		_, err := Evaluate(stmt, &scope)
+		_, err := Evaluate(stmt, &scope, dbgr)
 		if err != nil {
 			scope = environment.NewEnvironment(env)
 
@@ -20,7 +21,7 @@ func evalTryCatch(node *ast.TryCatchStmt, env *environment.Environment) (*shared
 
 			var lastResult *shared.RuntimeValue = nil
 			for _, stmt := range node.Catch {
-				res, catchErr := Evaluate(stmt, &scope)
+				res, catchErr := Evaluate(stmt, &scope, dbgr)
 				if catchErr != nil {
 					return nil, catchErr
 				}

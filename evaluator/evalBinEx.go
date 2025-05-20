@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/dev-kas/virtlang-go/v3/ast"
+	"github.com/dev-kas/virtlang-go/v3/debugger"
 	"github.com/dev-kas/virtlang-go/v3/environment"
 	"github.com/dev-kas/virtlang-go/v3/errors"
 	"github.com/dev-kas/virtlang-go/v3/shared"
@@ -32,13 +33,13 @@ func countDecimalPlaces(f float64) int {
 	return maxDecimalPlaces
 }
 
-func evalBinEx(binOp *ast.BinaryExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
-	lhs, err := Evaluate(binOp.LHS, env)
+func evalBinEx(binOp *ast.BinaryExpr, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
+	lhs, err := Evaluate(binOp.LHS, env, dbgr)
 	if err != nil {
 		return nil, err
 	}
 
-	rhs, err := Evaluate(binOp.RHS, env)
+	rhs, err := Evaluate(binOp.RHS, env, dbgr)
 	if err != nil {
 		return nil, err
 	}

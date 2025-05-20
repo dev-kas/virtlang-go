@@ -2,6 +2,7 @@ package evaluator
 
 import (
 	"github.com/dev-kas/virtlang-go/v3/ast"
+	"github.com/dev-kas/virtlang-go/v3/debugger"
 	"github.com/dev-kas/virtlang-go/v3/environment"
 	"github.com/dev-kas/virtlang-go/v3/errors"
 	"github.com/dev-kas/virtlang-go/v3/helpers"
@@ -9,8 +10,8 @@ import (
 	"github.com/dev-kas/virtlang-go/v3/values"
 )
 
-func evalIfStmt(statement *ast.IfStatement, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
-	cond, err := Evaluate(statement.Condition, env)
+func evalIfStmt(statement *ast.IfStatement, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
+	cond, err := Evaluate(statement.Condition, env, dbgr)
 	if err != nil {
 		return nil, err
 	}
@@ -18,7 +19,7 @@ func evalIfStmt(statement *ast.IfStatement, env *environment.Environment) (*shar
 	// Main `if` branch
 	if helpers.IsTruthy(cond) {
 		for _, stmt := range statement.Body {
-			if _, err := Evaluate(stmt, env); err != nil {
+			if _, err := Evaluate(stmt, env, dbgr); err != nil {
 				return nil, err
 			}
 		}
@@ -33,12 +34,12 @@ func evalIfStmt(statement *ast.IfStatement, env *environment.Environment) (*shar
 		// elements in array, but just one array that's deeply nested
 		// and i thought it;s already a good option,
 		// so we just evaluate the first element
-		return evalIfStmt(statement.ElseIf[0], env)
+		return evalIfStmt(statement.ElseIf[0], env, dbgr)
 	}
 
 	// Else branch
 	for _, stmt := range statement.Else {
-		if _, err := Evaluate(stmt, env); err != nil {
+		if _, err := Evaluate(stmt, env, dbgr); err != nil {
 			return nil, err
 		}
 	}

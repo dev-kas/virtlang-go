@@ -4,17 +4,18 @@ import (
 	"fmt"
 
 	"github.com/dev-kas/virtlang-go/v3/ast"
+	"github.com/dev-kas/virtlang-go/v3/debugger"
 	"github.com/dev-kas/virtlang-go/v3/environment"
 	"github.com/dev-kas/virtlang-go/v3/errors"
 	"github.com/dev-kas/virtlang-go/v3/shared"
 	"github.com/dev-kas/virtlang-go/v3/values"
 )
 
-func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
+func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
 	if node.Assignee.GetType() == ast.IdentifierNode {
 		varname := node.Assignee.(*ast.Identifier).Symbol
 
-		value, err := Evaluate(node.Value, env)
+		value, err := Evaluate(node.Value, env, dbgr)
 		if err != nil {
 			return nil, err
 		}
@@ -22,7 +23,7 @@ func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment
 		return env.AssignVar(varname, *value)
 	} else if node.Assignee.GetType() == ast.MemberExprNode {
 		memberExpr := node.Assignee.(*ast.MemberExpr)
-		obj, err := Evaluate(memberExpr.Object, env)
+		obj, err := Evaluate(memberExpr.Object, env, dbgr)
 		if err != nil {
 			return nil, err
 		}
@@ -34,7 +35,7 @@ func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment
 		}
 
 		if obj.Type == shared.Array {
-			indexVal, err := Evaluate(memberExpr.Value, env)
+			indexVal, err := Evaluate(memberExpr.Value, env, dbgr)
 			if err != nil {
 				return nil, err
 			}
@@ -65,7 +66,7 @@ func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment
 				obj.Value = array
 			}
 
-			value, err := Evaluate(node.Value, env)
+			value, err := Evaluate(node.Value, env, dbgr)
 			if err != nil {
 				return nil, err
 			}
@@ -84,7 +85,7 @@ func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment
 
 		var prop *shared.RuntimeValue
 		if memberExpr.Computed {
-			val, err := Evaluate(memberExpr.Value, env)
+			val, err := Evaluate(memberExpr.Value, env, dbgr)
 			if err != nil {
 				return nil, err
 			}
@@ -112,7 +113,7 @@ func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment
 			key = prop.Value.(string)
 		}
 
-		value, err := Evaluate(node.Value, env)
+		value, err := Evaluate(node.Value, env, dbgr)
 		if err != nil {
 			return nil, err
 		}

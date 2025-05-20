@@ -4,14 +4,15 @@ import (
 	"fmt"
 
 	"github.com/dev-kas/virtlang-go/v3/ast"
+	"github.com/dev-kas/virtlang-go/v3/debugger"
 	"github.com/dev-kas/virtlang-go/v3/environment"
 	"github.com/dev-kas/virtlang-go/v3/errors"
 	"github.com/dev-kas/virtlang-go/v3/shared"
 	"github.com/dev-kas/virtlang-go/v3/values"
 )
 
-func evalMemberExpr(node *ast.MemberExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
-	obj, err := Evaluate(node.Object, env)
+func evalMemberExpr(node *ast.MemberExpr, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
+	obj, err := Evaluate(node.Object, env, dbgr)
 	if err != nil {
 		return nil, err
 	}
@@ -23,18 +24,18 @@ func evalMemberExpr(node *ast.MemberExpr, env *environment.Environment) (*shared
 	}
 
 	if obj.Type == shared.Object {
-		return evalMemberExpr_object(node, env, obj)
+		return evalMemberExpr_object(node, env, obj, dbgr)
 	} else if obj.Type == shared.Array {
-		return evalMemberExpr_array(node, env)
+		return evalMemberExpr_array(node, env, dbgr)
 	} else {
-		return evalMemberExpr_class(node, env)
+		return evalMemberExpr_class(node, env, dbgr)
 	}
 }
 
-func evalMemberExpr_object(node *ast.MemberExpr, env *environment.Environment, obj *shared.RuntimeValue) (*shared.RuntimeValue, *errors.RuntimeError) {
+func evalMemberExpr_object(node *ast.MemberExpr, env *environment.Environment, obj *shared.RuntimeValue, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
 	var prop *shared.RuntimeValue
 	if node.Computed {
-		val, err := Evaluate(node.Value, env)
+		val, err := Evaluate(node.Value, env, dbgr)
 		if err != nil {
 			return nil, err
 		}
@@ -75,14 +76,14 @@ func evalMemberExpr_object(node *ast.MemberExpr, env *environment.Environment, o
 	return obj.Value.(map[string]*shared.RuntimeValue)[key], nil
 }
 
-func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
+func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
 	if !node.Computed {
 		return nil, &errors.RuntimeError{
 			Message: fmt.Sprintf("Cannot access property of array by non-number (attempting to access properties by %v).", node.Value.GetType()),
 		}
 	}
 
-	val, err := Evaluate(node.Value, env)
+	val, err := Evaluate(node.Value, env, dbgr)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +97,7 @@ func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment) (*
 
 	var updatedArr *shared.RuntimeValue
 
-	updatedArr, err = Evaluate(node.Object, env)
+	updatedArr, err = Evaluate(node.Object, env, dbgr)
 	if err != nil {
 		return nil, err
 	}
@@ -116,8 +117,8 @@ func evalMemberExpr_array(node *ast.MemberExpr, env *environment.Environment) (*
 	return result, nil
 }
 
-func evalMemberExpr_class(node *ast.MemberExpr, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
-	obj, err := Evaluate(node.Object, env)
+func evalMemberExpr_class(node *ast.MemberExpr, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
+	obj, err := Evaluate(node.Object, env, dbgr)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +133,7 @@ func evalMemberExpr_class(node *ast.MemberExpr, env *environment.Environment) (*
 	var key string
 
 	if node.Computed {
-		val, err := Evaluate(node.Value, env)
+		val, err := Evaluate(node.Value, env, dbgr)
 		if err != nil {
 			return nil, err
 		}
