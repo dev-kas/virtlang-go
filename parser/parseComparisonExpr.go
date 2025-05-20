@@ -31,10 +31,10 @@ func (p *Parser) parseComparisonExpr() (ast.Expr, *errors.SyntaxError) {
 			operator = ast.GreaterThanEqual
 		default:
 			return nil, &errors.SyntaxError{
-				Expected:   "<, ==, >, !=, <=, >=",
-				Got:        operatorToken,
-				Start:      p.at().Start,
-				Difference: p.at().Difference,
+				Expected: "<, ==, >, !=, <=, >=",
+				Got:      operatorToken,
+				Start:    errors.Position{Line: p.at().StartLine, Col: p.at().StartCol},
+				End:      errors.Position{Line: p.at().EndLine, Col: p.at().EndCol},
 			}
 		}
 

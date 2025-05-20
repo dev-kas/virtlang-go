@@ -23,10 +23,10 @@ func (p *Parser) parseMultiplicativeExpr() (ast.Expr, *errors.SyntaxError) {
 			operator = ast.Modulo
 		default:
 			return nil, &errors.SyntaxError{
-				Expected:   "+, -",
-				Got:        operatorLiteral,
-				Start:      p.at().Start,
-				Difference: p.at().Difference,
+				Expected: "+, -",
+				Got:      operatorLiteral,
+				Start:    errors.Position{Line: p.at().StartLine, Col: p.at().StartCol},
+				End:      errors.Position{Line: p.at().EndLine, Col: p.at().EndCol},
 			}
 		}
 

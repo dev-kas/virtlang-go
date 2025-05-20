@@ -9,10 +9,10 @@ func (p *Parser) expect(type_ lexer.TokenType) (*lexer.Token, *errors.SyntaxErro
 	prev := p.advance()
 	if prev == nil || prev.Type != type_ {
 		return nil, &errors.SyntaxError{
-			Expected:   lexer.Stringify(type_),
-			Got:        lexer.Stringify(prev.Type),
-			Start:      prev.Start,
-			Difference: prev.Difference,
+			Expected: lexer.Stringify(type_),
+			Got:      lexer.Stringify(prev.Type),
+			Start:    errors.Position{Line: prev.StartLine, Col: prev.StartCol},
+			End:      errors.Position{Line: prev.EndLine, Col: prev.EndCol},
 		}
 	}
 

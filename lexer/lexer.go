@@ -27,12 +27,12 @@ const (
 	CBracket                     // ]
 	Dot                          // .
 	Fn                           // fn
-	ComOperator                  // < == > != <= =>
+	ComOperator                  // < == > != <= >=
 	If                           // if
 	Else                         // else
 	String                       // '...' "..."
 	WhileLoop                    // while
-	Comment                      // --<...>-- -->...
+	Comment                      // /*...*/ //...
 	Try                          // try
 	Catch                        // catch
 	Return                       // return
@@ -133,18 +133,22 @@ var KEYWORDS = map[string]TokenType{
 }
 
 type Token struct {
-	Type       TokenType
-	Literal    string
-	Start      int
-	Difference int
+	Type      TokenType
+	Literal   string
+	StartLine int
+	StartCol  int
+	EndLine   int
+	EndCol    int
 }
 
-func NewToken(value string, tokenType TokenType, start, diff int) Token {
+func NewToken(value string, tokenType TokenType, startLine, startCol, endLine, endCol int) Token {
 	return Token{
-		Type:       tokenType,
-		Literal:    value,
-		Start:      start,
-		Difference: diff,
+		Type:      tokenType,
+		Literal:   value,
+		StartLine: startLine,
+		StartCol:  startCol,
+		EndLine:   endLine,
+		EndCol:    endCol,
 	}
 }
 
@@ -189,215 +193,300 @@ func IsComparisonOperator(r string) bool {
 
 func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 	var tokens []Token
-	src := strings.Split(srcCode, "")
-	srcLen := len(src)
+	runes := []rune(srcCode) // Process source as a slice of runes
+	srcLen := len(runes)
 
-	position := 0
+	position := 0      // Current index in `runes`
+	currentLine := 1   // 1-based line number
+	currentColumn := 1 // 1-based column number
+
+	// Use rune as key for single character tokens
+	singleCharTokenMap := map[rune]TokenType{
+		'(': OParen,
+		')': CParen,
+		'{': OBrace,
+		'}': CBrace,
+		'[': OBracket,
+		']': CBracket,
+		';': SemiColon,
+		':': Colon,
+		',': Comma,
+	}
 
 	for position < srcLen {
-		start := position
-		char := src[position]
-		currentCharRune := rune(char[0])
+		tokStartLine := currentLine
+		tokStartCol := currentColumn
 
+		currentCharRune := runes[position] // Get the current rune
+
+		// --- 1. Skippable characters ---
 		if IsSkippable(currentCharRune) {
-			position++
-			continue
-		}
+			position++ // Consume the skippable rune
 
-		tokenLen := 1
-		nextToken := Token{}
-		createToken := true
-
-		switch char {
-		case "(":
-			nextToken = NewToken(char, OParen, start+1, tokenLen)
-		case ")":
-			nextToken = NewToken(char, CParen, start+1, tokenLen)
-		case "{":
-			nextToken = NewToken(char, OBrace, start+1, tokenLen)
-		case "}":
-			nextToken = NewToken(char, CBrace, start+1, tokenLen)
-		case "[":
-			nextToken = NewToken(char, OBracket, start+1, tokenLen)
-		case "]":
-			nextToken = NewToken(char, CBracket, start+1, tokenLen)
-		case ";":
-			nextToken = NewToken(char, SemiColon, start+1, tokenLen)
-		case ":":
-			nextToken = NewToken(char, Colon, start+1, tokenLen)
-		case ",":
-			nextToken = NewToken(char, Comma, start+1, tokenLen)
-
-		default:
-			createToken = false
-		}
-
-		if createToken {
-			tokens = append(tokens, nextToken)
-			position += tokenLen
-			continue
-		}
-
-		if char == "/" && position+1 < srcLen {
-			nextChar := src[position+1]
-			if nextChar == "/" {
-				position += 2
-				for position < srcLen && src[position] != "\n" && src[position] != "\r" {
-					position++
+			if currentCharRune == '\n' {
+				currentLine++
+				currentColumn = 1
+			} else if currentCharRune == '\r' {
+				currentLine++
+				currentColumn = 1
+				// Handle \r\n sequence
+				if position < srcLen && runes[position] == '\n' {
+					position++ // Consume \n as part of the same line break
 				}
-				continue
-			} else if nextChar == "*" {
-				position += 2
-				foundEnd := false
-				for position+1 < srcLen {
-					if src[position] == "*" && src[position+1] == "/" {
-						foundEnd = true
-						position += 2
-						break
-					}
-					position++
-				}
-				if !foundEnd {
-					return nil, &errors.LexerError{Character: ' ', Position: start + 1}
-				}
-				continue
+			} else { // space or tab
+				currentColumn++
 			}
-		}
-
-		if IsBinaryOperator(currentCharRune) {
-			tokens = append(tokens, NewToken(char, BinOperator, start+1, 1))
-			position++
 			continue
 		}
 
-		if strings.ContainsRune("=<>!", currentCharRune) {
+		// --- 2. Single-character punctuation ---
+		if tokenType, ok := singleCharTokenMap[currentCharRune]; ok {
+			position++      // Consume the rune
+			currentColumn++ // These characters don't cause line breaks
+			tokens = append(tokens, NewToken(string(currentCharRune), tokenType, tokStartLine, tokStartCol, currentLine, currentColumn))
+			continue
+		}
+
+		// --- 3. Comments (// and /* */) ---
+		if currentCharRune == '/' {
 			if position+1 < srcLen {
-				twoCharOp := char + src[position+1]
-				if IsComparisonOperator(twoCharOp) {
-					tokens = append(tokens, NewToken(twoCharOp, ComOperator, start+1, 2))
-					position += 2
+				nextRune := runes[position+1]
+				if nextRune == '/' { // Single-line comment: //
+					position += 2 // Consume "//"
+					currentColumn += 2
+
+					for position < srcLen {
+						consumedCommentRune := runes[position]
+						position++ // Consume character in comment body
+
+						if consumedCommentRune == '\n' {
+							currentLine++
+							currentColumn = 1
+							break
+						} else if consumedCommentRune == '\r' {
+							currentLine++
+							currentColumn = 1
+							if position < srcLen && runes[position] == '\n' { // Check for \r\n
+								position++
+							}
+							break
+						} else {
+							currentColumn++
+						}
+					}
+					continue
+				} else if nextRune == '*' { // Multi-line comment: /* ... */
+					position += 2 // Consume "/*"
+					currentColumn += 2
+					unclosedCommentErrorPos := errors.Position{Line: tokStartLine, Col: tokStartCol}
+					foundEnd := false
+					for position+1 < srcLen { // Need at least two runes for "*/"
+						char1Rune := runes[position]
+
+						position++ // Consume current rune in comment body
+						if char1Rune == '\n' {
+							currentLine++
+							currentColumn = 1
+						} else if char1Rune == '\r' {
+							currentLine++
+							currentColumn = 1
+							if position < srcLen && runes[position] == '\n' { // Check for \r\n
+								position++
+							}
+						} else {
+							currentColumn++
+						}
+
+						if char1Rune == '*' && runes[position] == '/' {
+							foundEnd = true
+							position++ // Consume "/"
+							currentColumn++
+							break
+						}
+					}
+					if !foundEnd {
+						return nil, &errors.LexerError{
+							Character: '/',
+							Pos:       unclosedCommentErrorPos,
+						}
+					}
 					continue
 				}
 			}
-			if IsComparisonOperator(char) {
-				tokens = append(tokens, NewToken(char, ComOperator, start+1, 1))
+		}
+
+		// --- 4. Binary Operators (standalone +, -, *, /, %) ---
+		if IsBinaryOperator(currentCharRune) {
+			position++
+			currentColumn++
+			tokens = append(tokens, NewToken(string(currentCharRune), BinOperator, tokStartLine, tokStartCol, currentLine, currentColumn))
+			continue
+		}
+
+		// --- 5. Comparison and Equals Operators (=, ==, >, <, !=, <=, >=) ---
+		if strings.ContainsRune("=<>!", currentCharRune) {
+			firstOpCharStr := string(currentCharRune)
+
+			if position+1 < srcLen {
+				secondOpRune := runes[position+1]
+				twoCharOp := firstOpCharStr + string(secondOpRune)
+				if IsComparisonOperator(twoCharOp) {
+					position += 2
+					currentColumn += 2
+					tokens = append(tokens, NewToken(twoCharOp, ComOperator, tokStartLine, tokStartCol, currentLine, currentColumn))
+					continue
+				}
+			}
+
+			if IsComparisonOperator(firstOpCharStr) { // <, >
 				position++
+				currentColumn++
+				tokens = append(tokens, NewToken(firstOpCharStr, ComOperator, tokStartLine, tokStartCol, currentLine, currentColumn))
 				continue
-			} else if char == "=" {
-				tokens = append(tokens, NewToken(char, Equals, start+1, 1))
+			} else if firstOpCharStr == "=" { // =
 				position++
+				currentColumn++
+				tokens = append(tokens, NewToken(firstOpCharStr, Equals, tokStartLine, tokStartCol, currentLine, currentColumn))
 				continue
 			}
 		}
 
+		// --- 6. String Literals ('...' or "...") ---
 		if currentCharRune == '\'' || currentCharRune == '"' {
-			quote := currentCharRune
-			position++
-			strContent := ""
-			stringStart := start + 1
+			quoteRune := currentCharRune
+			openingQuoteStr := string(currentCharRune)
+
+			position++      // Consume opening quote from runes
+			currentColumn++ // Opening quote advances column
+
+			unclosedStringErrorPos := errors.Position{Line: tokStartLine, Col: tokStartCol}
+			var strContentBuilder strings.Builder // Builds the content BETWEEN quotes
 			foundEndQuote := false
+
 			for position < srcLen {
-				if rune(src[position][0]) == quote {
+				loopRune := runes[position] // Current rune from source
+
+				if loopRune == quoteRune {
+					position++      // Consume the closing quote from runes
+					currentColumn++ // The closing quote itself advances column
 					foundEndQuote = true
 					break
 				}
-				// TODO: Handle escape sequences
-				strContent += src[position]
-				position++
+
+				strContentBuilder.WriteRune(loopRune) // Add the current rune to our string's content
+				position++                            // Consume the rune from source
+
+				if loopRune == '\n' { // LF
+					currentLine++
+					currentColumn = 1
+				} else if loopRune == '\r' { // CR
+					currentLine++
+					currentColumn = 1
+					if position < srcLen && runes[position] == '\n' { // Check for CRLF
+						strContentBuilder.WriteRune(runes[position]) // Add LF part of CRLF
+						position++                                   // Consume the LF from runes
+					}
+				} else { // Regular character
+					currentColumn++
+				}
 			}
 
 			if foundEndQuote {
-				position++
-				fullLiteral := string(quote) + strContent + string(quote)
-				tokens = append(tokens, NewToken(fullLiteral, String, stringStart, position-start))
+				fullLiteral := openingQuoteStr + strContentBuilder.String() + string(quoteRune)
+				tokens = append(tokens, NewToken(fullLiteral, String, tokStartLine, tokStartCol, currentLine, currentColumn))
 			} else {
-				return nil, &errors.LexerError{Character: quote, Position: stringStart}
+				return nil, &errors.LexerError{
+					Character: quoteRune,
+					Pos:       unclosedStringErrorPos,
+				}
 			}
 			continue
 		}
 
+		// --- 7. Numbers (integers, floats, including dot-prefixed like .5) ---
 		if currentCharRune == '.' {
-			if position+1 < srcLen && IsNumeric(rune(src[position+1][0])) {
-				numStr := "."
-				position++
-				numStartPos := start
-				for position < srcLen && IsNumeric(rune(src[position][0])) {
-					numStr += src[position]
-					position++
-				}
-				tokens = append(tokens, NewToken(numStr, Number, numStartPos+1, position-numStartPos))
-			} else {
+			if position+1 < srcLen && IsNumeric(runes[position+1]) { // Number like .5
+				numStartIndex := position
+				position++ // Consume '.'
+				currentColumn++
 
-				tokens = append(tokens, NewToken(char, Dot, start+1, 1))
+				for position < srcLen && IsNumeric(runes[position]) {
+					position++
+					currentColumn++
+				}
+				literal := string(runes[numStartIndex:position])
+				tokens = append(tokens, NewToken(literal, Number, tokStartLine, tokStartCol, currentLine, currentColumn))
+				continue
+			} else { // Just a Dot token
 				position++
+				currentColumn++
+				tokens = append(tokens, NewToken(".", Dot, tokStartLine, tokStartCol, currentLine, currentColumn))
+				continue
 			}
-			continue
 		}
 
 		if IsNumeric(currentCharRune) {
-			numStart := start
-			numStr := ""
+			numStartIndex := position
 			hasDecimal := false
 			for position < srcLen {
-				loopChar := src[position]
-				loopRune := rune(loopChar[0])
+				loopRune := runes[position]
 
 				if IsNumeric(loopRune) {
-					numStr += loopChar
 					position++
-				} else if loopChar == "." {
+					currentColumn++
+				} else if loopRune == '.' {
 					if hasDecimal {
 						return nil, &errors.LexerError{
 							Character: '.',
-							Position:  position + 1,
+							Pos:       errors.Position{Line: currentLine, Col: currentColumn},
 						}
 					}
-					if position+1 < srcLen && IsNumeric(rune(src[position+1][0])) {
-						numStr += loopChar
+					if position+1 < srcLen && IsNumeric(runes[position+1]) {
 						hasDecimal = true
-						position++
-					} else {
+						position++ // Consume '.'
+						currentColumn++
+					} else { // Number ends before '.', e.g., "123."
 						break
 					}
-				} else {
+				} else { // Not a digit or a valid part of a number
 					break
 				}
 			}
-			tokens = append(tokens, NewToken(numStr, Number, numStart+1, position-numStart))
+			literal := string(runes[numStartIndex:position])
+			tokens = append(tokens, NewToken(literal, Number, tokStartLine, tokStartCol, currentLine, currentColumn))
 			continue
 		}
 
+		// --- 8. Identifiers and Keywords ---
 		if IsAlpha(currentCharRune) || currentCharRune == '_' || currentCharRune == '$' {
-			identStart := start
-			identStr := ""
+			identStartIndex := position
 
 			for position < srcLen {
-				loopChar := src[position]
-				loopRune := rune(loopChar[0])
+				loopRune := runes[position]
 				if IsAlphaNumeric(loopRune) || loopRune == '_' || loopRune == '$' {
-					identStr += loopChar
 					position++
+					currentColumn++
 				} else {
-					break
+					break // End of identifier/keyword
 				}
 			}
-
-			if tokenType, isKeyword := KEYWORDS[identStr]; isKeyword {
-				tokens = append(tokens, NewToken(identStr, tokenType, identStart+1, position-identStart))
-			} else {
-				tokens = append(tokens, NewToken(identStr, Identifier, identStart+1, position-identStart))
+			literal := string(runes[identStartIndex:position])
+			tokenType, isKeyword := KEYWORDS[literal]
+			if !isKeyword {
+				tokenType = Identifier
 			}
+			tokens = append(tokens, NewToken(literal, tokenType, tokStartLine, tokStartCol, currentLine, currentColumn))
 			continue
 		}
 
+		// --- 9. Unrecognized Character ---
 		return nil, &errors.LexerError{
 			Character: currentCharRune,
-			Position:  start + 1,
+			Pos:       errors.Position{Line: tokStartLine, Col: tokStartCol},
 		}
+	} // End of main for loop
 
-	}
-
-	tokens = append(tokens, NewToken("<EOF>", EOF, position+1, 0))
-
+	// --- EOF Token ---
+	tokens = append(tokens, NewToken("<EOF>", EOF, currentLine, currentColumn, currentLine, currentColumn))
 	return tokens, nil
 }

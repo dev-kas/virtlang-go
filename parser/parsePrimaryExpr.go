@@ -23,10 +23,10 @@ func (p *Parser) parsePrimaryExpr() (ast.Expr, *errors.SyntaxError) {
 		parsedValue, err := strconv.ParseFloat(value.(string), 64)
 		if err != nil {
 			return nil, &errors.SyntaxError{
-				Expected:   "Number",
-				Got:        value.(string),
-				Start:      p.at().Start,
-				Difference: p.at().Difference,
+				Expected: "Number",
+				Got:      value.(string),
+				Start:    errors.Position{Line: p.at().StartLine, Col: p.at().StartCol},
+				End:      errors.Position{Line: p.at().EndLine, Col: p.at().EndCol},
 			}
 		}
 		return &ast.NumericLiteral{
@@ -84,10 +84,10 @@ func (p *Parser) parsePrimaryExpr() (ast.Expr, *errors.SyntaxError) {
 
 	default:
 		return nil, &errors.SyntaxError{
-			Expected:   "Primary Expression",
-			Got:        lexer.Stringify(tk),
-			Start:      p.at().Start,
-			Difference: p.at().Difference,
+			Expected: "Primary Expression",
+			Got:      lexer.Stringify(tk),
+			Start:    errors.Position{Line: p.at().StartLine, Col: p.at().StartCol},
+			End:      errors.Position{Line: p.at().EndLine, Col: p.at().EndCol},
 		}
 	}
 }

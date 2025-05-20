@@ -35,10 +35,10 @@ func (p *Parser) parseClassStmt() (ast.Stmt, *errors.SyntaxError) {
 		for _, arg := range args {
 			if arg.GetType() != ast.IdentifierNode {
 				return nil, &errors.SyntaxError{
-					Expected:   "Identifier",
-					Got:        arg.GetType().String(),
-					Start:      p.at().Start,
-					Difference: p.at().Difference,
+					Expected: "Identifier",
+					Got:      arg.GetType().String(),
+					Start:    errors.Position{Line: p.at().StartLine, Col: p.at().StartCol},
+					End:      errors.Position{Line: p.at().EndLine, Col: p.at().EndCol},
 				}
 			}
 			params = append(params, arg.(*ast.Identifier).Symbol)

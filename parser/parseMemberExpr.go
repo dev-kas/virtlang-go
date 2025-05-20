@@ -26,10 +26,10 @@ func (p *Parser) parseMemberExpr() (ast.Expr, *errors.SyntaxError) {
 
 			if property.GetType() != ast.IdentifierNode {
 				return nil, &errors.SyntaxError{
-					Expected:   "Identifier",
-					Got:        property.GetType().String(),
-					Start:      p.at().Start,
-					Difference: p.at().Difference,
+					Expected: "Identifier",
+					Got:      property.GetType().String(),
+					Start:    errors.Position{Line: p.at().StartLine, Col: p.at().StartCol},
+					End:      errors.Position{Line: p.at().EndLine, Col: p.at().EndCol},
 				}
 			}
 		} else {

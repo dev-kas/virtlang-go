@@ -6,7 +6,12 @@ import (
 	"github.com/dev-kas/virtlang-go/v2/shared"
 )
 
-// InternalCommunicationProtocol
+type Position struct {
+	Line int // 1-based line number
+	Col  int // 1-based column number
+}
+
+// --- InternalCommunicationProtocol ---
 type InternalCommunicationProtocolTypes int
 
 const (
@@ -20,7 +25,7 @@ type InternalCommunicationProtocol struct {
 	RValue *shared.RuntimeValue
 }
 
-// RuntimeError
+// --- RuntimeError ---
 type RuntimeError struct {
 	Message                       string
 	InternalCommunicationProtocol *InternalCommunicationProtocol
@@ -28,138 +33,137 @@ type RuntimeError struct {
 
 func (e *RuntimeError) Error() string {
 	if e.Message == "" {
-		e.Message = "Unspecified error"
+		e.Message = "Unspecified error" // Or perhaps "Unknown runtime error"
 	}
-
-	return fmt.Sprintf(
-		"Runtime Error: %s",
-		e.Message,
-	)
+	return fmt.Sprintf("Runtime Error: %s", e.Message)
 }
 
-// SyntaxError
+// --- SyntaxError ---
 type SyntaxError struct {
-	Expected   string
-	Got        string
-	Start      int
-	Difference int
+	Expected string   // What was expected
+	Got      string   // What was actually found (e.g., token literal or type)
+	Start    Position // Start position of the problematic syntax
+	End      Position // End position of the problematic syntax
+	Message  string   // Optional additional message
 }
 
 func (e *SyntaxError) Error() string {
-	errFormatStart := "Syntax Error: Expected %s got %s"
-	errFormatEnd := "from position %d to position %d"
-
-	mode := 0
-
-	if e.Expected == "" || e.Got == "" {
-		errFormatStart = "Syntax Error: Unspecified error"
-		mode++
+	var positionStr string
+	// Check if it's a point error or a very short range on the same line
+	if e.Start.Line == e.End.Line && e.End.Col <= e.Start.Col+1 { // e.g. single char/token, or empty range
+		positionStr = fmt.Sprintf("at L%dC%d", e.Start.Line, e.Start.Col)
+	} else {
+		positionStr = fmt.Sprintf("from L%dC%d to L%dC%d", e.Start.Line, e.Start.Col, e.End.Line, e.End.Col)
 	}
 
-	if e.Difference <= 1 {
-		errFormatEnd = "at position %d"
-		mode += 2
+	baseMsg := "Syntax Error"
+	if e.Message != "" {
+		baseMsg = fmt.Sprintf("%s: %s", baseMsg, e.Message)
 	}
 
-	if mode == 0 { // Syntax Error: Expected %s got %s from position %d to position %d"
-		return fmt.Sprintf(
-			errFormatStart+" "+errFormatEnd,
-			e.Expected,
-			e.Got,
-			e.Start,
-			e.Difference+e.Start,
-		)
-	} else if mode == 1 { // Syntax Error: Unspecified error from position %d to position %d
-		return fmt.Sprintf(
-			errFormatStart+" "+errFormatEnd,
-			e.Start,
-			e.Difference+e.Start,
-		)
-	} else if mode == 2 { // Syntax Error: Expected %s got %s at position %d
-		return fmt.Sprintf(
-			errFormatStart+" "+errFormatEnd,
-			e.Expected,
-			e.Got,
-			e.Start,
-		)
-	} else { // Syntax Error: Unspecified error at position %d
-		return fmt.Sprintf(
-			errFormatStart+" "+errFormatEnd,
-			e.Start,
-		)
+	if e.Expected != "" && e.Got != "" {
+		return fmt.Sprintf("%s: Expected %s, got '%s' %s", baseMsg, e.Expected, e.Got, positionStr)
+	} else if e.Got != "" { // Only 'Got' is specified
+		return fmt.Sprintf("%s: Unexpected '%s' %s", baseMsg, e.Got, positionStr)
+	} else { // Neither Expected nor Got, or only Expected (less common for "got")
+		return fmt.Sprintf("%s %s", baseMsg, positionStr)
 	}
 }
 
-func NewSyntaxError(expected, got string, start, difference int) *SyntaxError {
+// NewSyntaxError creates a new SyntaxError.
+// 'gotLiteral' is often the token.Literal that caused the error.
+// 'start' and 'end' define the span of the problematic token/syntax.
+func NewSyntaxError(expected string, gotLiteral string, start, end Position) *SyntaxError {
 	return &SyntaxError{
-		Expected:   expected,
-		Got:        got,
-		Start:      start,
-		Difference: difference,
+		Expected: expected,
+		Got:      gotLiteral,
+		Start:    start,
+		End:      end,
 	}
 }
 
-// ParserError
+// NewSyntaxErrorf creates a new SyntaxError with a custom message.
+func NewSyntaxErrorf(start, end Position, format string, args ...interface{}) *SyntaxError {
+	return &SyntaxError{
+		Start:   start,
+		End:     end,
+		Message: fmt.Sprintf(format, args...),
+	}
+}
+
+// --- ParserError ---
+// Often, ParserError is very similar to SyntaxError.
 type ParserError struct {
-	Token      string
-	Start      int
-	Difference int
+	Token   string   // The literal of the unexpected token
+	Start   Position // Start position of the token
+	End     Position // End position of the token
+	Message string   // Optional: More specific message about why it's an error
 }
 
 func (e *ParserError) Error() string {
-	errFormatStart := "Parser Error: Unexpected token %s"
-	errFormatEnd := "from position %d to position %d"
-
-	mode := 0
-
-	if e.Token == "" {
-		errFormatStart = "Parser Error: Unspecified error"
-		mode++
+	var positionStr string
+	if e.Start.Line == e.End.Line && e.End.Col <= e.Start.Col+1 {
+		positionStr = fmt.Sprintf("at L%dC%d", e.Start.Line, e.Start.Col)
+	} else {
+		positionStr = fmt.Sprintf("from L%dC%d to L%dC%d", e.Start.Line, e.Start.Col, e.End.Line, e.End.Col)
 	}
 
-	if e.Difference <= 1 {
-		errFormatEnd = "at position %d"
-		mode += 2
+	baseMsg := "Parser Error"
+	if e.Message != "" {
+		baseMsg = fmt.Sprintf("%s: %s", baseMsg, e.Message)
 	}
 
-	if mode == 0 { // Parser Error: Unexpected token %s from position %d to position %d
-		return fmt.Sprintf(
-			errFormatStart+" "+errFormatEnd,
-			e.Token,
-			e.Start,
-			e.Difference+e.Start,
-		)
-	} else if mode == 1 { // Parser Error: Unspecified error from position %d to position %d
-		return fmt.Sprintf(
-			errFormatStart+" "+errFormatEnd,
-			e.Start,
-			e.Difference+e.Start,
-		)
-	} else if mode == 2 { // Parser Error: Unexpected token %s at position %d
-		return fmt.Sprintf(
-			errFormatStart+" "+errFormatEnd,
-			e.Token,
-			e.Start,
-		)
-	} else { // Parser Error: Unspecified error at position %d
-		return fmt.Sprintf(
-			errFormatStart+" "+errFormatEnd,
-			e.Start,
-		)
+	if e.Token != "" {
+		return fmt.Sprintf("%s: Unexpected token '%s' %s", baseMsg, e.Token, positionStr)
+	}
+	return fmt.Sprintf("%s %s", baseMsg, positionStr)
+}
+
+// NewParserError creates a new ParserError for an unexpected token.
+func NewParserError(tokenLiteral string, start, end Position) *ParserError {
+	return &ParserError{
+		Token: tokenLiteral,
+		Start: start,
+		End:   end,
 	}
 }
 
-// LexerError
+// NewParserErrorf creates a new ParserError with a custom formatted message.
+func NewParserErrorf(start, end Position, format string, args ...interface{}) *ParserError {
+	return &ParserError{
+		Start:   start,
+		End:     end,
+		Message: fmt.Sprintf(format, args...),
+	}
+}
+
+// --- LexerError ---
 type LexerError struct {
-	Character rune
-	Position  int
+	Character rune     // The problematic character
+	Pos       Position // Position (Line/Col) of the character
+	Message   string   // Optional: for specific messages like "unclosed comment"
 }
 
 func (e *LexerError) Error() string {
-	return fmt.Sprintf(
-		"Lexer Error: Unexpected character '%c' (0x%02x) at position %d",
-		e.Character,
-		e.Character,
-		e.Position,
-	)
+	if e.Message != "" {
+		return fmt.Sprintf("Lexer Error: %s at L%dC%d", e.Message, e.Pos.Line, e.Pos.Col)
+	}
+
+	return fmt.Sprintf("Lexer Error: Unexpected character '%c' at L%dC%d", e.Character, e.Pos.Line, e.Pos.Col)
+}
+
+// NewLexerError creates a new LexerError for an unexpected character (Message will be empty).
+func NewLexerError(char rune, pos Position) *LexerError {
+	return &LexerError{Character: char, Pos: pos}
+}
+
+// NewLexerErrorf creates a new LexerError with a custom message.
+// 'charForContext' can be the opening delimiter (e.g., '/' for unclosed comment) or 0 if not relevant.
+// The Message field will be populated by the formatted string.
+func NewLexerErrorf(pos Position, charForContext rune, format string, args ...interface{}) *LexerError {
+	return &LexerError{
+		Pos:       pos,
+		Character: charForContext,
+		Message:   fmt.Sprintf(format, args...),
+	}
 }

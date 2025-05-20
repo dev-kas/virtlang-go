@@ -77,7 +77,7 @@ func (p *Parser) parseIfStmt() (*ast.IfStatement, *errors.SyntaxError) {
 			ifStmt.Else = elseBody
 			break
 		} else {
-			return nil, errors.NewSyntaxError("Unexpected token after else", lexer.Stringify(p.at().Type), p.at().Start, p.at().Difference)
+			return nil, errors.NewSyntaxError("Unexpected token after else", lexer.Stringify(p.at().Type), errors.Position{Line: p.at().StartLine, Col: p.at().StartCol}, errors.Position{Line: p.at().EndLine, Col: p.at().EndCol})
 		}
 	}
 
