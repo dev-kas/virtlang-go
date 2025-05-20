@@ -720,7 +720,7 @@ import "github.com/dev-kas/virtlang-go/v3/debugger"
   - [func \(d \*Debugger\) IsDebuggable\(astNode ast.Stmt\) bool](<#Debugger.IsDebuggable>)
   - [func \(d \*Debugger\) Pause\(\) error](<#Debugger.Pause>)
   - [func \(d \*Debugger\) Run\(\) error](<#Debugger.Run>)
-  - [func \(d \*Debugger\) ShouldStop\(line string, col int\) bool](<#Debugger.ShouldStop>)
+  - [func \(d \*Debugger\) ShouldStop\(filename string, line int\) bool](<#Debugger.ShouldStop>)
   - [func \(d \*Debugger\) Step\(\) error](<#Debugger.Step>)
   - [func \(d \*Debugger\) StepInto\(\) error](<#Debugger.StepInto>)
   - [func \(d \*Debugger\) StepOut\(\) error](<#Debugger.StepOut>)
@@ -869,7 +869,7 @@ func (d *Debugger) Run() error
 ### func \(\*Debugger\) [ShouldStop](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L50>)
 
 ```go
-func (d *Debugger) ShouldStop(line string, col int) bool
+func (d *Debugger) ShouldStop(filename string, line int) bool
 ```
 
 
