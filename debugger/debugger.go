@@ -15,12 +15,23 @@ const (
 	SteppingState State = "stepping"
 )
 
+type StepType string
+
+const (
+	StepInto StepType = "step_into"
+	StepOver StepType = "step_over"
+	StepOut  StepType = "step_out"
+)
+
 type Debugger struct {
 	BreakpointManager BreakpointManager
 	Environment       *environment.Environment
 	State             State
 	CurrentFile       string
 	CurrentLine       int
+	CallStack         CallStack
+	stepType          StepType
+	stepDepth         int
 	mu                sync.Mutex
 	cond              *sync.Cond
 }
@@ -30,6 +41,9 @@ func NewDebugger(env *environment.Environment) *Debugger {
 		BreakpointManager: *NewBreakpointManager(),
 		Environment:       env,
 		State:             RunningState,
+		CallStack:         make(CallStack, 0),
+		stepType:          StepInto,
+		stepDepth:         0,
 		mu:                sync.Mutex{},
 	}
 	d.cond = sync.NewCond(&d.mu)
@@ -65,16 +79,55 @@ func (d *Debugger) IsDebuggable(nodeType ast.NodeType) bool {
 	return isDebuggable
 }
 
-func (d *Debugger) WaitIfPaused() {
+func (d *Debugger) WaitIfPaused(nodeType ast.NodeType) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
-	for d.State == PausedState {
-		d.cond.Wait()
+	for {
+		switch d.State {
+		case PausedState:
+			d.cond.Wait()
+		case SteppingState:
+			if !d.IsDebuggable(nodeType) {
+				// Not debuggable, continue execution
+				return
+			}
+			currentDepth := len(d.CallStack)
+			switch d.stepType {
+			case StepInto:
+				d.State = PausedState
+				return
+			case StepOver:
+				if currentDepth <= d.stepDepth {
+					d.State = PausedState
+					return
+				}
+			case StepOut:
+				if currentDepth < d.stepDepth {
+					d.State = PausedState
+					return
+				}
+			}
+			d.cond.Wait()
+		default:
+			return
+		}
 	}
-	if d.State == SteppingState {
-		d.State = PausedState
+}
+
+func (d *Debugger) PushFrame(frame StackFrame) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.CallStack = append(d.CallStack, frame)
+}
+
+func (d *Debugger) PopFrame() {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	if len(d.CallStack) == 0 {
+		return
 	}
+	d.CallStack = d.CallStack[:len(d.CallStack)-1]
 }
 
 // End user API
@@ -87,28 +140,32 @@ func (d *Debugger) Continue() error {
 	return nil
 }
 
-func (d *Debugger) Step() error {
+func (d *Debugger) StepInto() error {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 	d.State = SteppingState
+	d.stepType = StepInto
+	d.stepDepth = len(d.CallStack)
+	d.cond.Broadcast()
+	return nil
+}
+
+func (d *Debugger) StepOver() error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.State = SteppingState
+	d.stepType = StepOver
+	d.stepDepth = len(d.CallStack)
 	d.cond.Broadcast()
 	return nil
 }
 
 func (d *Debugger) StepOut() error {
-	// TODO: Handle stepping out
 	d.mu.Lock()
 	defer d.mu.Unlock()
 	d.State = SteppingState
-	d.cond.Broadcast()
-	return nil
-}
-
-func (d *Debugger) StepInto() error {
-	// TODO: Handle stepping into
-	d.mu.Lock()
-	defer d.mu.Unlock()
-	d.State = SteppingState
+	d.stepType = StepOut
+	d.stepDepth = len(d.CallStack)
 	d.cond.Broadcast()
 	return nil
 }

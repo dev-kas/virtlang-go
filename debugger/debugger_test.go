@@ -40,7 +40,7 @@ func TestStateTransitions(t *testing.T) {
 		expected  debugger.State
 	}{
 		{"Pause", (*debugger.Debugger).Pause, nil, debugger.PausedState},
-		{"Step", (*debugger.Debugger).Step, nil, debugger.SteppingState},
+		{"StepInto", (*debugger.Debugger).StepInto, nil, debugger.SteppingState},
 		{"Continue", (*debugger.Debugger).Continue, func(d *debugger.Debugger) {
 			d.Pause()
 		}, debugger.RunningState},
@@ -131,7 +131,7 @@ func TestWaitIfPaused(t *testing.T) {
 	// Test that WaitIfPaused doesn't block when not paused
 	done := make(chan bool)
 	go func() {
-		dbg.WaitIfPaused()
+		dbg.WaitIfPaused(ast.FnDeclarationNode)
 		done <- true
 	}()
 
@@ -145,7 +145,7 @@ func TestWaitIfPaused(t *testing.T) {
 	// Test that WaitIfPaused blocks when paused
 	dbg.Pause()
 	go func() {
-		dbg.WaitIfPaused()
+		dbg.WaitIfPaused(ast.FnDeclarationNode)
 		done <- true
 	}()
 
@@ -218,7 +218,7 @@ func TestConcurrentAccess(t *testing.T) {
 			defer wg.Done()
 			dbg.Pause()
 			dbg.Continue()
-			dbg.Step()
+			dbg.StepInto()
 		}()
 	}
 
@@ -226,7 +226,7 @@ func TestConcurrentAccess(t *testing.T) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		dbg.WaitIfPaused()
+		dbg.WaitIfPaused(ast.FnDeclarationNode)
 	}()
 
 	// Let the goroutines run for a bit
@@ -236,4 +236,165 @@ func TestConcurrentAccess(t *testing.T) {
 	dbg.Continue()
 
 	wg.Wait()
+}
+
+// TestStepInto tests the StepInto functionality with correct state expectations
+func TestStepInto(t *testing.T) {
+	env := environment.NewEnvironment(nil)
+	dbg := debugger.NewDebugger(&env)
+
+	// Set up a goroutine to simulate execution
+	done := make(chan bool)
+	go func() {
+		dbg.WaitIfPaused(ast.FnDeclarationNode)
+		done <- true
+	}()
+
+	// Start stepping into
+	if err := dbg.StepInto(); err != nil {
+		t.Fatalf("StepInto failed: %v", err)
+	}
+
+	// Verify state is SteppingState after StepInto
+	if dbg.State != debugger.SteppingState {
+		t.Errorf("Expected state SteppingState, got %v", dbg.State)
+	}
+
+	// Continue execution
+	if err := dbg.Continue(); err != nil {
+		t.Fatalf("Continue failed: %v", err)
+	}
+
+	// Wait for the goroutine to finish
+	select {
+	case <-done:
+		// Expected
+	case <-time.After(100 * time.Millisecond):
+		t.Fatal("Test timed out")
+	}
+}
+
+// TestStepOver tests the StepOver functionality with correct state expectations
+func TestStepOver(t *testing.T) {
+	env := environment.NewEnvironment(nil)
+	dbg := debugger.NewDebugger(&env)
+
+	// Set up initial call stack
+	dbg.PushFrame(debugger.StackFrame{Filename: "main.go", Line: 1})
+
+	// Set up a goroutine to simulate execution
+	done := make(chan bool)
+	go func() {
+		dbg.WaitIfPaused(ast.FnDeclarationNode)
+		done <- true
+	}()
+
+	// Start stepping over
+	if err := dbg.StepOver(); err != nil {
+		t.Fatalf("StepOver failed: %v", err)
+	}
+
+	// Verify state is SteppingState after StepOver
+	if dbg.State != debugger.SteppingState {
+		t.Errorf("Expected state SteppingState, got %v", dbg.State)
+	}
+
+	// Continue execution
+	if err := dbg.Continue(); err != nil {
+		t.Fatalf("Continue failed: %v", err)
+	}
+
+	// Wait for the goroutine to finish
+	select {
+	case <-done:
+		// Expected
+	case <-time.After(100 * time.Millisecond):
+		t.Fatal("Test timed out")
+	}
+}
+
+// TestStepOut tests the StepOut functionality with correct state expectations
+func TestStepOut(t *testing.T) {
+	env := environment.NewEnvironment(nil)
+	dbg := debugger.NewDebugger(&env)
+
+	// Set up initial call stack with multiple frames
+	dbg.PushFrame(debugger.StackFrame{Filename: "main.go", Line: 1})
+	dbg.PushFrame(debugger.StackFrame{Filename: "utils.go", Line: 5})
+
+	// Set up a goroutine to simulate execution
+	done := make(chan bool)
+	go func() {
+		dbg.WaitIfPaused(ast.FnDeclarationNode)
+		done <- true
+	}()
+
+	// Start stepping out
+	if err := dbg.StepOut(); err != nil {
+		t.Fatalf("StepOut failed: %v", err)
+	}
+
+	// Verify state is SteppingState after StepOut
+	if dbg.State != debugger.SteppingState {
+		t.Errorf("Expected state SteppingState, got %v", dbg.State)
+	}
+
+	// Continue execution
+	if err := dbg.Continue(); err != nil {
+		t.Fatalf("Continue failed: %v", err)
+	}
+
+	// Wait for the goroutine to finish
+	select {
+	case <-done:
+		// Expected
+	case <-time.After(100 * time.Millisecond):
+		t.Fatal("Test timed out")
+	}
+}
+
+// TestCallStack tests the call stack functionality
+func TestCallStack(t *testing.T) {
+	env := environment.NewEnvironment(nil)
+	dbg := debugger.NewDebugger(&env)
+
+	// Test initial call stack is empty
+	if len(dbg.CallStack) != 0 {
+		t.Fatalf("Expected empty call stack, got length %d", len(dbg.CallStack))
+	}
+
+	// Push a frame
+	frame1 := debugger.StackFrame{Filename: "test1.go", Line: 10}
+	dbg.PushFrame(frame1)
+
+	if len(dbg.CallStack) != 1 {
+		t.Fatalf("Expected call stack length 1, got %d", len(dbg.CallStack))
+	}
+
+	if dbg.CallStack[0].Filename != "test1.go" || dbg.CallStack[0].Line != 10 {
+		t.Fatalf("Unexpected frame data: %+v", dbg.CallStack[0])
+	}
+
+	// Push another frame
+	frame2 := debugger.StackFrame{Filename: "test2.go", Line: 20}
+	dbg.PushFrame(frame2)
+
+	if len(dbg.CallStack) != 2 {
+		t.Fatalf("Expected call stack length 2, got %d", len(dbg.CallStack))
+	}
+
+	// Pop a frame
+	dbg.PopFrame()
+	if len(dbg.CallStack) != 1 {
+		t.Fatalf("Expected call stack length 1 after pop, got %d", len(dbg.CallStack))
+	}
+
+	// Pop last frame
+	dbg.PopFrame()
+	if len(dbg.CallStack) != 0 {
+		t.Fatalf("Expected empty call stack after pops, got length %d", len(dbg.CallStack))
+	}
+
+	// Test pop empty stack (should not panic)
+	dbg.PopFrame()
 }

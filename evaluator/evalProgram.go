@@ -10,6 +10,16 @@ import (
 )
 
 func evalProgram(astNode *ast.Program, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
+	// Push the <main> frame
+	if dbgr != nil && dbgr.IsDebuggable(ast.ProgramNode) {
+		dbgr.PushFrame(debugger.StackFrame{
+			Name:     "<main>",
+			Filename: astNode.GetSourceMetadata().Filename,
+			Line:     astNode.GetSourceMetadata().StartLine,
+		})
+		defer dbgr.PopFrame()
+	}
+
 	result := values.MK_NIL()
 
 	for _, stmt := range astNode.Stmts {

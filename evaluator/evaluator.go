@@ -24,7 +24,7 @@ func Evaluate(astNode ast.Stmt, env *environment.Environment, dbgr *debugger.Deb
 				dbgr.Pause()
 			}
 		}
-		dbgr.WaitIfPaused()
+		dbgr.WaitIfPaused(type_)
 	}
 
 	switch type_ {

@@ -46,6 +46,20 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 		fnVal := fn.Value.(values.FunctionValue)
 		scope := environment.NewEnvironment(fnVal.DeclarationEnv)
 
+		// Push frame to stack
+		if dbgr != nil {
+			dbgr.PushFrame(debugger.StackFrame{
+				Name: func() string {
+					if fnVal.Name == "" {
+						return "<anonymous>"
+					}
+					return fnVal.Name
+				}(),
+				Filename: node.GetSourceMetadata().Filename,
+				Line:     node.GetSourceMetadata().StartLine,
+			})
+		}
+
 		for i, param := range fnVal.Params {
 			// TODO: check bounds and arity of fn
 			scope.DeclareVar(param, *args[i], true)
@@ -58,12 +72,21 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 			var res *shared.RuntimeValue
 			res, err = Evaluate(stmt, &scope, dbgr)
 			if err != nil {
+				// Pop frame from stack
+				if dbgr != nil {
+					dbgr.PopFrame()
+				}
 				if err.InternalCommunicationProtocol != nil && err.InternalCommunicationProtocol.Type == errors.ICP_Return {
 					return err.InternalCommunicationProtocol.RValue, nil
 				}
 				return nil, err
 			}
 			result = *res
+		}
+
+		// Pop frame from stack
+		if dbgr != nil {
+			dbgr.PopFrame()
 		}
 
 		return &result, nil
@@ -112,9 +135,22 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 			constructorScope.DeclareVar(param, *args[i], true)
 		}
 
+		// Push frame to stack
+		if dbgr != nil {
+			dbgr.PushFrame(debugger.StackFrame{
+				Name:     "constructor",
+				Filename: node.GetSourceMetadata().Filename,
+				Line:     node.GetSourceMetadata().StartLine,
+			})
+		}
+
 		for _, stmt := range constructor.Body {
 			_, err := Evaluate(stmt, &constructorScope, dbgr)
 			if err != nil {
+				// Pop frame from stack
+				if dbgr != nil {
+					dbgr.PopFrame()
+				}
 				if err.InternalCommunicationProtocol != nil && err.InternalCommunicationProtocol.Type == errors.ICP_Return {
 					return nil, &errors.RuntimeError{
 						Message: "Constructor cannot return a value.",
@@ -122,6 +158,11 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 				}
 				return nil, err
 			}
+		}
+
+		// Pop frame from stack
+		if dbgr != nil {
+			dbgr.PopFrame()
 		}
 
 		retVal := values.MK_CLASS_INSTANCE(&classVal, publics, &classScope)
