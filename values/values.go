@@ -1,10 +1,10 @@
 package values
 
 import (
-	"github.com/dev-kas/virtlang-go/v2/ast"
-	"github.com/dev-kas/virtlang-go/v2/environment"
-	"github.com/dev-kas/virtlang-go/v2/errors"
-	"github.com/dev-kas/virtlang-go/v2/shared"
+	"github.com/dev-kas/virtlang-go/v3/ast"
+	"github.com/dev-kas/virtlang-go/v3/environment"
+	"github.com/dev-kas/virtlang-go/v3/errors"
+	"github.com/dev-kas/virtlang-go/v3/shared"
 )
 
 // Factory Functions

@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"github.com/dev-kas/virtlang-go/v2/shared"
+	"github.com/dev-kas/virtlang-go/v3/shared"
 )
 
 // IsTruthy determines whether a VirtLang RuntimeValue should be considered

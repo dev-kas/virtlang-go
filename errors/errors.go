@@ -3,7 +3,7 @@ package errors
 import (
 	"fmt"
 
-	"github.com/dev-kas/virtlang-go/v2/shared"
+	"github.com/dev-kas/virtlang-go/v3/shared"
 )
 
 type Position struct {

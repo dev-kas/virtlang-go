@@ -6,10 +6,10 @@ import (
 
 	"testing"
 
-	"github.com/dev-kas/virtlang-go/v2/environment"
-	"github.com/dev-kas/virtlang-go/v2/evaluator"
-	"github.com/dev-kas/virtlang-go/v2/parser"
-	"github.com/dev-kas/virtlang-go/v2/shared"
+	"github.com/dev-kas/virtlang-go/v3/environment"
+	"github.com/dev-kas/virtlang-go/v3/evaluator"
+	"github.com/dev-kas/virtlang-go/v3/parser"
+	"github.com/dev-kas/virtlang-go/v3/shared"
 )
 
 func TestNumbers(t *testing.T) {

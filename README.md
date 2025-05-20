@@ -48,9 +48,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/dev-kas/virtlang-go/v2/environment"
-	"github.com/dev-kas/virtlang-go/v2/evaluator"
-	"github.com/dev-kas/virtlang-go/v2/parser"
+	"github.com/dev-kas/virtlang-go/v3/environment"
+	"github.com/dev-kas/virtlang-go/v3/evaluator"
+	"github.com/dev-kas/virtlang-go/v3/parser"
 )
 
 func main() {
