@@ -1136,7 +1136,7 @@ func TestTryCatch(t *testing.T) {
 			input: "let error = 'error not triggered'\ntry {undefinedVariable} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot resolve variable `undefinedVariable`",
+				Value: "\"Runtime Error: Cannot resolve variable `undefinedVariable`\"",
 			},
 		},
 		{
@@ -1157,14 +1157,14 @@ func TestTryCatch(t *testing.T) {
 			input: "let error = 'error not triggered'\ntry {let x = y} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot resolve variable `y`",
+				Value: "\"Runtime Error: Cannot resolve variable `y`\"",
 			},
 		},
 		{
 			input: "let error = 'error not triggered'\ntry {let x = 10\nx = x + y} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot resolve variable `y`",
+				Value: "\"Runtime Error: Cannot resolve variable `y`\"",
 			},
 		},
 		{
@@ -1178,7 +1178,7 @@ func TestTryCatch(t *testing.T) {
 			input: "let error = 'error not triggered'\ntry {let obj = {foo: 'bar'}\nobj.foo()} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot invoke a non-function (attempted to call a string).",
+				Value: "\"Runtime Error: Cannot invoke a non-function (attempted to call a string).\"",
 			},
 		},
 		{
@@ -1192,7 +1192,7 @@ func TestTryCatch(t *testing.T) {
 			input: "let error = 'error not triggered'\ntry {let arr = [1, 2, 3]\narr.foo()} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot access property of array by non-number (attempting to access properties by Identifier).",
+				Value: "\"Runtime Error: Cannot access property of array by non-number (attempting to access properties by Identifier).\"",
 			},
 		},
 		{
@@ -1473,7 +1473,7 @@ func TestContinueKeyword(t *testing.T) {
 			input: "let err = ''\ntry {continue} catch e {err = e}\nerr",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: `continue` statement used outside of a loop context.",
+				Value: "\"Runtime Error: `continue` statement used outside of a loop context.\"",
 			},
 		},
 	}
@@ -1647,7 +1647,7 @@ func TestBreakKeyword(t *testing.T) {
 			input: "let err = ''\ntry {break} catch e {err = e}\nerr",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: `break` statement used outside of a loop context.",
+				Value: "\"Runtime Error: `break` statement used outside of a loop context.\"",
 			},
 		},
 	}
