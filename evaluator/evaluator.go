@@ -23,8 +23,11 @@ func Evaluate(astNode ast.Stmt, env *environment.Environment, dbgr *debugger.Deb
 			if dbgr.ShouldStop(astNode.GetSourceMetadata().Filename, astNode.GetSourceMetadata().StartLine) {
 				dbgr.Pause()
 			}
+			// Only wait if the node is debuggable
+			// This is required to prevent debugging
+			// at a microscopic level
+			dbgr.WaitIfPaused(type_)
 		}
-		dbgr.WaitIfPaused(type_)
 	}
 
 	switch type_ {
