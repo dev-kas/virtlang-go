@@ -72,13 +72,17 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 			var res *shared.RuntimeValue
 			res, err = Evaluate(stmt, &scope, dbgr)
 			if err != nil {
-				// Take snapshot and pop frame from stack
+				// pop frame from stack
 				if dbgr != nil {
-					dbgr.TakeSnapshot()
 					dbgr.PopFrame()
 				}
 				if err.InternalCommunicationProtocol != nil && err.InternalCommunicationProtocol.Type == errors.ICP_Return {
 					return err.InternalCommunicationProtocol.RValue, nil
+				}
+				// Take a snapshot now because it is a real error,
+				// not a control flow event
+				if dbgr != nil {
+					dbgr.TakeSnapshot()
 				}
 				return nil, err
 			}
