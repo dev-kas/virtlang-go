@@ -82,7 +82,7 @@ type CompareOperator string
 const (
 	LessThanEqual    CompareOperator = "<="
 	LessThan         CompareOperator = "<"
-	GreaterThanEqual CompareOperator = "=>"
+	GreaterThanEqual CompareOperator = ">="
 	GreaterThan      CompareOperator = ">"
 	Equal            CompareOperator = "=="
 	NotEqual         CompareOperator = "!="
