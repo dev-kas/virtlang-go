@@ -67,7 +67,7 @@ var Debuggables = map[ast.NodeType]struct{}{
 	ast.ClassNode:             {},
 	ast.ClassMethodNode:       {},
 	ast.ClassPropertyNode:     {},
-	ast.ProgramNode:{},
+	ast.ProgramNode:           {},
 }
 
 // Internal API
