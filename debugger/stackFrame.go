@@ -12,7 +12,7 @@ type CallStack []StackFrame
 
 type Snapshot struct {
 	Stack CallStack
-	Env *environment.Environment
+	Env   *environment.Environment
 }
 
 type Snapshots []Snapshot

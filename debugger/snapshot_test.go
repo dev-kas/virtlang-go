@@ -136,7 +136,7 @@ func TestDebugger_TakeSnapshot(t *testing.T) {
 		expectedName := "modifiedFunction"
 		expectedLine := 20
 		if topFrame.Name != expectedName || topFrame.Line != expectedLine {
-			t.Errorf("expected top frame to be %s:%d, got %s:%d", 
+			t.Errorf("expected top frame to be %s:%d, got %s:%d",
 				expectedName, expectedLine, topFrame.Name, topFrame.Line)
 		}
 
@@ -148,7 +148,7 @@ func TestDebugger_TakeSnapshot(t *testing.T) {
 
 		// Verify first frame was modified as expected
 		if dbg.CallStack[0].Name != expectedName || dbg.CallStack[0].Line != expectedLine {
-			t.Errorf("expected first stack frame to be %s:%d, got %v", 
+			t.Errorf("expected first stack frame to be %s:%d, got %v",
 				expectedName, expectedLine, dbg.CallStack[0])
 		}
 

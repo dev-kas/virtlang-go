@@ -947,6 +947,7 @@ import "github.com/dev-kas/virtlang-go/v3/debugger"
   - [func \(bm \*BreakpointManager\) Remove\(file string, line int\)](<#BreakpointManager.Remove>)
   - [func \(bm \*BreakpointManager\) Set\(file string, line int\)](<#BreakpointManager.Set>)
 - [type CallStack](<#CallStack>)
+  - [func DeepCopyCallStack\(stack CallStack\) CallStack](<#DeepCopyCallStack>)
 - [type Debugger](<#Debugger>)
   - [func NewDebugger\(env \*environment.Environment\) \*Debugger](<#NewDebugger>)
   - [func \(d \*Debugger\) Continue\(\) error](<#Debugger.Continue>)
@@ -958,7 +959,10 @@ import "github.com/dev-kas/virtlang-go/v3/debugger"
   - [func \(d \*Debugger\) StepInto\(\) error](<#Debugger.StepInto>)
   - [func \(d \*Debugger\) StepOut\(\) error](<#Debugger.StepOut>)
   - [func \(d \*Debugger\) StepOver\(\) error](<#Debugger.StepOver>)
+  - [func \(d \*Debugger\) TakeSnapshot\(\)](<#Debugger.TakeSnapshot>)
   - [func \(d \*Debugger\) WaitIfPaused\(nodeType ast.NodeType\)](<#Debugger.WaitIfPaused>)
+- [type Snapshot](<#Snapshot>)
+- [type Snapshots](<#Snapshots>)
 - [type StackFrame](<#StackFrame>)
 - [type State](<#State>)
 - [type StepType](<#StepType>)
@@ -1044,7 +1048,7 @@ func (bm *BreakpointManager) Set(file string, line int)
 
 
 <a name="CallStack"></a>
-## type [CallStack](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/stackFrame.go#L9>)
+## type [CallStack](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/stackFrame.go#L11>)
 
 
 
@@ -1052,8 +1056,17 @@ func (bm *BreakpointManager) Set(file string, line int)
 type CallStack []StackFrame
 ```
 
+<a name="DeepCopyCallStack"></a>
+### func [DeepCopyCallStack](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L150>)
+
+```go
+func DeepCopyCallStack(stack CallStack) CallStack
+```
+
+DeepCopyCallStack creates a deep copy of the call stack
+
 <a name="Debugger"></a>
-## type [Debugger](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L26-L37>)
+## type [Debugger](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L26-L38>)
 
 
 
@@ -1065,12 +1078,13 @@ type Debugger struct {
     CurrentFile       string
     CurrentLine       int
     CallStack         CallStack
+    Snapshots         Snapshots
     // contains filtered or unexported fields
 }
 ```
 
 <a name="NewDebugger"></a>
-### func [NewDebugger](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L39>)
+### func [NewDebugger](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L40>)
 
 ```go
 func NewDebugger(env *environment.Environment) *Debugger
@@ -1079,7 +1093,7 @@ func NewDebugger(env *environment.Environment) *Debugger
 
 
 <a name="Debugger.Continue"></a>
-### func \(\*Debugger\) [Continue](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L135>)
+### func \(\*Debugger\) [Continue](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L162>)
 
 ```go
 func (d *Debugger) Continue() error
@@ -1088,7 +1102,7 @@ func (d *Debugger) Continue() error
 
 
 <a name="Debugger.IsDebuggable"></a>
-### func \(\*Debugger\) [IsDebuggable](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L77>)
+### func \(\*Debugger\) [IsDebuggable](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L79>)
 
 ```go
 func (d *Debugger) IsDebuggable(nodeType ast.NodeType) bool
@@ -1097,7 +1111,7 @@ func (d *Debugger) IsDebuggable(nodeType ast.NodeType) bool
 
 
 <a name="Debugger.Pause"></a>
-### func \(\*Debugger\) [Pause](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L173>)
+### func \(\*Debugger\) [Pause](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L200>)
 
 ```go
 func (d *Debugger) Pause() error
@@ -1106,7 +1120,7 @@ func (d *Debugger) Pause() error
 
 
 <a name="Debugger.PopFrame"></a>
-### func \(\*Debugger\) [PopFrame](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L124>)
+### func \(\*Debugger\) [PopFrame](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L126>)
 
 ```go
 func (d *Debugger) PopFrame()
@@ -1115,7 +1129,7 @@ func (d *Debugger) PopFrame()
 
 
 <a name="Debugger.PushFrame"></a>
-### func \(\*Debugger\) [PushFrame](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L118>)
+### func \(\*Debugger\) [PushFrame](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L120>)
 
 ```go
 func (d *Debugger) PushFrame(frame StackFrame)
@@ -1124,7 +1138,7 @@ func (d *Debugger) PushFrame(frame StackFrame)
 
 
 <a name="Debugger.ShouldStop"></a>
-### func \(\*Debugger\) [ShouldStop](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L73>)
+### func \(\*Debugger\) [ShouldStop](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L75>)
 
 ```go
 func (d *Debugger) ShouldStop(filename string, line int) bool
@@ -1133,7 +1147,7 @@ func (d *Debugger) ShouldStop(filename string, line int) bool
 
 
 <a name="Debugger.StepInto"></a>
-### func \(\*Debugger\) [StepInto](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L143>)
+### func \(\*Debugger\) [StepInto](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L170>)
 
 ```go
 func (d *Debugger) StepInto() error
@@ -1142,7 +1156,7 @@ func (d *Debugger) StepInto() error
 
 
 <a name="Debugger.StepOut"></a>
-### func \(\*Debugger\) [StepOut](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L163>)
+### func \(\*Debugger\) [StepOut](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L190>)
 
 ```go
 func (d *Debugger) StepOut() error
@@ -1151,7 +1165,7 @@ func (d *Debugger) StepOut() error
 
 
 <a name="Debugger.StepOver"></a>
-### func \(\*Debugger\) [StepOver](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L153>)
+### func \(\*Debugger\) [StepOver](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L180>)
 
 ```go
 func (d *Debugger) StepOver() error
@@ -1159,8 +1173,17 @@ func (d *Debugger) StepOver() error
 
 
 
+<a name="Debugger.TakeSnapshot"></a>
+### func \(\*Debugger\) [TakeSnapshot](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L135>)
+
+```go
+func (d *Debugger) TakeSnapshot()
+```
+
+
+
 <a name="Debugger.WaitIfPaused"></a>
-### func \(\*Debugger\) [WaitIfPaused](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L82>)
+### func \(\*Debugger\) [WaitIfPaused](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/debugger.go#L84>)
 
 ```go
 func (d *Debugger) WaitIfPaused(nodeType ast.NodeType)
@@ -1168,8 +1191,29 @@ func (d *Debugger) WaitIfPaused(nodeType ast.NodeType)
 
 
 
+<a name="Snapshot"></a>
+## type [Snapshot](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/stackFrame.go#L13-L16>)
+
+
+
+```go
+type Snapshot struct {
+    Stack CallStack
+    Env   *environment.Environment
+}
+```
+
+<a name="Snapshots"></a>
+## type [Snapshots](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/stackFrame.go#L18>)
+
+
+
+```go
+type Snapshots []Snapshot
+```
+
 <a name="StackFrame"></a>
-## type [StackFrame](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/stackFrame.go#L3-L7>)
+## type [StackFrame](<https://github.com/dev-kas/virtlang-go/blob/master/debugger/stackFrame.go#L5-L9>)
 
 
 
@@ -1228,6 +1272,7 @@ import "github.com/dev-kas/virtlang-go/v3/environment"
 ## Index
 
 - [type Environment](<#Environment>)
+  - [func DeepCopy\(env \*Environment\) \*Environment](<#DeepCopy>)
   - [func NewEnvironment\(fork \*Environment\) Environment](<#NewEnvironment>)
   - [func \(e \*Environment\) AssignVar\(name string, value shared.RuntimeValue\) \(\*shared.RuntimeValue, \*errors.RuntimeError\)](<#Environment.AssignVar>)
   - [func \(e \*Environment\) DeclareVar\(name string, value shared.RuntimeValue, constant bool\) \(\*shared.RuntimeValue, \*errors.RuntimeError\)](<#Environment.DeclareVar>)
@@ -1248,6 +1293,15 @@ type Environment struct {
     Global    bool
 }
 ```
+
+<a name="DeepCopy"></a>
+### func [DeepCopy](<https://github.com/dev-kas/virtlang-go/blob/master/environment/helpers.go#L8>)
+
+```go
+func DeepCopy(env *Environment) *Environment
+```
+
+DeepCopy creates a deep copy of the environment
 
 <a name="NewEnvironment"></a>
 ### func [NewEnvironment](<https://github.com/dev-kas/virtlang-go/blob/master/environment/environment.go#L17>)
