@@ -15,9 +15,9 @@ func evalTryCatch(node *ast.TryCatchStmt, env *environment.Environment, dbgr *de
 	for _, stmt := range node.Try {
 		_, err := Evaluate(stmt, &scope, dbgr)
 		if err != nil {
-			// Because we are successfully catching this error, we can safely delete
-			// the snapshot
-			if dbgr != nil {
+			// Because we are successfully catching this error,
+			// we can safely delete the snapshot
+			if dbgr != nil && len(dbgr.Snapshots) > 0 {
 				dbgr.Snapshots = dbgr.Snapshots[:len(dbgr.Snapshots)-1]
 			}
 			scope = environment.NewEnvironment(env)
