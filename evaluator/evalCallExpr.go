@@ -72,8 +72,9 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 			var res *shared.RuntimeValue
 			res, err = Evaluate(stmt, &scope, dbgr)
 			if err != nil {
-				// Pop frame from stack
+				// Take snapshot and pop frame from stack
 				if dbgr != nil {
+					dbgr.TakeSnapshot()
 					dbgr.PopFrame()
 				}
 				if err.InternalCommunicationProtocol != nil && err.InternalCommunicationProtocol.Type == errors.ICP_Return {
@@ -147,8 +148,9 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 		for _, stmt := range constructor.Body {
 			_, err := Evaluate(stmt, &constructorScope, dbgr)
 			if err != nil {
-				// Pop frame from stack
+				// Take snapshot and pop frame from stack
 				if dbgr != nil {
+					dbgr.TakeSnapshot()
 					dbgr.PopFrame()
 				}
 				if err.InternalCommunicationProtocol != nil && err.InternalCommunicationProtocol.Type == errors.ICP_Return {

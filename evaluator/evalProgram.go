@@ -28,6 +28,10 @@ func evalProgram(astNode *ast.Program, env *environment.Environment, dbgr *debug
 			if err.InternalCommunicationProtocol != nil && err.InternalCommunicationProtocol.Type == errors.ICP_Return {
 				return err.InternalCommunicationProtocol.RValue, nil
 			}
+			// Take snapshot
+			if dbgr != nil {
+				dbgr.TakeSnapshot()
+			}
 			return nil, err
 		}
 
