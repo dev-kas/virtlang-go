@@ -30,6 +30,7 @@ type Debugger struct {
 	CurrentFile       string
 	CurrentLine       int
 	CallStack         CallStack
+	Snapshots         Snapshots
 	stepType          StepType
 	stepDepth         int
 	mu                sync.Mutex
@@ -42,6 +43,7 @@ func NewDebugger(env *environment.Environment) *Debugger {
 		Environment:       env,
 		State:             RunningState,
 		CallStack:         make(CallStack, 0),
+		Snapshots:         make(Snapshots, 0),
 		stepType:          StepInto,
 		stepDepth:         0,
 		mu:                sync.Mutex{},
@@ -128,6 +130,31 @@ func (d *Debugger) PopFrame() {
 		return
 	}
 	d.CallStack = d.CallStack[:len(d.CallStack)-1]
+}
+
+func (d *Debugger) TakeSnapshot() {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
+	// Create deep copies of the call stack and environment
+	stackCopy := DeepCopyCallStack(d.CallStack)
+	envCopy := environment.DeepCopy(d.Environment)
+
+	d.Snapshots = append(d.Snapshots, Snapshot{
+		Stack: stackCopy,
+		Env:   envCopy,
+	})
+}
+
+// DeepCopyCallStack creates a deep copy of the call stack
+func DeepCopyCallStack(stack CallStack) CallStack {
+	if stack == nil {
+		return nil
+	}
+
+	newStack := make(CallStack, len(stack))
+	copy(newStack, stack)
+	return newStack
 }
 
 // End user API
