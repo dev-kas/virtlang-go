@@ -766,7 +766,7 @@ func TestFunctions(t *testing.T) {
 		{
 			input: "fn myFunc(arg) { return arg }\nmyFunc()",
 			output: shared.RuntimeValue{
-				Type: shared.Nil,
+				Type:  shared.Nil,
 				Value: nil,
 			},
 		},
@@ -774,7 +774,7 @@ func TestFunctions(t *testing.T) {
 		{
 			input: "fn myFunc(arg) { return arg }\nmyFunc(1, 2)",
 			output: shared.RuntimeValue{
-				Type: shared.Number,
+				Type:  shared.Number,
 				Value: float64(1),
 			},
 		},
@@ -1813,42 +1813,42 @@ func TestArrays(t *testing.T) {
 		},
 		// ISSUE#5: Array Assignment in Object
 		{
-			input:  "let obj = {arr: [1, 2, 3]}\nobj.arr[0] = 10\nobj.arr[0]",
+			input: "let obj = {arr: [1, 2, 3]}\nobj.arr[0] = 10\nobj.arr[0]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
 				Value: float64(10),
 			},
 		},
 		{
-			input:  "let obj = {arr: [1, \"hello\"]}\nobj.arr[1] = 10\nobj.arr[1]",
+			input: "let obj = {arr: [1, \"hello\"]}\nobj.arr[1] = 10\nobj.arr[1]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
 				Value: float64(10),
 			},
 		},
 		{
-			input:  "let obj = {prop:{arr: [1, 2, 3]}}\nobj.prop.arr[0] = 10\nobj.prop.arr[0]",
+			input: "let obj = {prop:{arr: [1, 2, 3]}}\nobj.prop.arr[0] = 10\nobj.prop.arr[0]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
 				Value: float64(10),
 			},
 		},
 		{
-			input:  "let obj = {prop:{arr: [1, \"hello\"]}}\nobj.prop.arr[1] = 10\nobj.prop.arr[1]",
+			input: "let obj = {prop:{arr: [1, \"hello\"]}}\nobj.prop.arr[1] = 10\nobj.prop.arr[1]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
 				Value: float64(10),
 			},
 		},
 		{
-			input:  "let obj = {prop:{arr: [1, {prop2:{arr2: [1, 2, 3]}}]}}\nobj.prop.arr[1].prop2.arr2[0] = 10\nobj.prop.arr[1].prop2.arr2[0]",
+			input: "let obj = {prop:{arr: [1, {prop2:{arr2: [1, 2, 3]}}]}}\nobj.prop.arr[1].prop2.arr2[0] = 10\nobj.prop.arr[1].prop2.arr2[0]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
 				Value: float64(10),
 			},
 		},
 		{
-			input:  "let obj = {prop:{arr: [1, {prop2:{arr2: [1, {prop3:{arr3: [1, 2, 3]}}]}}]}}\nobj.prop.arr[1].prop2.arr2[1].prop3.arr3[0] = 10\nobj.prop.arr[1].prop2.arr2[1].prop3.arr3[0]",
+			input: "let obj = {prop:{arr: [1, {prop2:{arr2: [1, {prop3:{arr3: [1, 2, 3]}}]}}]}}\nobj.prop.arr[1].prop2.arr2[1].prop3.arr3[0] = 10\nobj.prop.arr[1].prop2.arr2[1].prop3.arr3[0]",
 			output: shared.RuntimeValue{
 				Type:  shared.Number,
 				Value: float64(10),
