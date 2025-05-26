@@ -31,8 +31,8 @@ func NewEnvironment(fork *Environment) Environment {
 
 func (e *Environment) DeclareVar(name string, value shared.RuntimeValue, constant bool) (*shared.RuntimeValue, *errors.RuntimeError) {
 	if name == "" { // Trimming space is intentionally omitted here
-		return &value, nil // Currently skip, as a replication of the original code.
-	} // TODO: Fix that above code later to see why the interpreter sometimes give an empty name.
+		return &value, nil
+	}
 
 	if _, exists := e.Variables[name]; exists {
 		return nil, &errors.RuntimeError{
@@ -77,8 +77,8 @@ func (e *Environment) LookupVar(name string) (*shared.RuntimeValue, *errors.Runt
 
 func (e *Environment) AssignVar(name string, value shared.RuntimeValue) (*shared.RuntimeValue, *errors.RuntimeError) {
 	if name == "" { // Trimming space is intentionally omitted here
-		return &value, nil // Currently skip, as a replication of the original code.
-	} // TODO: Fix that above code later to see why the interpreter sometimes give an empty name.
+		return &value, nil
+	}
 
 	env, err := e.Resolve(name)
 	if err != nil {

@@ -60,9 +60,15 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 			})
 		}
 
+		// Handle all function parameters, setting missing ones to nil
 		for i, param := range fnVal.Params {
-			// TODO: check bounds and arity of fn
-			scope.DeclareVar(param, *args[i], true)
+			var value shared.RuntimeValue
+			if i < len(args) {
+				value = *args[i]
+			} else {
+				value = values.MK_NIL()
+			}
+			scope.DeclareVar(param, value, true)
 		}
 
 		result := values.MK_NIL()
@@ -135,9 +141,15 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 
 		constructor := classVal.Constructor
 		constructorScope := environment.NewEnvironment(&classScope)
+		// Handle all constructor parameters, setting missing ones to nil
 		for i, param := range constructor.Params {
-			// TODO: check bounds and arity of fn
-			constructorScope.DeclareVar(param, *args[i], true)
+			var value shared.RuntimeValue
+			if i < len(args) {
+				value = *args[i]
+			} else {
+				value = values.MK_NIL()
+			}
+			constructorScope.DeclareVar(param, value, true)
 		}
 
 		// Push frame to stack

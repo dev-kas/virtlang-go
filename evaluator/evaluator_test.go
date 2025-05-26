@@ -762,6 +762,22 @@ func TestFunctions(t *testing.T) {
 				Value: float64(14),
 			},
 		},
+		// Function calls with insufficient arguments
+		{
+			input: "fn myFunc(arg) { return arg }\nmyFunc()",
+			output: shared.RuntimeValue{
+				Type: shared.Nil,
+				Value: nil,
+			},
+		},
+		// Function calls with too many arguments
+		{
+			input: "fn myFunc(arg) { return arg }\nmyFunc(1, 2)",
+			output: shared.RuntimeValue{
+				Type: shared.Number,
+				Value: float64(1),
+			},
+		},
 	}
 
 	for i, test := range tests {
@@ -2139,6 +2155,40 @@ func TestClasses(t *testing.T) {
 			output: shared.RuntimeValue{
 				Type:  shared.String,
 				Value: "\"Transformed\"",
+			},
+		},
+		{
+			input: `
+				class Test {
+					public arg = "i am not initialized"
+					public constructor(arg_param) {
+						arg = arg_param
+					}
+				}
+
+				let instance = Test()
+				instance.arg
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.Nil,
+				Value: nil,
+			},
+		},
+		{
+			input: `
+				class Test {
+					public arg = "i am not initialized"
+					public constructor(arg_param) {
+						arg = arg_param
+					}
+				}
+
+				let instance = Test("i am initialized", "i am extra")
+				instance.arg
+			`,
+			output: shared.RuntimeValue{
+				Type:  shared.String,
+				Value: "\"i am initialized\"",
 			},
 		},
 	}
