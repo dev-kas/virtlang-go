@@ -74,10 +74,51 @@ func evalVarAssignment(node *ast.VarAssignmentExpr, env *environment.Environment
 			array[index] = *value
 			obj.Value = array
 
-			varName := memberExpr.Object.(*ast.Identifier).Symbol
-			_, err = env.AssignVar(varName, *obj)
-			if err != nil {
-				return nil, err
+			switch memberExpr.Object.GetType() {
+			case ast.IdentifierNode:
+				varName := memberExpr.Object.(*ast.Identifier).Symbol
+				_, err = env.AssignVar(varName, *obj)
+				if err != nil {
+					return nil, err
+				}
+			case ast.MemberExprNode:
+				memberExpr := node.Assignee.(*ast.MemberExpr)
+				obj, err := Evaluate(memberExpr.Object, env, dbgr)
+				if err != nil {
+					return nil, err
+				}
+
+				switch obj.Type {
+				case shared.Object:
+					var prop *shared.RuntimeValue
+					if memberExpr.Computed {
+						val, err := Evaluate(memberExpr.Value, env, dbgr)
+						if err != nil {
+							return nil, err
+						}
+						prop = val
+					} else {
+						prop = &shared.RuntimeValue{
+							Type:  shared.String,
+							Value: memberExpr.Value.(*ast.Identifier).Symbol,
+						}
+					}
+
+					var key string
+					switch v := prop.Value.(type) {
+					case string:
+						key = v
+					case int:
+						key = fmt.Sprintf("%v", v)
+					default:
+						return nil, &errors.RuntimeError{
+							Message: fmt.Sprintf("Invalid property key type: %T", prop.Value),
+						}
+					}
+
+					obj.Value.(map[string]*shared.RuntimeValue)[key] = value
+					return value, nil
+				}
 			}
 
 			return value, nil
