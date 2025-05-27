@@ -1288,7 +1288,7 @@ import "github.com/dev-kas/virtlang-go/v3/environment"
 ```go
 type Environment struct {
     Parent    *Environment
-    Variables map[string]shared.RuntimeValue
+    Variables map[string]*shared.RuntimeValue
     Constants map[string]struct{}
     Global    bool
 }
@@ -1313,7 +1313,7 @@ func NewEnvironment(fork *Environment) Environment
 
 
 <a name="Environment.AssignVar"></a>
-### func \(\*Environment\) [AssignVar](<https://github.com/dev-kas/virtlang-go/blob/master/environment/environment.go#L78>)
+### func \(\*Environment\) [AssignVar](<https://github.com/dev-kas/virtlang-go/blob/master/environment/environment.go#L81>)
 
 ```go
 func (e *Environment) AssignVar(name string, value shared.RuntimeValue) (*shared.RuntimeValue, *errors.RuntimeError)
@@ -1331,7 +1331,7 @@ func (e *Environment) DeclareVar(name string, value shared.RuntimeValue, constan
 
 
 <a name="Environment.LookupVar"></a>
-### func \(\*Environment\) [LookupVar](<https://github.com/dev-kas/virtlang-go/blob/master/environment/environment.go#L65>)
+### func \(\*Environment\) [LookupVar](<https://github.com/dev-kas/virtlang-go/blob/master/environment/environment.go#L67>)
 
 ```go
 func (e *Environment) LookupVar(name string) (*shared.RuntimeValue, *errors.RuntimeError)
@@ -1340,7 +1340,7 @@ func (e *Environment) LookupVar(name string) (*shared.RuntimeValue, *errors.Runt
 
 
 <a name="Environment.Resolve"></a>
-### func \(\*Environment\) [Resolve](<https://github.com/dev-kas/virtlang-go/blob/master/environment/environment.go#L51>)
+### func \(\*Environment\) [Resolve](<https://github.com/dev-kas/virtlang-go/blob/master/environment/environment.go#L53>)
 
 ```go
 func (e *Environment) Resolve(varname string) (*Environment, *errors.RuntimeError)

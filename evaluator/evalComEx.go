@@ -60,8 +60,6 @@ func compareValues(lhs, rhs *shared.RuntimeValue) (int, *errors.RuntimeError) {
 	}
 }
 
-
-
 // compareEqual handles == and !=
 func compareEqual(lhs, rhs *shared.RuntimeValue, negate bool) (*shared.RuntimeValue, *errors.RuntimeError) {
 	// If both sides are the same reference, they are equal (unless negated)
@@ -95,7 +93,7 @@ func compareEqual(lhs, rhs *shared.RuntimeValue, negate bool) (*shared.RuntimeVa
 		// This ensures that when a function is assigned to a variable, the comparison works
 		lhsFn, lhsOk := lhs.Value.(*values.FunctionValue)
 		rhsFn, rhsOk := rhs.Value.(*values.FunctionValue)
-		
+
 		if !lhsOk || !rhsOk {
 			res := values.MK_BOOL(negate)
 			return &res, nil
