@@ -1,6 +1,8 @@
 package lexer
 
 import (
+	"fmt"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -180,6 +182,34 @@ func IsBinaryOperator(r rune) bool {
 	default:
 		return false
 	}
+}
+
+func UnescapeString(s string) (string, error) {
+	stringQuoted := s
+	isQuoted := false
+	
+	if len(stringQuoted) == 0 {
+		return "", nil
+	}
+
+	if stringQuoted[0] == '"' && stringQuoted[len(stringQuoted)-1] == '"' {
+		isQuoted = true
+	} else {
+		stringQuoted = fmt.Sprintf("\"%s\"", stringQuoted)
+	}
+
+	unquoted, err := strconv.Unquote(stringQuoted)
+	if err != nil {
+		return "", err
+	}
+
+	stringQuoted = unquoted
+
+	if !isQuoted {
+		return stringQuoted, nil
+	}
+
+	return fmt.Sprintf("\"%s\"", stringQuoted), nil
 }
 
 func IsComparisonOperator(r string) bool {
@@ -366,7 +396,7 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 			for position < srcLen {
 				loopRune := runes[position] // Current rune from source
 
-				if loopRune == quoteRune {
+				if loopRune == quoteRune && runes[position-1] != '\\' { // Not an escaped quote
 					position++      // Consume the closing quote from runes
 					currentColumn++ // The closing quote itself advances column
 					foundEndQuote = true
@@ -392,7 +422,24 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 			}
 
 			if foundEndQuote {
-				fullLiteral := openingQuoteStr + strContentBuilder.String() + string(quoteRune)
+				stringified := strContentBuilder.String()
+				finalBuilder := strings.Builder{}
+				splitted := strings.Split(strings.ReplaceAll(strings.ReplaceAll(stringified, "\r\n", "\n"), "\r", "\n"), "\n")
+				for i, line := range splitted {
+					unescapedLiteral, err := UnescapeString(line)
+					if err != nil {
+						return nil, &errors.LexerError{
+							Character: quoteRune,
+							Pos:       unclosedStringErrorPos,
+							Message:   err.Error(),
+						}
+					}
+					finalBuilder.WriteString(unescapedLiteral)
+					if i != len(splitted)-1 {
+						finalBuilder.WriteString("\n")
+					}
+				}
+				fullLiteral := openingQuoteStr + finalBuilder.String() + string(quoteRune)
 				tokens = append(tokens, NewToken(fullLiteral, String, tokStartLine, tokStartCol, currentLine, currentColumn))
 			} else {
 				return nil, &errors.LexerError{

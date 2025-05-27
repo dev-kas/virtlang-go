@@ -22,6 +22,67 @@ func TestTokenFactory(t *testing.T) {
 	}
 }
 
+func TestUnescapeString(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   string
+		want    string
+		wantErr bool
+	}{
+		{
+			name:    "Simple Unescape",
+			input:   `"hello"`,
+			want:    `"hello"`,
+			wantErr: false,
+		},
+		{
+			name:    "Direct Unescape",
+			input:   `hello`,
+			want:    `hello`,
+			wantErr: false,
+		},
+		{
+			name:    "Escape Sequences",
+			input:   `"\n\t"`,
+			want:    "\"\n\t\"",
+			wantErr: false,
+		},
+		{
+			name:    "Empty String",
+			input:   `""`,
+			want:    `""`,
+			wantErr: false,
+		},
+		{
+			name:    "Invalid String",
+			input:   `"hello`,
+			want:    "",
+			wantErr: true,
+		},
+		{
+			name:    "More Escape Sequences",
+			input:   `\n\t\r`,
+			want:    "\n\t\r",
+			wantErr: false,
+		},
+	}
+
+	for i, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			// t.Parallel()
+			got, err := lexer.UnescapeString(tt.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UnescapeString() %d error = %v, wantErr %v", i + 1, err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("UnescapeString() %d got = %v, want %v", i + 1, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestTokenize(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -29,6 +90,42 @@ func TestTokenize(t *testing.T) {
 		want    []lexer.Token
 		wantErr bool
 	}{
+		{
+			name: "String Escape Sequences",
+			input: `"\n\t\r"`,
+			want: []lexer.Token{
+				lexer.NewToken("\"\n\t\r\"", lexer.String, 1, 1, 1, 9),
+				lexer.NewToken("<EOF>", lexer.EOF, 1, 9, 1, 9),
+			},
+			wantErr: false,
+		},              
+		{
+			name: "Multiple Escape Sequences",
+			input: `"Hello\nWorld\t!\"'"`,
+			want: []lexer.Token{
+				lexer.NewToken("\"Hello\nWorld\t!\"'\"", lexer.String, 1, 1, 1, 21),
+				lexer.NewToken("<EOF>", lexer.EOF, 1, 21, 1, 21),
+			},
+			wantErr: false,
+		},              
+		{
+			name: "All Escape Sequences",
+			input: `"\\\\n\t\r\b\f\\\"'"`,
+			want: []lexer.Token{
+				lexer.NewToken("\"\\\\n\t\r\b\f\\\"'\"", lexer.String, 1, 1, 1, 21),
+				lexer.NewToken("<EOF>", lexer.EOF, 1, 21, 1, 21),
+			},
+			wantErr: false,
+		},             
+		{
+			name: "Unicode Escape Sequence",
+			input: `"\u2388 <- UNICODE"`,
+			want: []lexer.Token{
+				lexer.NewToken("\"\u2388 <- UNICODE\"", lexer.String, 1, 1, 1, 20),
+				lexer.NewToken("<EOF>", lexer.EOF, 1, 20, 1, 20),
+			},
+			wantErr: false,
+		},             
 		{
 			name:  "Simple Arithmetic Tokenization",
 			input: "(4+2)*3",
@@ -247,8 +344,6 @@ func TestTokenize(t *testing.T) {
 		},
 		{
 			name: "String with newline",
-			// CURRENT LEXER BEHAVIOR: Treats '\\' and 'n' as two separate characters.
-			// It does NOT process "\\n" into an actual newline character.
 			input: "let s = \"line1\\nline2\";",
 			want: []lexer.Token{
 				lexer.NewToken("let", lexer.Let, 1, 1, 1, 4),
@@ -263,7 +358,7 @@ func TestTokenize(t *testing.T) {
 				// "line2" (5 chars) -> curL=1, curC=22
 				// Consume ". curL=1, curC=23.
 				// So, EndLine=1, EndCol=23.
-				lexer.NewToken("\"line1\\nline2\"", lexer.String, 1, 9, 1, 23),
+				lexer.NewToken("\"line1\nline2\"", lexer.String, 1, 9, 1, 23),
 				lexer.NewToken(";", lexer.SemiColon, 1, 23, 1, 24),
 				lexer.NewToken("<EOF>", lexer.EOF, 1, 24, 1, 24),
 			},
@@ -289,7 +384,7 @@ func TestTokenize(t *testing.T) {
 				// d -> curL=2, curC=3
 				// ' Consume '. curL=2, curC=4
 				// So, EndLine=2, EndCol=4
-				lexer.NewToken("'ab\r\ncd'", lexer.String, 1, 9, 2, 4),
+				lexer.NewToken("'ab\ncd'", lexer.String, 1, 9, 2, 4),
 				lexer.NewToken(";", lexer.SemiColon, 2, 4, 2, 5),
 				lexer.NewToken("<EOF>", lexer.EOF, 2, 5, 2, 5),
 			},
@@ -297,26 +392,26 @@ func TestTokenize(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for i, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
+			// t.Parallel()
 
 			got, err := lexer.Tokenize(tt.input)
 
 			if (err != nil) != tt.wantErr {
-				t.Fatalf("Tokenize() error = %v, wantErr %v", err, tt.wantErr)
+				t.Fatalf("Tokenize() %d error = %v, wantErr %v", i + 1, err, tt.wantErr)
 			}
 
 			if !tt.wantErr {
 				if !reflect.DeepEqual(got, tt.want) {
 					if len(got) != len(tt.want) {
-						t.Errorf("Tokenize() token count mismatch:\nexpected: %d tokens\n     got: %d tokens", len(tt.want), len(got))
+						t.Errorf("Tokenize() %d token count mismatch:\nexpected: %d tokens\n     got: %d tokens", i + 1, len(tt.want), len(got))
 						t.Logf("Expected tokens: %+v", tt.want)
 						t.Logf("Got tokens:      %+v", got)
 						for i := 0; i < min(len(got), len(tt.want)); i++ {
 							if !reflect.DeepEqual(got[i], tt.want[i]) {
-								t.Errorf("Token %d mismatch (first diff):\nexpected: %+v\n     got: %+v", i, tt.want[i], got[i])
+								t.Errorf("Tokenize() %d mismatch (first diff):\nexpected: %+v\n     got: %+v", i + 1, tt.want[i], got[i])
 							}
 						}
 						if len(got) > len(tt.want) {
@@ -325,10 +420,10 @@ func TestTokenize(t *testing.T) {
 							t.Errorf("Missing tokens, expected: %+v", tt.want[len(got):])
 						}
 					} else {
-						for i := range got {
-							if !reflect.DeepEqual(got[i], tt.want[i]) {
-								t.Errorf("Tokenize() mismatch at index %d:\nexpected: %+v (%s)\n     got: %+v (%s)",
-									i, tt.want[i], lexer.Stringify(tt.want[i].Type), got[i], lexer.Stringify(got[i].Type))
+						for j := range got {
+							if !reflect.DeepEqual(got[j], tt.want[j]) {
+								t.Errorf("Tokenize() %d mismatch at index %d:\nexpected: %+v (%s)\n     got: %+v (%s)",
+									i + 1, j, tt.want[j], lexer.Stringify(tt.want[j].Type), got[j], lexer.Stringify(got[j].Type))
 								break
 							}
 						}
