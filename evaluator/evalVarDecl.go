@@ -10,24 +10,14 @@ import (
 )
 
 func evalVarDecl(node *ast.VarDeclaration, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
-	var value shared.RuntimeValue
-
 	if node.Value != nil {
 		evaluated, err := Evaluate(node.Value, env, dbgr)
 		if err != nil {
 			return nil, err
 		}
-
-		value = *evaluated
-	} else {
-		value = values.MK_NIL()
+		return env.DeclareVar(node.Identifier, *evaluated, node.Constant)
 	}
 
-	result, err := env.DeclareVar(node.Identifier, value, node.Constant)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	value := values.MK_NIL()
+	return env.DeclareVar(node.Identifier, value, node.Constant)
 }

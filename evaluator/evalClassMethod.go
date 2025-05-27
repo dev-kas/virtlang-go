@@ -18,19 +18,15 @@ func evalClassMethod(node *ast.ClassMethod, env *environment.Environment) (*shar
 		Value:          nil,
 	}
 
-	_, err := env.DeclareVar(node.Name, shared.RuntimeValue{
+	rtValue := &shared.RuntimeValue{
 		Type:  shared.Function,
-		Value: *method,
-	}, false)
+		Value: method,
+	}
 
+	_, err := env.DeclareVar(node.Name, *rtValue, false)
 	if err != nil {
 		return nil, err
 	}
 
-	result := shared.RuntimeValue{
-		Type:  shared.Function,
-		Value: *method,
-	}
-
-	return &result, nil
+	return rtValue, nil
 }

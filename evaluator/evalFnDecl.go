@@ -9,7 +9,7 @@ import (
 )
 
 func evalFnDecl(node *ast.FnDeclaration, env *environment.Environment) (*shared.RuntimeValue, *errors.RuntimeError) {
-	fn := values.FunctionValue{
+	fn := &values.FunctionValue{
 		Name:           node.Name,
 		Params:         node.Params,
 		DeclarationEnv: env,
@@ -18,12 +18,14 @@ func evalFnDecl(node *ast.FnDeclaration, env *environment.Environment) (*shared.
 		Value:          nil,
 	}
 
-	if node.Anonymous {
-		return &shared.RuntimeValue{
-			Type:  shared.Function,
-			Value: fn,
-		}, nil
-	} else {
-		return env.DeclareVar(node.Name, shared.RuntimeValue{Type: shared.Function, Value: fn}, true)
+	rtValue := &shared.RuntimeValue{
+		Type:  shared.Function,
+		Value: fn,
 	}
+
+	if node.Anonymous {
+		return rtValue, nil
+	}
+
+	return env.DeclareVar(node.Name, *rtValue, true)
 }

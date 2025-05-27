@@ -479,24 +479,115 @@ func TestComparisonOperators(t *testing.T) {
 				Value: false,
 			},
 		},
+		{
+			input: "(1==1) == (1==1)",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "(1==1) == (1!=1)",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "{} == []",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "(1!=1) != (1!=1)",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "(1!=1) != (1==1)",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "{} != []",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "{} == {}",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "let a = []\na == a",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "let a = {}\n a == a",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "let a = []\na != a",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "fn a(){}\nlet b=a\na == b",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "let a = fn(){}\na == a",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "(fn(){}) == (fn(){})",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
 	}
 
-	for _, test := range tests {
+	for i, test := range tests {
 		p := parser.New("test")
 		env := environment.NewEnvironment(nil)
 		program, synErr := p.ProduceAST(test.input)
 		if synErr != nil {
-			t.Errorf("expected no error, got %v", synErr)
+			t.Errorf("[%d] expected no error, got %v, input: %v", i+1, synErr, test.input)
 		}
 		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
 		if runErr != nil {
-			t.Errorf("expected no error, got %v", runErr)
+			t.Errorf("[%d] expected no error, got %v, input: %v", i+1, runErr, test.input)
 		}
 		if evaluated.Type != test.output.Type {
-			t.Errorf("expected %v, got %v", test.output.Type, evaluated.Type)
+			t.Errorf("[%d] expected %v, got %v, input: %v", i+1, test.output.Type, evaluated.Type, test.input)
 		}
 		if evaluated.Value != test.output.Value {
-			t.Errorf("expected %v, got %v", test.output.Value, evaluated.Value)
+			t.Errorf("[%d] expected %v, got %v, input: %v", i+1, test.output.Value, evaluated.Value, test.input)
 		}
 	}
 }

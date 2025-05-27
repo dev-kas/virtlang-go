@@ -9,7 +9,7 @@ import (
 
 type Environment struct {
 	Parent    *Environment
-	Variables map[string]shared.RuntimeValue
+	Variables map[string]*shared.RuntimeValue
 	Constants map[string]struct{}
 	Global    bool
 }
@@ -21,8 +21,8 @@ func NewEnvironment(fork *Environment) Environment {
 	}
 	env := Environment{
 		Parent:    fork,
-		Variables: map[string]shared.RuntimeValue{},
-		Constants: map[string]struct{}{},
+		Variables: make(map[string]*shared.RuntimeValue),
+		Constants: make(map[string]struct{}),
 		Global:    global,
 	}
 
@@ -31,7 +31,8 @@ func NewEnvironment(fork *Environment) Environment {
 
 func (e *Environment) DeclareVar(name string, value shared.RuntimeValue, constant bool) (*shared.RuntimeValue, *errors.RuntimeError) {
 	if name == "" { // Trimming space is intentionally omitted here
-		return &value, nil
+		val := value
+		return &val, nil
 	}
 
 	if _, exists := e.Variables[name]; exists {
@@ -40,12 +41,13 @@ func (e *Environment) DeclareVar(name string, value shared.RuntimeValue, constan
 		}
 	}
 
-	e.Variables[name] = value
+	val := value
+	e.Variables[name] = &val
 	if constant {
 		e.Constants[name] = struct{}{}
 	}
 
-	return &value, nil
+	return e.Variables[name], nil
 }
 
 func (e *Environment) Resolve(varname string) (*Environment, *errors.RuntimeError) {
@@ -67,40 +69,32 @@ func (e *Environment) LookupVar(name string) (*shared.RuntimeValue, *errors.Runt
 	if err != nil {
 		return nil, err
 	}
-	value := env.Variables[name]
-
-	if value.Type == shared.Object || value.Type == shared.Array {
+	value, exists := env.Variables[name]
+	if !exists {
+		return nil, &errors.RuntimeError{
+			Message: fmt.Sprintf("Variable '%s' not found", name),
+		}
 	}
-
-	return &value, err
+	return value, nil
 }
 
 func (e *Environment) AssignVar(name string, value shared.RuntimeValue) (*shared.RuntimeValue, *errors.RuntimeError) {
 	if name == "" { // Trimming space is intentionally omitted here
-		return &value, nil
+		val := value
+		return &val, nil
 	}
 
 	env, err := e.Resolve(name)
 	if err != nil {
 		return nil, err
 	}
+
 	if _, exists := env.Constants[name]; exists {
 		return nil, &errors.RuntimeError{
 			Message: fmt.Sprintf("Cannot reassign to constant variable `%s`", name),
 		}
 	}
 
-	if value.Type == shared.Array || value.Type == shared.Object {
-		currentValue, exists := env.Variables[name]
-		if exists && (currentValue.Type == shared.Array || currentValue.Type == shared.Object) {
-			currentValue.Value = value.Value
-			env.Variables[name] = currentValue
-		} else {
-			env.Variables[name] = value
-		}
-	} else {
-		env.Variables[name] = value
-	}
-
-	return &value, nil
+	env.Variables[name] = &value
+	return env.Variables[name], nil
 }

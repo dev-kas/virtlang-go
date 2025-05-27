@@ -11,33 +11,33 @@ func DeepCopy(env *Environment) *Environment {
 	}
 
 	// Create a new environment with the same parent
-	var newEnv *Environment
-	if env.Parent != nil {
-		parentCopy := DeepCopy(env.Parent)
-		envCopy := NewEnvironment(parentCopy)
-		envCopy.Global = env.Global
-		newEnv = &envCopy
-	} else {
-		envCopy := NewEnvironment(nil)
-		envCopy.Global = env.Global
-		newEnv = &envCopy
+	newEnv := &Environment{
+		Parent:    DeepCopy(env.Parent),
+		Variables: make(map[string]*shared.RuntimeValue),
+		Constants: make(map[string]struct{}),
+		Global:    env.Global,
 	}
 
 	// Copy variables
 	for k, v := range env.Variables {
-		// Create a deep copy of the RuntimeValue
-		var newValue any
+		if v == nil {
+			continue
+		}
+
+		var newValue interface{}
 		switch val := v.Value.(type) {
-		case map[string]*shared.RuntimeValue: // Object
-			newMap := make(map[string]*shared.RuntimeValue, len(val))
-			for mk, mv := range val {
-				if mv != nil {
-					mvCopy := *mv
-					newMap[mk] = &mvCopy
+		case map[string]*shared.RuntimeValue:
+			// Deep copy the object
+			newMap := make(map[string]*shared.RuntimeValue)
+			for k, v := range val {
+				if v != nil {
+					valCopy := *v
+					newMap[k] = &valCopy
 				}
 			}
 			newValue = newMap
-		case []shared.RuntimeValue: // Array
+		case []shared.RuntimeValue:
+			// Deep copy the array
 			newSlice := make([]shared.RuntimeValue, len(val))
 			copy(newSlice, val)
 			newValue = newSlice
@@ -46,10 +46,12 @@ func DeepCopy(env *Environment) *Environment {
 			newValue = v.Value
 		}
 
-		(*newEnv).Variables[k] = shared.RuntimeValue{
+		// Create a new RuntimeValue pointer
+		rv := &shared.RuntimeValue{
 			Type:  v.Type,
 			Value: newValue,
 		}
+		(*newEnv).Variables[k] = rv
 	}
 
 	// Copy constants

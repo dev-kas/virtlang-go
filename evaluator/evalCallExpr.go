@@ -43,7 +43,12 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 		}
 		return result, nil
 	} else if fn.Type == shared.Function {
-		fnVal := fn.Value.(values.FunctionValue)
+		fnVal, ok := fn.Value.(*values.FunctionValue)
+		if !ok {
+			return nil, &errors.RuntimeError{
+				Message: fmt.Sprintf("Expected function value, got %T", fn.Value),
+			}
+		}
 		scope := environment.NewEnvironment(fnVal.DeclarationEnv)
 
 		// Push frame to stack
@@ -60,7 +65,6 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 			})
 		}
 
-		// Handle all function parameters, setting missing ones to nil
 		for i, param := range fnVal.Params {
 			var value shared.RuntimeValue
 			if i < len(args) {
