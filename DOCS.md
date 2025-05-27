@@ -1620,6 +1620,7 @@ import "github.com/dev-kas/virtlang-go/v3/lexer"
 - [func IsNumeric\(r rune\) bool](<#IsNumeric>)
 - [func IsSkippable\(r rune\) bool](<#IsSkippable>)
 - [func Stringify\(t TokenType\) string](<#Stringify>)
+- [func UnescapeString\(s string\) \(string, error\)](<#UnescapeString>)
 - [type Token](<#Token>)
   - [func NewToken\(value string, tokenType TokenType, startLine, startCol, endLine, endCol int\) Token](<#NewToken>)
   - [func Tokenize\(srcCode string\) \(\[\]Token, \*errors.LexerError\)](<#Tokenize>)
@@ -1650,7 +1651,7 @@ var KEYWORDS = map[string]TokenType{
 ```
 
 <a name="IsAlpha"></a>
-## func [IsAlpha](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L155>)
+## func [IsAlpha](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L157>)
 
 ```go
 func IsAlpha(r rune) bool
@@ -1659,7 +1660,7 @@ func IsAlpha(r rune) bool
 
 
 <a name="IsAlphaNumeric"></a>
-## func [IsAlphaNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L163>)
+## func [IsAlphaNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L165>)
 
 ```go
 func IsAlphaNumeric(r rune) bool
@@ -1668,7 +1669,7 @@ func IsAlphaNumeric(r rune) bool
 
 
 <a name="IsBinaryOperator"></a>
-## func [IsBinaryOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L176>)
+## func [IsBinaryOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L178>)
 
 ```go
 func IsBinaryOperator(r rune) bool
@@ -1677,7 +1678,7 @@ func IsBinaryOperator(r rune) bool
 
 
 <a name="IsComparisonOperator"></a>
-## func [IsComparisonOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L185>)
+## func [IsComparisonOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L215>)
 
 ```go
 func IsComparisonOperator(r string) bool
@@ -1686,7 +1687,7 @@ func IsComparisonOperator(r string) bool
 
 
 <a name="IsNumeric"></a>
-## func [IsNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L159>)
+## func [IsNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L161>)
 
 ```go
 func IsNumeric(r rune) bool
@@ -1695,7 +1696,7 @@ func IsNumeric(r rune) bool
 
 
 <a name="IsSkippable"></a>
-## func [IsSkippable](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L167>)
+## func [IsSkippable](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L169>)
 
 ```go
 func IsSkippable(r rune) bool
@@ -1704,7 +1705,7 @@ func IsSkippable(r rune) bool
 
 
 <a name="Stringify"></a>
-## func [Stringify](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L47>)
+## func [Stringify](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L49>)
 
 ```go
 func Stringify(t TokenType) string
@@ -1712,8 +1713,17 @@ func Stringify(t TokenType) string
 
 
 
+<a name="UnescapeString"></a>
+## func [UnescapeString](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L187>)
+
+```go
+func UnescapeString(s string) (string, error)
+```
+
+
+
 <a name="Token"></a>
-## type [Token](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L135-L142>)
+## type [Token](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L137-L144>)
 
 
 
@@ -1729,7 +1739,7 @@ type Token struct {
 ```
 
 <a name="NewToken"></a>
-### func [NewToken](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L144>)
+### func [NewToken](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L146>)
 
 ```go
 func NewToken(value string, tokenType TokenType, startLine, startCol, endLine, endCol int) Token
@@ -1738,7 +1748,7 @@ func NewToken(value string, tokenType TokenType, startLine, startCol, endLine, e
 
 
 <a name="Tokenize"></a>
-### func [Tokenize](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L194>)
+### func [Tokenize](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L224>)
 
 ```go
 func Tokenize(srcCode string) ([]Token, *errors.LexerError)
@@ -1747,7 +1757,7 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError)
 
 
 <a name="TokenType"></a>
-## type [TokenType](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L10>)
+## type [TokenType](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L12>)
 
 
 

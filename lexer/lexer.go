@@ -187,7 +187,7 @@ func IsBinaryOperator(r rune) bool {
 func UnescapeString(s string) (string, error) {
 	stringQuoted := s
 	isQuoted := false
-	
+
 	if len(stringQuoted) == 0 {
 		return "", nil
 	}
