@@ -35,7 +35,7 @@ func evalTryCatch(node *ast.TryCatchStmt, env *environment.Environment, dbgr *de
 			}
 			scope = environment.NewEnvironment(env)
 
-			scope.DeclareVar(node.CatchVar, shared.RuntimeValue{Type: shared.String, Value: "\"Runtime Error: " + err.Message + "\""}, false)
+			scope.DeclareVar(node.CatchVar, shared.RuntimeValue{Type: shared.String, Value: "Runtime Error: " + err.Message}, false)
 
 			var lastResult *shared.RuntimeValue = nil
 			for _, stmt := range node.Catch {

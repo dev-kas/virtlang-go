@@ -37,9 +37,7 @@ func IsTruthy(value *shared.RuntimeValue) bool {
 	case shared.String:
 		// Strings are truthy if they're non-empty
 		str := value.Value.(string)
-		// We are using 2 here because the string, specifically VirtLang's string RuntimeValue,
-		// is wrapped in double quotes which adds 2 characters to the string.
-		return len(str) > 2
+		return len(str) > 0
 
 	case shared.Nil:
 		// nil is always falsy

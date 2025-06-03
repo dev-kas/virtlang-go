@@ -53,11 +53,9 @@ func evalMemberExpr_object(node *ast.MemberExpr, env *environment.Environment, o
 	if prop.Type == shared.ValueType(ast.IdentifierNode) {
 		key = prop.Value.(string)
 	} else {
-		// key = prop.Value.(shared.RuntimeValue).Value.(string)
 		switch v := prop.Value.(type) {
 		case string:
 			key = v
-			// key = v[1 : len(v)-1]
 		case int:
 			key = fmt.Sprintf("%v", v)
 		default:
@@ -143,7 +141,6 @@ func evalMemberExpr_class(node *ast.MemberExpr, env *environment.Environment, db
 			}
 		}
 		key = val.Value.(string)
-		key = key[1 : len(key)-1]
 	} else {
 		key = node.Value.(*ast.Identifier).Symbol
 	}

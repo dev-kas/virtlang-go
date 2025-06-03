@@ -8,14 +8,6 @@ import (
 )
 
 func TestIsTruthy(t *testing.T) {
-	// Helper to create a string RuntimeValue with the expected VirtLang quoted format.
-	// VirtLang strings are stored with their surrounding quotes in the RuntimeValue.Value.
-	NewStringValue := func(s string) *shared.RuntimeValue {
-		return &shared.RuntimeValue{Type: shared.String, Value: "\"" + s + "\""}
-	}
-	// VirtLang empty string "" is represented as "\"\""
-	VirtLangEmptyString := &shared.RuntimeValue{Type: shared.String, Value: "\"\""}
-
 	testCases := []struct {
 		name     string
 		value    *shared.RuntimeValue
@@ -65,22 +57,22 @@ func TestIsTruthy(t *testing.T) {
 		// 4. String Type
 		{
 			name:     "StringNonEmptySimple",
-			value:    NewStringValue("a"),
+			value:    &shared.RuntimeValue{Type: shared.String, Value: "a"},
 			expected: true,
 		},
 		{
 			name:     "StringNonEmptyLong",
-			value:    NewStringValue("hello world"),
+			value:    &shared.RuntimeValue{Type: shared.String, Value: "hello world"},
 			expected: true,
 		},
 		{
 			name:     "StringEmptyVirtLang",
-			value:    VirtLangEmptyString,
+			value:    &shared.RuntimeValue{Type: shared.String, Value: ""},
 			expected: false,
 		},
 		{
 			name:     "StringWithSpaces",
-			value:    NewStringValue("   "),
+			value:    &shared.RuntimeValue{Type: shared.String, Value: "   ",},
 			expected: true,
 		},
 

@@ -94,7 +94,7 @@ func TestTokenize(t *testing.T) {
 			name:  "String Escape Sequences",
 			input: `"\n\t\r"`,
 			want: []lexer.Token{
-				lexer.NewToken("\"\n\t\r\"", lexer.String, 1, 1, 1, 9),
+				lexer.NewToken("\n\t\r", lexer.String, 1, 1, 1, 9),
 				lexer.NewToken("<EOF>", lexer.EOF, 1, 9, 1, 9),
 			},
 			wantErr: false,
@@ -103,7 +103,7 @@ func TestTokenize(t *testing.T) {
 			name:  "Multiple Escape Sequences",
 			input: `"Hello\nWorld\t!\"'"`,
 			want: []lexer.Token{
-				lexer.NewToken("\"Hello\nWorld\t!\"'\"", lexer.String, 1, 1, 1, 21),
+				lexer.NewToken("Hello\nWorld\t!\"'", lexer.String, 1, 1, 1, 21),
 				lexer.NewToken("<EOF>", lexer.EOF, 1, 21, 1, 21),
 			},
 			wantErr: false,
@@ -112,7 +112,7 @@ func TestTokenize(t *testing.T) {
 			name:  "All Escape Sequences",
 			input: `"\\\\n\t\r\b\f\\\"'"`,
 			want: []lexer.Token{
-				lexer.NewToken("\"\\\\n\t\r\b\f\\\"'\"", lexer.String, 1, 1, 1, 21),
+				lexer.NewToken("\\\\n\t\r\b\f\\\"'", lexer.String, 1, 1, 1, 21),
 				lexer.NewToken("<EOF>", lexer.EOF, 1, 21, 1, 21),
 			},
 			wantErr: false,
@@ -121,7 +121,7 @@ func TestTokenize(t *testing.T) {
 			name:  "Unicode Escape Sequence",
 			input: `"\u2388 <- UNICODE"`,
 			want: []lexer.Token{
-				lexer.NewToken("\"\u2388 <- UNICODE\"", lexer.String, 1, 1, 1, 20),
+				lexer.NewToken("\u2388 <- UNICODE", lexer.String, 1, 1, 1, 20),
 				lexer.NewToken("<EOF>", lexer.EOF, 1, 20, 1, 20),
 			},
 			wantErr: false,
@@ -148,7 +148,7 @@ func TestTokenize(t *testing.T) {
 				lexer.NewToken("let", lexer.Let, 1, 1, 1, 4),        // "let"
 				lexer.NewToken("abc", lexer.Identifier, 1, 5, 1, 8), // " abc"
 				lexer.NewToken("=", lexer.Equals, 1, 9, 1, 10),      // " = "
-				lexer.NewToken("'hi'", lexer.String, 1, 11, 1, 15),  // " 'hi'"
+				lexer.NewToken("hi", lexer.String, 1, 11, 1, 15),  // " 'hi'"
 				lexer.NewToken("<EOF>", lexer.EOF, 1, 15, 1, 15),
 			},
 			wantErr: false,
@@ -201,15 +201,15 @@ func TestTokenize(t *testing.T) {
 			want: []lexer.Token{
 				lexer.NewToken("a", lexer.Identifier, 1, 1, 1, 2),
 				lexer.NewToken("=", lexer.Equals, 1, 3, 1, 4),
-				lexer.NewToken(`"double"`, lexer.String, 1, 5, 1, 13),
+				lexer.NewToken(`double`, lexer.String, 1, 5, 1, 13),
 				lexer.NewToken(";", lexer.SemiColon, 1, 13, 1, 14),
 				lexer.NewToken("b", lexer.Identifier, 1, 15, 1, 16),
 				lexer.NewToken("=", lexer.Equals, 1, 17, 1, 18),
-				lexer.NewToken("''", lexer.String, 1, 19, 1, 21),
+				lexer.NewToken("", lexer.String, 1, 19, 1, 21),
 				lexer.NewToken(";", lexer.SemiColon, 1, 21, 1, 22),
 				lexer.NewToken("c", lexer.Identifier, 1, 23, 1, 24),
 				lexer.NewToken("=", lexer.Equals, 1, 25, 1, 26),
-				lexer.NewToken(`"with space"`, lexer.String, 1, 27, 1, 39),
+				lexer.NewToken(`with space`, lexer.String, 1, 27, 1, 39),
 				lexer.NewToken(";", lexer.SemiColon, 1, 39, 1, 40),
 				lexer.NewToken("<EOF>", lexer.EOF, 1, 40, 1, 40),
 			},
@@ -358,7 +358,7 @@ func TestTokenize(t *testing.T) {
 				// "line2" (5 chars) -> curL=1, curC=22
 				// Consume ". curL=1, curC=23.
 				// So, EndLine=1, EndCol=23.
-				lexer.NewToken("\"line1\nline2\"", lexer.String, 1, 9, 1, 23),
+				lexer.NewToken("line1\nline2", lexer.String, 1, 9, 1, 23),
 				lexer.NewToken(";", lexer.SemiColon, 1, 23, 1, 24),
 				lexer.NewToken("<EOF>", lexer.EOF, 1, 24, 1, 24),
 			},
@@ -384,7 +384,7 @@ func TestTokenize(t *testing.T) {
 				// d -> curL=2, curC=3
 				// ' Consume '. curL=2, curC=4
 				// So, EndLine=2, EndCol=4
-				lexer.NewToken("'ab\ncd'", lexer.String, 1, 9, 2, 4),
+				lexer.NewToken("ab\ncd", lexer.String, 1, 9, 2, 4),
 				lexer.NewToken(";", lexer.SemiColon, 2, 4, 2, 5),
 				lexer.NewToken("<EOF>", lexer.EOF, 2, 5, 2, 5),
 			},
@@ -395,7 +395,7 @@ func TestTokenize(t *testing.T) {
 	for i, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			// t.Parallel()
+			t.Parallel()
 
 			got, err := lexer.Tokenize(tt.input)
 

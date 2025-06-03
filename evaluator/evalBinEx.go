@@ -88,7 +88,7 @@ func plusMinus(lhs, rhs *shared.RuntimeValue, isAddition bool) (*shared.RuntimeV
 	var err *errors.RuntimeError
 
 	if lhs.Type == shared.String && rhs.Type == shared.String && isAddition {
-		result = values.MK_STRING(lhs.Value.(string)[:len(lhs.Value.(string))-1] + rhs.Value.(string)[1:])
+		result = values.MK_STRING(lhs.Value.(string) + rhs.Value.(string))
 	} else {
 		lhsValue := lhs.Value.(float64)
 		rhsValue := rhs.Value.(float64)

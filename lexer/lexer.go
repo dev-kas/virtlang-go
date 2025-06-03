@@ -384,7 +384,6 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 		// --- 6. String Literals ('...' or "...") ---
 		if currentCharRune == '\'' || currentCharRune == '"' {
 			quoteRune := currentCharRune
-			openingQuoteStr := string(currentCharRune)
 
 			position++      // Consume opening quote from runes
 			currentColumn++ // Opening quote advances column
@@ -439,7 +438,7 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 						finalBuilder.WriteString("\n")
 					}
 				}
-				fullLiteral := openingQuoteStr + finalBuilder.String() + string(quoteRune)
+				fullLiteral := finalBuilder.String()
 				tokens = append(tokens, NewToken(fullLiteral, String, tokStartLine, tokStartCol, currentLine, currentColumn))
 			} else {
 				return nil, &errors.LexerError{

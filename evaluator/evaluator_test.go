@@ -74,14 +74,6 @@ func TestNumbers(t *testing.T) {
 	}
 }
 
-func normalizeString(s string) string {
-	// Ensure the string is always wrapped in double quotes
-	if len(s) > 0 && s[0] == '\'' && s[len(s)-1] == '\'' {
-		s = `"` + s[1:len(s)-1] + `"`
-	}
-	return s
-}
-
 func TestStrings(t *testing.T) {
 	tests := []struct {
 		input  string
@@ -91,49 +83,49 @@ func TestStrings(t *testing.T) {
 			input: `"hello"`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"hello\"",
+				Value: "hello",
 			},
 		},
 		{
 			input: `"hello world"`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"hello world\"",
+				Value: "hello world",
 			},
 		},
 		{
 			input: `""`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"\"",
+				Value: "",
 			},
 		},
 		{
 			input: `"123"`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"123\"",
+				Value: "123",
 			},
 		},
 		{
 			input: `'hello world'`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'hello world'",
+				Value: "hello world",
 			},
 		},
 		{
 			input: `''`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "''",
+				Value: "",
 			},
 		},
 		{
 			input: `'123'`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'123'",
+				Value: "123",
 			},
 		},
 	}
@@ -153,7 +145,7 @@ func TestStrings(t *testing.T) {
 			t.Errorf("expected %v, got %v", test.output.Type, evaluated.Type)
 		}
 		if evaluated.Value != test.output.Value {
-			t.Errorf("expected %v, got %v", normalizeString(test.output.Value.(string)), normalizeString(evaluated.Value.(string)))
+			t.Errorf("expected %v, got %v", test.output.Value.(string), evaluated.Value.(string))
 		}
 	}
 }
@@ -170,7 +162,7 @@ func TestObjects(t *testing.T) {
 				Value: map[string]*shared.RuntimeValue{
 					"foo": {
 						Type:  shared.String,
-						Value: "\"bar\"",
+						Value: "bar",
 					},
 				},
 			},
@@ -182,11 +174,11 @@ func TestObjects(t *testing.T) {
 				Value: map[string]*shared.RuntimeValue{
 					"foo": {
 						Type:  shared.String,
-						Value: "\"bar\"",
+						Value: "bar",
 					},
 					"bar": {
 						Type:  shared.String,
-						Value: "\"foo\"",
+						Value: "foo",
 					},
 				},
 			},
@@ -570,6 +562,20 @@ func TestComparisonOperators(t *testing.T) {
 				Value: false,
 			},
 		},
+		{
+			input: "'string' == 'another'",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "'string' == 'string'",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
 	}
 
 	for i, test := range tests {
@@ -607,7 +613,7 @@ func TestVariableDeclarationAndAssignment(t *testing.T) {
 			input: "let x = 'hello'\nx",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'hello'",
+				Value: "hello",
 			},
 		},
 		{
@@ -621,7 +627,7 @@ func TestVariableDeclarationAndAssignment(t *testing.T) {
 			input: "let x = {foo: 'bar'}\nx.foo",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'bar'",
+				Value: "bar",
 			},
 		},
 		{
@@ -787,7 +793,7 @@ func TestFunctions(t *testing.T) {
 			input: "fn myFunc() { 'hello' }\nmyFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'hello'",
+				Value: "hello",
 			},
 		},
 		{
@@ -808,7 +814,7 @@ func TestFunctions(t *testing.T) {
 			input: "let myFunc = fn() { 'anonymous' }\nmyFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'anonymous'",
+				Value: "anonymous",
 			},
 		},
 		{
@@ -836,7 +842,7 @@ func TestFunctions(t *testing.T) {
 			input: "fn myFunc() { fn() { 'nested' } }\nlet nestedFunc = myFunc()\nnestedFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'nested'",
+				Value: "nested",
 			},
 		},
 		{
@@ -1243,70 +1249,70 @@ func TestTryCatch(t *testing.T) {
 			input: "let error = 'error not triggered'\ntry {undefinedVariable} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"Runtime Error: Cannot resolve variable `undefinedVariable`\"",
+				Value: "Runtime Error: Cannot resolve variable `undefinedVariable`",
 			},
 		},
 		{
 			input: "let error = 'error not triggered'\ntry {1 + 1} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'error not triggered'",
+				Value: "error not triggered",
 			},
 		},
 		{
 			input: "let error = 'error not triggered'\ntry {let x = 10\nx} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'error not triggered'",
+				Value: "error not triggered",
 			},
 		},
 		{
 			input: "let error = 'error not triggered'\ntry {let x = y} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"Runtime Error: Cannot resolve variable `y`\"",
+				Value: "Runtime Error: Cannot resolve variable `y`",
 			},
 		},
 		{
 			input: "let error = 'error not triggered'\ntry {let x = 10\nx = x + y} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"Runtime Error: Cannot resolve variable `y`\"",
+				Value: "Runtime Error: Cannot resolve variable `y`",
 			},
 		},
 		{
 			input: "let error = 'error not triggered'\ntry {let obj = {foo: 'bar'}\nobj.bar} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'error not triggered'",
+				Value: "error not triggered",
 			},
 		},
 		{
 			input: "let error = 'error not triggered'\ntry {let obj = {foo: 'bar'}\nobj.foo()} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"Runtime Error: Cannot invoke a non-function (attempted to call a string).\"",
+				Value: "Runtime Error: Cannot invoke a non-function (attempted to call a string).",
 			},
 		},
 		{
 			input: "let error = 'error not triggered'\ntry {let arr = [1, 2, 3]\narr[5]} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'error not triggered'",
+				Value: "error not triggered",
 			},
 		},
 		{
 			input: "let error = 'error not triggered'\ntry {let arr = [1, 2, 3]\narr.foo()} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"Runtime Error: Cannot access property of array by non-number (attempting to access properties by Identifier).\"",
+				Value: "Runtime Error: Cannot access property of array by non-number (attempting to access properties by Identifier).",
 			},
 		},
 		{
 			input: "let error = 'error not triggered'\ntry {let x = 10\nx = x + 5} catch e {error = e}\nerror",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'error not triggered'",
+				Value: "error not triggered",
 			},
 		},
 	}
@@ -1346,7 +1352,7 @@ func TestReturnStatements(t *testing.T) {
 			input: "fn myFunc() { return 'hello' }\nmyFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'hello'",
+				Value: "hello",
 			},
 		},
 		{
@@ -1356,7 +1362,7 @@ func TestReturnStatements(t *testing.T) {
 				Value: map[string]*shared.RuntimeValue{
 					"foo": {
 						Type:  shared.String,
-						Value: "'bar'",
+						Value: "bar",
 					},
 				},
 			},
@@ -1379,7 +1385,7 @@ func TestReturnStatements(t *testing.T) {
 			input: "fn myFunc() { return fn() { return 'nested' } }\nlet nestedFunc = myFunc()\nnestedFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'nested'",
+				Value: "nested",
 			},
 		},
 		{
@@ -1407,7 +1413,7 @@ func TestReturnStatements(t *testing.T) {
 			input: "fn myFunc() { let x = {foo: 'bar'}\nreturn x.foo }\nmyFunc()",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "'bar'",
+				Value: "bar",
 			},
 		},
 	}
@@ -1580,7 +1586,7 @@ func TestContinueKeyword(t *testing.T) {
 			input: "let err = ''\ntry {continue} catch e {err = e}\nerr",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"Runtime Error: `continue` statement used outside of a loop context.\"",
+				Value: "Runtime Error: `continue` statement used outside of a loop context.",
 			},
 		},
 	}
@@ -1754,7 +1760,7 @@ func TestBreakKeyword(t *testing.T) {
 			input: "let err = ''\ntry {break} catch e {err = e}\nerr",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"Runtime Error: `break` statement used outside of a loop context.\"",
+				Value: "Runtime Error: `break` statement used outside of a loop context.",
 			},
 		},
 	}
@@ -2000,7 +2006,7 @@ func TestClasses(t *testing.T) {
 			`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"John: Hello World!\"",
+				Value: "John: Hello World!",
 			},
 		},
 		{
@@ -2048,7 +2054,7 @@ func TestClasses(t *testing.T) {
 			`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"Jedi\"",
+				Value: "Jedi",
 			},
 		},
 		{
@@ -2070,7 +2076,7 @@ func TestClasses(t *testing.T) {
 			`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"John\"",
+				Value: "John",
 			},
 		},
 		{
@@ -2126,7 +2132,7 @@ func TestClasses(t *testing.T) {
 			`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"called two\"",
+				Value: "called two",
 			},
 		},
 		{
@@ -2174,7 +2180,7 @@ func TestClasses(t *testing.T) {
 			`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"This is a function property!\"",
+				Value: "This is a function property!",
 			},
 		},
 		{
@@ -2245,7 +2251,7 @@ func TestClasses(t *testing.T) {
 			`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"Transformed\"",
+				Value: "Transformed",
 			},
 		},
 		{
@@ -2279,7 +2285,7 @@ func TestClasses(t *testing.T) {
 			`,
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "\"i am initialized\"",
+				Value: "i am initialized",
 			},
 		},
 	}
