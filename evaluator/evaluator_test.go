@@ -61,7 +61,7 @@ func TestNumbers(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("expected no error, got %v", synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("expected no error, got %v", runErr)
 		}
@@ -145,7 +145,7 @@ func TestStrings(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("expected no error, got %v", synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("expected no error, got %v", runErr)
 		}
@@ -253,7 +253,7 @@ func TestObjects(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("expected no error, got %v", synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("expected no error, got %v", runErr)
 		}
@@ -385,7 +385,7 @@ func TestBinaryExpression(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("[%d] expected no error, got %v", i+1, synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("[%d] expected no error, got %v", i+1, runErr)
 		}
@@ -579,7 +579,7 @@ func TestComparisonOperators(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("[%d] expected no error, got %v, input: %v", i+1, synErr, test.input)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("[%d] expected no error, got %v, input: %v", i+1, runErr, test.input)
 		}
@@ -723,7 +723,7 @@ func TestVariableDeclarationAndAssignment(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
 		}
@@ -878,7 +878,7 @@ func TestFunctions(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
 		}
@@ -1090,7 +1090,7 @@ func TestIfStatements(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
 		}
@@ -1221,7 +1221,7 @@ func TestWhileLoops(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
 		}
@@ -1318,7 +1318,7 @@ func TestTryCatch(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
 		}
@@ -1419,7 +1419,7 @@ func TestReturnStatements(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
 		}
@@ -1592,7 +1592,7 @@ func TestContinueKeyword(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
 		}
@@ -1766,7 +1766,7 @@ func TestBreakKeyword(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
 		}
@@ -1954,7 +1954,7 @@ func TestArrays(t *testing.T) {
 		if synErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
 		}
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
 		}
@@ -2292,7 +2292,7 @@ func TestClasses(t *testing.T) {
 			t.Fatalf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
 		}
 
-		evaluated, runErr := evaluator.Evaluate(program, &env, nil)
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Fatalf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
 		}

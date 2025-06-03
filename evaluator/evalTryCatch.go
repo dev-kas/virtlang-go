@@ -24,7 +24,7 @@ func evalTryCatch(node *ast.TryCatchStmt, env *environment.Environment, dbgr *de
 
 	for _, stmt := range node.Try {
 
-		_, err := Evaluate(stmt, &scope, dbgr)
+		_, err := Evaluate(stmt, scope, dbgr)
 		if err != nil {
 			// Because we are successfully catching this error,
 			// we can safely delete the snapshot
@@ -39,7 +39,7 @@ func evalTryCatch(node *ast.TryCatchStmt, env *environment.Environment, dbgr *de
 
 			var lastResult *shared.RuntimeValue = nil
 			for _, stmt := range node.Catch {
-				res, catchErr := Evaluate(stmt, &scope, dbgr)
+				res, catchErr := Evaluate(stmt, scope, dbgr)
 				if catchErr != nil {
 					return nil, catchErr
 				}

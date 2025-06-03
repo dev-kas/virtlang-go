@@ -23,7 +23,7 @@ func evalWhileLoop(astNode *ast.WhileLoop, env *environment.Environment, dbgr *d
 		if cond.Type == shared.Boolean && cond.Value.(bool) {
 			scope := environment.NewEnvironment(env)
 			for _, stmt := range astNode.Body {
-				_, err := Evaluate(stmt, &scope, dbgr)
+				_, err := Evaluate(stmt, scope, dbgr)
 				if err != nil {
 					switch {
 					case isControlFlow(err, errors.ICP_Continue):

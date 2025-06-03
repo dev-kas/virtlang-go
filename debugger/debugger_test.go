@@ -14,7 +14,7 @@ import (
 // TestNewDebugger tests the creation of a new debugger
 func TestNewDebugger(t *testing.T) {
 	env := environment.NewEnvironment(nil)
-	dbg := debugger.NewDebugger(&env)
+	dbg := debugger.NewDebugger(env)
 
 	if dbg == nil {
 		t.Fatal("NewDebugger returned nil")
@@ -26,7 +26,7 @@ func TestNewDebugger(t *testing.T) {
 	}
 
 	// Check environment is set correctly
-	if dbg.Environment != &env {
+	if dbg.Environment != env {
 		t.Error("Environment not set correctly")
 	}
 }
@@ -49,7 +49,7 @@ func TestStateTransitions(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			env := environment.NewEnvironment(nil)
-			dbg := debugger.NewDebugger(&env)
+			dbg := debugger.NewDebugger(env)
 
 			if tc.setup != nil {
 				tc.setup(dbg)
@@ -70,7 +70,7 @@ func TestStateTransitions(t *testing.T) {
 // TestBreakpointIntegration tests integration with BreakpointManager
 func TestBreakpointIntegration(t *testing.T) {
 	env := environment.NewEnvironment(nil)
-	dbg := debugger.NewDebugger(&env)
+	dbg := debugger.NewDebugger(env)
 
 	file := "test.go"
 	line := 42
@@ -97,10 +97,10 @@ func TestBreakpointIntegration(t *testing.T) {
 // TestEnvironmentIntegration tests that the environment is passed through correctly
 func TestEnvironmentIntegration(t *testing.T) {
 	env := environment.NewEnvironment(nil)
-	dbg := debugger.NewDebugger(&env)
+	dbg := debugger.NewDebugger(env)
 
 	// The debugger should use the provided environment
-	if dbg.Environment != &env {
+	if dbg.Environment != env {
 		t.Error("Debugger does not use the provided environment")
 	}
 
@@ -126,7 +126,7 @@ func TestEnvironmentIntegration(t *testing.T) {
 // TestWaitIfPaused tests the WaitIfPaused functionality
 func TestWaitIfPaused(t *testing.T) {
 	env := environment.NewEnvironment(nil)
-	dbg := debugger.NewDebugger(&env)
+	dbg := debugger.NewDebugger(env)
 
 	// Test that WaitIfPaused doesn't block when not paused
 	done := make(chan bool)
@@ -170,7 +170,7 @@ func TestWaitIfPaused(t *testing.T) {
 // TestIsDebuggable tests the IsDebuggable method
 func TestIsDebuggable(t *testing.T) {
 	env := environment.NewEnvironment(nil)
-	dbg := debugger.NewDebugger(&env)
+	dbg := debugger.NewDebugger(env)
 
 	tests := []struct {
 		name     string
@@ -206,7 +206,7 @@ func TestIsDebuggable(t *testing.T) {
 // TestConcurrentAccess tests thread safety of the debugger
 func TestConcurrentAccess(t *testing.T) {
 	env := environment.NewEnvironment(nil)
-	dbg := debugger.NewDebugger(&env)
+	dbg := debugger.NewDebugger(env)
 
 	var wg sync.WaitGroup
 	numRoutines := 10
@@ -241,7 +241,7 @@ func TestConcurrentAccess(t *testing.T) {
 // TestStepInto tests the StepInto functionality with correct state expectations
 func TestStepInto(t *testing.T) {
 	env := environment.NewEnvironment(nil)
-	dbg := debugger.NewDebugger(&env)
+	dbg := debugger.NewDebugger(env)
 
 	// Set up a goroutine to simulate execution
 	done := make(chan bool)
@@ -277,7 +277,7 @@ func TestStepInto(t *testing.T) {
 // TestStepOver tests the StepOver functionality with correct state expectations
 func TestStepOver(t *testing.T) {
 	env := environment.NewEnvironment(nil)
-	dbg := debugger.NewDebugger(&env)
+	dbg := debugger.NewDebugger(env)
 
 	// Set up initial call stack
 	dbg.PushFrame(debugger.StackFrame{Filename: "main.go", Line: 1})
@@ -316,7 +316,7 @@ func TestStepOver(t *testing.T) {
 // TestStepOut tests the StepOut functionality with correct state expectations
 func TestStepOut(t *testing.T) {
 	env := environment.NewEnvironment(nil)
-	dbg := debugger.NewDebugger(&env)
+	dbg := debugger.NewDebugger(env)
 
 	// Set up initial call stack with multiple frames
 	dbg.PushFrame(debugger.StackFrame{Filename: "main.go", Line: 1})
@@ -356,7 +356,7 @@ func TestStepOut(t *testing.T) {
 // TestCallStack tests the call stack functionality
 func TestCallStack(t *testing.T) {
 	env := environment.NewEnvironment(nil)
-	dbg := debugger.NewDebugger(&env)
+	dbg := debugger.NewDebugger(env)
 
 	// Test initial call stack is empty
 	if len(dbg.CallStack) != 0 {

@@ -2,6 +2,7 @@ package environment
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/dev-kas/virtlang-go/v3/errors"
 	"github.com/dev-kas/virtlang-go/v3/shared"
@@ -12,18 +13,20 @@ type Environment struct {
 	Variables map[string]*shared.RuntimeValue
 	Constants map[string]struct{}
 	Global    bool
+	Mutex     sync.RWMutex
 }
 
-func NewEnvironment(fork *Environment) Environment {
+func NewEnvironment(fork *Environment) *Environment {
 	global := false
 	if fork == nil {
 		global = true
 	}
-	env := Environment{
+	env := &Environment{
 		Parent:    fork,
 		Variables: make(map[string]*shared.RuntimeValue),
 		Constants: make(map[string]struct{}),
 		Global:    global,
+		Mutex:     sync.RWMutex{},
 	}
 
 	return env
@@ -34,6 +37,9 @@ func (e *Environment) DeclareVar(name string, value shared.RuntimeValue, constan
 		val := value
 		return &val, nil
 	}
+
+	e.Mutex.Lock()
+	defer e.Mutex.Unlock()
 
 	if _, exists := e.Variables[name]; exists {
 		return nil, &errors.RuntimeError{
@@ -51,16 +57,21 @@ func (e *Environment) DeclareVar(name string, value shared.RuntimeValue, constan
 }
 
 func (e *Environment) Resolve(varname string) (*Environment, *errors.RuntimeError) {
+	e.Mutex.RLock()
+
 	if _, exists := e.Variables[varname]; exists {
+		e.Mutex.RUnlock()
 		return e, nil
 	}
 
 	if e.Parent == nil {
+		e.Mutex.RUnlock()
 		return nil, &errors.RuntimeError{
 			Message: fmt.Sprintf("Cannot resolve variable `%s`", varname),
 		}
 	}
 
+	e.Mutex.RUnlock()
 	return e.Parent.Resolve(varname)
 }
 
@@ -69,6 +80,10 @@ func (e *Environment) LookupVar(name string) (*shared.RuntimeValue, *errors.Runt
 	if err != nil {
 		return nil, err
 	}
+
+	env.Mutex.RLock()
+	defer env.Mutex.RUnlock()
+
 	value, exists := env.Variables[name]
 	if !exists {
 		return nil, &errors.RuntimeError{
@@ -88,6 +103,9 @@ func (e *Environment) AssignVar(name string, value shared.RuntimeValue) (*shared
 	if err != nil {
 		return nil, err
 	}
+
+	env.Mutex.Lock()
+	defer env.Mutex.Unlock()
 
 	if _, exists := env.Constants[name]; exists {
 		return nil, &errors.RuntimeError{

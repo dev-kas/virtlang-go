@@ -80,7 +80,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 		for _, stmt := range fnVal.Body {
 			var err *errors.RuntimeError
 			var res *shared.RuntimeValue
-			res, err = Evaluate(stmt, &scope, dbgr)
+			res, err = Evaluate(stmt, scope, dbgr)
 			if err != nil {
 				// pop frame from stack
 				if dbgr != nil {
@@ -124,7 +124,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 		for _, stmt := range classVal.Body {
 			if stmt.GetType() == ast.ClassMethodNode {
 				method := stmt.(*ast.ClassMethod)
-				_, err := evalClassMethod(method, &classScope)
+				_, err := evalClassMethod(method, classScope)
 				if err != nil {
 					return nil, err
 				}
@@ -133,7 +133,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 				}
 			} else if stmt.GetType() == ast.ClassPropertyNode {
 				property := stmt.(*ast.ClassProperty)
-				_, err := evalClassProperty(property, &classScope, dbgr)
+				_, err := evalClassProperty(property, classScope, dbgr)
 				if err != nil {
 					return nil, err
 				}
@@ -144,7 +144,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 		}
 
 		constructor := classVal.Constructor
-		constructorScope := environment.NewEnvironment(&classScope)
+		constructorScope := environment.NewEnvironment(classScope)
 		// Handle all constructor parameters, setting missing ones to nil
 		for i, param := range constructor.Params {
 			var value shared.RuntimeValue
@@ -166,7 +166,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 		}
 
 		for _, stmt := range constructor.Body {
-			_, err := Evaluate(stmt, &constructorScope, dbgr)
+			_, err := Evaluate(stmt, constructorScope, dbgr)
 			if err != nil {
 				// Take snapshot and pop frame from stack
 				if dbgr != nil {
@@ -187,7 +187,7 @@ func evalCallExpr(node *ast.CallExpr, env *environment.Environment, dbgr *debugg
 			dbgr.PopFrame()
 		}
 
-		retVal := values.MK_CLASS_INSTANCE(&classVal, publics, &classScope)
+		retVal := values.MK_CLASS_INSTANCE(&classVal, publics, classScope)
 		return &retVal, nil
 	} else {
 		return nil, &errors.RuntimeError{

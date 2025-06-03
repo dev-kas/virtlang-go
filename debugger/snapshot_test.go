@@ -13,7 +13,7 @@ func TestDebugger_TakeSnapshot(t *testing.T) {
 		env := environment.NewEnvironment(nil)
 		env.DeclareVar("testVar", shared.RuntimeValue{Type: shared.Number, Value: 42.0}, false)
 
-		dbg := debugger.NewDebugger(&env)
+		dbg := debugger.NewDebugger(env)
 
 		dbg.PushFrame(debugger.StackFrame{
 			Name:     "testFunction",
@@ -55,7 +55,7 @@ func TestDebugger_TakeSnapshot(t *testing.T) {
 		env := environment.NewEnvironment(nil)
 		env.DeclareVar("testVar", shared.RuntimeValue{Type: shared.Number, Value: 42.0}, false)
 
-		dbg := debugger.NewDebugger(&env)
+		dbg := debugger.NewDebugger(env)
 
 		// Push initial frame
 		dbg.PushFrame(debugger.StackFrame{

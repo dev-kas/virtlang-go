@@ -14,10 +14,10 @@ func TestNewEnvironment(t *testing.T) {
 		t.Errorf("Expected Parent to be nil, but got %v", global.Parent)
 	}
 
-	local := environment.NewEnvironment(&global)
+	local := environment.NewEnvironment(global)
 
-	if local.Parent != &global {
-		t.Errorf("Local environment parent should be global, but got %v and %v", &global, local.Parent)
+	if local.Parent != global {
+		t.Errorf("Local environment parent should be global, but got %v and %v", global, local.Parent)
 	}
 }
 
@@ -107,7 +107,7 @@ func TestResolveAndLookupVarWithParent(t *testing.T) {
 	global := environment.NewEnvironment(nil)
 	global.DeclareVar("globalVar", shared.RuntimeValue{Type: shared.String, Value: "global value"}, false)
 
-	local := environment.NewEnvironment(&global)
+	local := environment.NewEnvironment(global)
 	local.DeclareVar("localVar", shared.RuntimeValue{Type: shared.String, Value: "local value"}, false)
 
 	// Lookup in local scope
@@ -133,7 +133,7 @@ func TestResolveAndLookupVarWithParent(t *testing.T) {
 	if err != nil {
 		t.Errorf("resolve(\"localVar\") returned error: %v", err)
 	}
-	if resolvedLocal != &local {
+	if resolvedLocal != local {
 		t.Errorf("resolve(\"localVar\") should have returned the local environment")
 	}
 
@@ -141,7 +141,7 @@ func TestResolveAndLookupVarWithParent(t *testing.T) {
 	if err != nil {
 		t.Errorf("resolve(\"globalVar\") returned error: %v", err)
 	}
-	if resolvedGlobal != &global {
+	if resolvedGlobal != global {
 		t.Errorf("resolve(\"globalVar\") should have returned the global environment")
 	}
 
