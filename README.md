@@ -20,10 +20,12 @@ VirtLang features a clean three-stage architecture:
 3. **Evaluation** (`evaluator.Evaluate()`) — runs the AST and produces results
 
 The AST separates logic into:
+
 - `Stmt` → non-returning statements (like `let`, `while`, `if`)
 - `Expr` → return-producing expressions (like `1 + 2`, `"hello"`)
 
 Runtime is powered by:
+
 - A unified `RuntimeValue` type system
 - Scoped environments for variable resolution
 - Support for both **native** and **user-defined** functions
@@ -46,47 +48,47 @@ Here's a minimal example showing how to evaluate VirtLang code in Go:
 package main
 
 import (
-	"fmt"
+    "fmt"
 
-	"github.com/dev-kas/virtlang-go/v3/environment"
-	"github.com/dev-kas/virtlang-go/v3/evaluator"
-	"github.com/dev-kas/virtlang-go/v3/parser"
+    "github.com/dev-kas/virtlang-go/v3/environment"
+    "github.com/dev-kas/virtlang-go/v3/evaluator"
+    "github.com/dev-kas/virtlang-go/v3/parser"
 )
 
 func main() {
-	code := `let n = 1
+    code := `let n = 1
 while (n < 10) {
-	n = n + 1
+    n = n + 1
 }
 n // output: 10`
 
-	// Set up parser and global environment
-	p := parser.New()
-	env := environment.NewEnvironment(nil)
+    // Set up parser and global environment
+    p := parser.New("demo")
+    env := environment.NewEnvironment(nil)
 
-	// Parse source code into AST
-	program, err := p.ProduceAST(code)
-	if err != nil {
-		fmt.Printf("Syntax error: %v\n", err)
-		return
-	}
+    // Parse source code into AST
+    program, err := p.ProduceAST(code)
+    if err != nil {
+        fmt.Printf("Syntax error: %v\n", err)
+        return
+    }
 
-	// Evaluate AST
-	result, runErr := evaluator.Evaluate(program, &env)
-	if runErr != nil {
-		fmt.Printf("Runtime error: %v\n", runErr)
-		return
-	}
+    // Evaluate AST
+    result, runErr := evaluator.Evaluate(program, env, nil)
+    if runErr != nil {
+        fmt.Printf("Runtime error: %v\n", runErr)
+        return
+    }
 
-	// Display result
-	fmt.Printf("Result: %v (Type: %v)\n", result.Value, result.Type)
+    // Display result
+    fmt.Printf("Result: %v (Type: %v)\n", result.Value, result.Type)
 }
 ```
 
 ## 📚 Documentation
 
-* Auto-generated Go package docs: [`DOCS.md`](DOCS.md)
-* Full design write-up and architecture: [VirtLang Wiki](https://deepwiki.com/dev-kas/virtlang-go)
+- Auto-generated Go package docs: [`DOCS.md`](DOCS.md)
+- Full design write-up and architecture: [VirtLang Wiki](https://deepwiki.com/dev-kas/virtlang-go)
 
 ## 🤝 Contributing
 
@@ -95,5 +97,5 @@ Found a bug? Want to add a feature? See [`CONTRIBUTING.md`](CONTRIBUTING.md) for
 ## 📊 Analytics
 
 <div align="center">
-  <img src="https://repobeats.axiom.co/api/embed/09a765e0d0bf50cf5dcc409272f31b3c66aa4b7c.svg" title="Repobeats analytics image for virtlang-go" alt="Repobeats analytics image for virtlang-go">
+    <img src="https://repobeats.axiom.co/api/embed/09a765e0d0bf50cf5dcc409272f31b3c66aa4b7c.svg" title="Repobeats analytics image for virtlang-go" alt="Repobeats analytics image for virtlang-go">
 </div>
