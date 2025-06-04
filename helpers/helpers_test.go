@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dev-kas/virtlang-go/v3/shared"
+	"github.com/dev-kas/virtlang-go/v4/shared"
 )
 
 func TestIsTruthy(t *testing.T) {

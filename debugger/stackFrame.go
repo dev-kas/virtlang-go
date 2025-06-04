@@ -1,6 +1,6 @@
 package debugger
 
-import "github.com/dev-kas/virtlang-go/v3/environment"
+import "github.com/dev-kas/virtlang-go/v4/environment"
 
 type StackFrame struct {
 	Name     string

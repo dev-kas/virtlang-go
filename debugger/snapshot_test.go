@@ -3,9 +3,9 @@ package debugger_test
 import (
 	"testing"
 
-	"github.com/dev-kas/virtlang-go/v3/debugger"
-	"github.com/dev-kas/virtlang-go/v3/environment"
-	"github.com/dev-kas/virtlang-go/v3/shared"
+	"github.com/dev-kas/virtlang-go/v4/debugger"
+	"github.com/dev-kas/virtlang-go/v4/environment"
+	"github.com/dev-kas/virtlang-go/v4/shared"
 )
 
 func TestDebugger_TakeSnapshot(t *testing.T) {

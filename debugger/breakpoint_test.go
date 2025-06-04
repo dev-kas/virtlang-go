@@ -3,7 +3,7 @@ package debugger_test
 import (
 	"testing"
 
-	"github.com/dev-kas/virtlang-go/v3/debugger"
+	"github.com/dev-kas/virtlang-go/v4/debugger"
 )
 
 // TestBreakpointManager tests the public API of BreakpointManager

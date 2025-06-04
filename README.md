@@ -50,9 +50,9 @@ package main
 import (
     "fmt"
 
-    "github.com/dev-kas/virtlang-go/v3/environment"
-    "github.com/dev-kas/virtlang-go/v3/evaluator"
-    "github.com/dev-kas/virtlang-go/v3/parser"
+    "github.com/dev-kas/virtlang-go/v4/environment"
+    "github.com/dev-kas/virtlang-go/v4/evaluator"
+    "github.com/dev-kas/virtlang-go/v4/parser"
 )
 
 func main() {

@@ -1,12 +1,12 @@
 package evaluator
 
 import (
-	"github.com/dev-kas/virtlang-go/v3/ast"
-	"github.com/dev-kas/virtlang-go/v3/debugger"
-	"github.com/dev-kas/virtlang-go/v3/environment"
-	"github.com/dev-kas/virtlang-go/v3/errors"
-	"github.com/dev-kas/virtlang-go/v3/shared"
-	"github.com/dev-kas/virtlang-go/v3/values"
+	"github.com/dev-kas/virtlang-go/v4/ast"
+	"github.com/dev-kas/virtlang-go/v4/debugger"
+	"github.com/dev-kas/virtlang-go/v4/environment"
+	"github.com/dev-kas/virtlang-go/v4/errors"
+	"github.com/dev-kas/virtlang-go/v4/shared"
+	"github.com/dev-kas/virtlang-go/v4/values"
 )
 
 func evalProgram(astNode *ast.Program, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {

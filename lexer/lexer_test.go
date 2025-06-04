@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dev-kas/virtlang-go/v3/lexer"
+	"github.com/dev-kas/virtlang-go/v4/lexer"
 )
 
 func TestTokenFactory(t *testing.T) {

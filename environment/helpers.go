@@ -1,7 +1,7 @@
 package environment
 
 import (
-	"github.com/dev-kas/virtlang-go/v3/shared"
+	"github.com/dev-kas/virtlang-go/v4/shared"
 )
 
 // DeepCopy creates a deep copy of the environment

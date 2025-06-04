@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dev-kas/virtlang-go/v3/ast"
-	"github.com/dev-kas/virtlang-go/v3/debugger"
-	"github.com/dev-kas/virtlang-go/v3/environment"
-	"github.com/dev-kas/virtlang-go/v3/shared"
+	"github.com/dev-kas/virtlang-go/v4/ast"
+	"github.com/dev-kas/virtlang-go/v4/debugger"
+	"github.com/dev-kas/virtlang-go/v4/environment"
+	"github.com/dev-kas/virtlang-go/v4/shared"
 )
 
 // TestNewDebugger tests the creation of a new debugger

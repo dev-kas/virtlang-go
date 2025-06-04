@@ -3,8 +3,8 @@ package errors_test
 import (
 	"testing"
 
-	"github.com/dev-kas/virtlang-go/v3/errors"
-	// "github.com/dev-kas/virtlang-go/v3/shared" // We'll use errors.Position
+	"github.com/dev-kas/virtlang-go/v4/errors"
+	// "github.com/dev-kas/virtlang-go/v4/shared" // We'll use errors.Position
 )
 
 func TestRuntimeError(t *testing.T) {

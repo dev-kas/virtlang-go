@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/dev-kas/virtlang-go/v3/errors"
-	"github.com/dev-kas/virtlang-go/v3/shared"
+	"github.com/dev-kas/virtlang-go/v4/errors"
+	"github.com/dev-kas/virtlang-go/v4/shared"
 )
 
 type Environment struct {
