@@ -3,7 +3,7 @@
 # ast
 
 ```go
-import "github.com/dev-kas/virtlang-go/v3/ast"
+import "github.com/dev-kas/virtlang-go/v4/ast"
 ```
 
 ## Index
@@ -934,7 +934,7 @@ func (w *WhileLoop) GetType() NodeType
 # debugger
 
 ```go
-import "github.com/dev-kas/virtlang-go/v3/debugger"
+import "github.com/dev-kas/virtlang-go/v4/debugger"
 ```
 
 ## Index
@@ -1266,7 +1266,7 @@ const (
 # environment
 
 ```go
-import "github.com/dev-kas/virtlang-go/v3/environment"
+import "github.com/dev-kas/virtlang-go/v4/environment"
 ```
 
 ## Index
@@ -1352,7 +1352,7 @@ func (e *Environment) Resolve(varname string) (*Environment, *errors.RuntimeErro
 # errors
 
 ```go
-import "github.com/dev-kas/virtlang-go/v3/errors"
+import "github.com/dev-kas/virtlang-go/v4/errors"
 ```
 
 ## Index
@@ -1566,7 +1566,7 @@ func (e *SyntaxError) Error() string
 # evaluator
 
 ```go
-import "github.com/dev-kas/virtlang-go/v3/evaluator"
+import "github.com/dev-kas/virtlang-go/v4/evaluator"
 ```
 
 ## Index
@@ -1586,7 +1586,7 @@ func Evaluate(astNode ast.Stmt, env *environment.Environment, dbgr *debugger.Deb
 # helpers
 
 ```go
-import "github.com/dev-kas/virtlang-go/v3/helpers"
+import "github.com/dev-kas/virtlang-go/v4/helpers"
 ```
 
 ## Index
@@ -1608,7 +1608,7 @@ Truthiness rules: \- Boolean: true is truthy, false is falsy \- Number: non\-zer
 # lexer
 
 ```go
-import "github.com/dev-kas/virtlang-go/v3/lexer"
+import "github.com/dev-kas/virtlang-go/v4/lexer"
 ```
 
 ## Index
@@ -1808,7 +1808,7 @@ const (
 # parser
 
 ```go
-import "github.com/dev-kas/virtlang-go/v3/parser"
+import "github.com/dev-kas/virtlang-go/v4/parser"
 ```
 
 ## Index
@@ -1850,7 +1850,7 @@ func (p *Parser) ProduceAST(srcCode string) (*ast.Program, error)
 # shared
 
 ```go
-import "github.com/dev-kas/virtlang-go/v3/shared"
+import "github.com/dev-kas/virtlang-go/v4/shared"
 ```
 
 ## Index
@@ -1910,7 +1910,7 @@ const (
 # values
 
 ```go
-import "github.com/dev-kas/virtlang-go/v3/values"
+import "github.com/dev-kas/virtlang-go/v4/values"
 ```
 
 ## Index
