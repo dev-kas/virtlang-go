@@ -3,7 +3,7 @@ package evaluator_test
 import (
 	"fmt"
 	"reflect"
-
+	"strings"
 	"testing"
 
 	"github.com/dev-kas/virtlang-go/v3/environment"
@@ -222,6 +222,13 @@ func TestObjects(t *testing.T) {
 						},
 					},
 				},
+			},
+		},
+		{
+			input: "let error = 'error not triggered'\ntry {undefinedVariable} catch e {error = e}\nerror.message",
+			output: shared.RuntimeValue{
+				Type:  shared.String,
+				Value: "Cannot resolve variable `undefinedVariable`",
 			},
 		},
 		// {
@@ -1244,12 +1251,26 @@ func TestTryCatch(t *testing.T) {
 	tests := []struct {
 		input  string
 		output shared.RuntimeValue
+		check  func(t *testing.T, result shared.RuntimeValue) bool
 	}{
 		{
-			input: "let error = 'error not triggered'\ntry {undefinedVariable} catch e {error = e}\nerror",
+			input: "let error = 'error not triggered'\ntry {undefinedVariable} catch e {error = e}\nerror.message",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot resolve variable `undefinedVariable`",
+				Value: "Cannot resolve variable `undefinedVariable`",
+			},
+			check: func(t *testing.T, result shared.RuntimeValue) bool {
+				if result.Type != shared.String {
+					t.Errorf("Expected error to be a string, got %v", result.Type)
+					return false
+				}
+
+				if !strings.Contains(result.Value.(string), "Cannot resolve variable") {
+					t.Errorf("Unexpected error message: %v", result.Value)
+					return false
+				}
+
+				return true
 			},
 		},
 		{
@@ -1267,17 +1288,17 @@ func TestTryCatch(t *testing.T) {
 			},
 		},
 		{
-			input: "let error = 'error not triggered'\ntry {let x = y} catch e {error = e}\nerror",
+			input: "let error = 'error not triggered'\ntry {let x = y} catch e {error = e}\nerror.message",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot resolve variable `y`",
+				Value: "Cannot resolve variable `y`",
 			},
 		},
 		{
-			input: "let error = 'error not triggered'\ntry {let x = 10\nx = x + y} catch e {error = e}\nerror",
+			input: "let error = 'error not triggered'\ntry {let x = 10\nx = x + y} catch e {error = e}\nerror.message",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot resolve variable `y`",
+				Value: "Cannot resolve variable `y`",
 			},
 		},
 		{
@@ -1288,10 +1309,10 @@ func TestTryCatch(t *testing.T) {
 			},
 		},
 		{
-			input: "let error = 'error not triggered'\ntry {let obj = {foo: 'bar'}\nobj.foo()} catch e {error = e}\nerror",
+			input: "let error = 'error not triggered'\ntry {let obj = {foo: 'bar'}\nobj.foo()} catch e {error = e}\nerror.message",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot invoke a non-function (attempted to call a string).",
+				Value: "Cannot invoke a non-function (attempted to call a string).",
 			},
 		},
 		{
@@ -1302,10 +1323,10 @@ func TestTryCatch(t *testing.T) {
 			},
 		},
 		{
-			input: "let error = 'error not triggered'\ntry {let arr = [1, 2, 3]\narr.foo()} catch e {error = e}\nerror",
+			input: "let error = 'error not triggered'\ntry {let arr = [1, 2, 3]\narr.foo()} catch e {error = e}\nerror.message",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: Cannot access property of array by non-number (attempting to access properties by Identifier).",
+				Value: "Cannot access property of array by non-number (attempting to access properties by Identifier).",
 			},
 		},
 		{
@@ -1318,22 +1339,34 @@ func TestTryCatch(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		p := parser.New("test")
-		env := environment.NewEnvironment(nil)
-		program, synErr := p.ProduceAST(test.input)
-		if synErr != nil {
-			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
-		}
-		evaluated, runErr := evaluator.Evaluate(program, env, nil)
-		if runErr != nil {
-			t.Errorf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
-		}
-		if evaluated.Type != test.output.Type {
-			t.Errorf("test %d failed: input=%q, expected type %v, got %v", i, test.input, test.output.Type, evaluated.Type)
-		}
-		if evaluated.Value != test.output.Value {
-			t.Errorf("test %d failed: input=%q, value mismatch. expected %v, got %v", i, test.input, test.output.Value, evaluated.Value)
-		}
+		t.Run(fmt.Sprintf("test_%d", i), func(t *testing.T) {
+			p := parser.New("test")
+			env := environment.NewEnvironment(nil)
+			program, synErr := p.ProduceAST(test.input)
+			if synErr != nil {
+				t.Fatalf("parser error: %v", synErr)
+			}
+	
+			evaluated, runErr := evaluator.Evaluate(program, env, nil)
+			if runErr != nil {
+				t.Fatalf("evaluation error: %v", runErr)
+			}
+	
+			if test.check != nil {
+				if !test.check(t, *evaluated) {
+					t.Errorf("test %d failed custom check for input: %q", i, test.input)
+				}
+			} else {
+				if evaluated.Type != test.output.Type {
+					t.Errorf("test %d failed: input=%q, expected type %v, got %v", 
+						i, test.input, test.output.Type, evaluated.Type)
+				}
+				if !reflect.DeepEqual(evaluated.Value, test.output.Value) {
+					t.Errorf("test %d failed: input=%q, value mismatch. expected %+v, got %+v", 
+						i, test.input, test.output.Value, evaluated.Value)
+				}
+			}
+		})
 	}
 }
 func TestReturnStatements(t *testing.T) {
@@ -1583,10 +1616,10 @@ func TestContinueKeyword(t *testing.T) {
 			},
 		},
 		{
-			input: "let err = ''\ntry {continue} catch e {err = e}\nerr",
+			input: "let err = ''\ntry {continue} catch e {err = e}\nerr.message",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: `continue` statement used outside of a loop context.",
+				Value: "`continue` statement used outside of a loop context.",
 			},
 		},
 	}
@@ -1757,10 +1790,10 @@ func TestBreakKeyword(t *testing.T) {
 			},
 		},
 		{
-			input: "let err = ''\ntry {break} catch e {err = e}\nerr",
+			input: "let err = ''\ntry {break} catch e {err = e}\nerr.message",
 			output: shared.RuntimeValue{
 				Type:  shared.String,
-				Value: "Runtime Error: `break` statement used outside of a loop context.",
+				Value: "`break` statement used outside of a loop context.",
 			},
 		},
 	}
