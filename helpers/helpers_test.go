@@ -72,7 +72,7 @@ func TestIsTruthy(t *testing.T) {
 		},
 		{
 			name:     "StringWithSpaces",
-			value:    &shared.RuntimeValue{Type: shared.String, Value: "   ",},
+			value:    &shared.RuntimeValue{Type: shared.String, Value: "   "},
 			expected: true,
 		},
 

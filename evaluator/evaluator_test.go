@@ -1346,23 +1346,23 @@ func TestTryCatch(t *testing.T) {
 			if synErr != nil {
 				t.Fatalf("parser error: %v", synErr)
 			}
-	
+
 			evaluated, runErr := evaluator.Evaluate(program, env, nil)
 			if runErr != nil {
 				t.Fatalf("evaluation error: %v", runErr)
 			}
-	
+
 			if test.check != nil {
 				if !test.check(t, *evaluated) {
 					t.Errorf("test %d failed custom check for input: %q", i, test.input)
 				}
 			} else {
 				if evaluated.Type != test.output.Type {
-					t.Errorf("test %d failed: input=%q, expected type %v, got %v", 
+					t.Errorf("test %d failed: input=%q, expected type %v, got %v",
 						i, test.input, test.output.Type, evaluated.Type)
 				}
 				if !reflect.DeepEqual(evaluated.Value, test.output.Value) {
-					t.Errorf("test %d failed: input=%q, value mismatch. expected %+v, got %+v", 
+					t.Errorf("test %d failed: input=%q, value mismatch. expected %+v, got %+v",
 						i, test.input, test.output.Value, evaluated.Value)
 				}
 			}

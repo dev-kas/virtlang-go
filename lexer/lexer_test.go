@@ -148,7 +148,7 @@ func TestTokenize(t *testing.T) {
 				lexer.NewToken("let", lexer.Let, 1, 1, 1, 4),        // "let"
 				lexer.NewToken("abc", lexer.Identifier, 1, 5, 1, 8), // " abc"
 				lexer.NewToken("=", lexer.Equals, 1, 9, 1, 10),      // " = "
-				lexer.NewToken("hi", lexer.String, 1, 11, 1, 15),  // " 'hi'"
+				lexer.NewToken("hi", lexer.String, 1, 11, 1, 15),    // " 'hi'"
 				lexer.NewToken("<EOF>", lexer.EOF, 1, 15, 1, 15),
 			},
 			wantErr: false,
