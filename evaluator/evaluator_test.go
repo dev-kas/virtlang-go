@@ -231,18 +231,26 @@ func TestObjects(t *testing.T) {
 				Value: "Cannot resolve variable `undefinedVariable`",
 			},
 		},
-		// {
-		// 	input: `{foo: fn (){"hello world"}}`,
-		// 	output: shared.RuntimeValue{
-		// 		Type:  shared.Object,
-		// 		Value: map[string]*shared.RuntimeValue{
-		// 			"foo": {
-		// 				Type:  shared.Function,
-		// 				Value: map[string]*shared.RuntimeValue{},
-		// 			},
-		// 		},
-		// 	},
-		// },
+		{
+			input: "let obj = { class: 'legendary' }\nobj.fn = 'Function'\nobj.if = 'Branch'\nobj",
+			output: shared.RuntimeValue{
+				Type: shared.Object,
+				Value: map[string]*shared.RuntimeValue{
+					"class": {
+						Type:  shared.String,
+						Value: "legendary",
+					},
+					"fn": {
+						Type:  shared.String,
+						Value: "Function",
+					},
+					"if": {
+						Type:  shared.String,
+						Value: "Branch",
+					},
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {
