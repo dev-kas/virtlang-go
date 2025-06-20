@@ -255,17 +255,18 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 		if IsSkippable(currentCharRune) {
 			position++ // Consume the skippable rune
 
-			if currentCharRune == '\n' {
+			switch currentCharRune {
+			case '\n':
 				currentLine++
 				currentColumn = 1
-			} else if currentCharRune == '\r' {
+			case '\r':
 				currentLine++
 				currentColumn = 1
 				// Handle \r\n sequence
 				if position < srcLen && runes[position] == '\n' {
 					position++ // Consume \n as part of the same line break
 				}
-			} else { // space or tab
+			default: // space or tab
 				currentColumn++
 			}
 			continue
@@ -316,16 +317,17 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 						char1Rune := runes[position]
 
 						position++ // Consume current rune in comment body
-						if char1Rune == '\n' {
+						switch char1Rune {
+						case '\n':
 							currentLine++
 							currentColumn = 1
-						} else if char1Rune == '\r' {
+						case '\r':
 							currentLine++
 							currentColumn = 1
 							if position < srcLen && runes[position] == '\n' { // Check for \r\n
 								position++
 							}
-						} else {
+						default:
 							currentColumn++
 						}
 
@@ -407,17 +409,18 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 				strContentBuilder.WriteRune(loopRune) // Add the current rune to our string's content
 				position++                            // Consume the rune from source
 
-				if loopRune == '\n' { // LF
+				switch loopRune {
+				case '\n': // LF
 					currentLine++
 					currentColumn = 1
-				} else if loopRune == '\r' { // CR
+				case '\r': // CR
 					currentLine++
 					currentColumn = 1
 					if position < srcLen && runes[position] == '\n' { // Check for CRLF
 						strContentBuilder.WriteRune(runes[position]) // Add LF part of CRLF
 						position++                                   // Consume the LF from runes
 					}
-				} else { // Regular character
+				default: // Regular character
 					currentColumn++
 				}
 			}

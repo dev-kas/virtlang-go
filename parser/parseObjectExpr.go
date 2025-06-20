@@ -12,7 +12,7 @@ func (p *Parser) parseObjectExpr() (ast.Expr, *errors.SyntaxError) {
 		return p.parseAdditiveExpr()
 	}
 
-	p.advance() // { 
+	p.advance() // {
 
 	properties := []ast.Property{}
 
