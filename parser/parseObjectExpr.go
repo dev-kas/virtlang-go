@@ -12,14 +12,20 @@ func (p *Parser) parseObjectExpr() (ast.Expr, *errors.SyntaxError) {
 		return p.parseAdditiveExpr()
 	}
 
-	p.advance()
+	p.advance() // { 
 
 	properties := []ast.Property{}
 
 	for !p.isEOF() && p.at().Type != lexer.CBrace {
-		key, err := p.expect(lexer.Identifier)
-		if err != nil {
-			return nil, err
+		var key *lexer.Token
+		var err *errors.SyntaxError
+		if _, ok := lexer.REVERSE_KEYWORDS[p.at().Type]; ok {
+			key = p.advance()
+		} else {
+			key, err = p.expect(lexer.Identifier)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		if p.at().Type == lexer.Comma { // { key, }

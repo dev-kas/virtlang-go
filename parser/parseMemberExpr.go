@@ -20,18 +20,27 @@ func (p *Parser) parseMemberExpr() (ast.Expr, *errors.SyntaxError) {
 
 		if operator.Type == lexer.Dot {
 			computed = false
-			property, err = p.parsePrimaryExpr()
-			if err != nil {
-				return nil, err
+
+			var key *lexer.Token
+			var err *errors.SyntaxError
+			if _, ok := lexer.REVERSE_KEYWORDS[p.at().Type]; ok {
+				key = p.advance()
+			} else {
+				key, err = p.expect(lexer.Identifier)
+				if err != nil {
+					return nil, err
+				}
 			}
 
-			if property.GetType() != ast.IdentifierNode {
-				return nil, &errors.SyntaxError{
-					Expected: "Identifier",
-					Got:      property.GetType().String(),
-					Start:    errors.Position{Line: p.at().StartLine, Col: p.at().StartCol},
-					End:      errors.Position{Line: p.at().EndLine, Col: p.at().EndCol},
-				}
+			property = &ast.Identifier{
+				Symbol: key.Literal,
+				SourceMetadata: ast.SourceMetadata{
+					Filename:    p.filename,
+					StartLine:   start.StartLine,
+					StartColumn: start.StartCol,
+					EndLine:     p.at().EndLine,
+					EndColumn:   p.at().EndCol,
+				},
 			}
 		} else {
 			computed = true

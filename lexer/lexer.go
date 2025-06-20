@@ -134,6 +134,8 @@ var KEYWORDS = map[string]TokenType{
 	"private":  Private,
 }
 
+var REVERSE_KEYWORDS = make(map[TokenType]string, len(KEYWORDS))
+
 type Token struct {
 	Type      TokenType
 	Literal   string
@@ -535,4 +537,10 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 	// --- EOF Token ---
 	tokens = append(tokens, NewToken("<EOF>", EOF, currentLine, currentColumn, currentLine, currentColumn))
 	return tokens, nil
+}
+
+func init() {
+	for k, v := range KEYWORDS {
+		REVERSE_KEYWORDS[v] = k
+	}
 }
