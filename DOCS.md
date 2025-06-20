@@ -1651,8 +1651,14 @@ var KEYWORDS = map[string]TokenType{
 }
 ```
 
+<a name="REVERSE_KEYWORDS"></a>
+
+```go
+var REVERSE_KEYWORDS = make(map[TokenType]string, len(KEYWORDS))
+```
+
 <a name="IsAlpha"></a>
-## func [IsAlpha](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L157>)
+## func [IsAlpha](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L159>)
 
 ```go
 func IsAlpha(r rune) bool
@@ -1661,7 +1667,7 @@ func IsAlpha(r rune) bool
 
 
 <a name="IsAlphaNumeric"></a>
-## func [IsAlphaNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L165>)
+## func [IsAlphaNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L167>)
 
 ```go
 func IsAlphaNumeric(r rune) bool
@@ -1670,7 +1676,7 @@ func IsAlphaNumeric(r rune) bool
 
 
 <a name="IsBinaryOperator"></a>
-## func [IsBinaryOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L178>)
+## func [IsBinaryOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L180>)
 
 ```go
 func IsBinaryOperator(r rune) bool
@@ -1679,7 +1685,7 @@ func IsBinaryOperator(r rune) bool
 
 
 <a name="IsComparisonOperator"></a>
-## func [IsComparisonOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L215>)
+## func [IsComparisonOperator](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L217>)
 
 ```go
 func IsComparisonOperator(r string) bool
@@ -1688,7 +1694,7 @@ func IsComparisonOperator(r string) bool
 
 
 <a name="IsNumeric"></a>
-## func [IsNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L161>)
+## func [IsNumeric](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L163>)
 
 ```go
 func IsNumeric(r rune) bool
@@ -1697,7 +1703,7 @@ func IsNumeric(r rune) bool
 
 
 <a name="IsSkippable"></a>
-## func [IsSkippable](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L169>)
+## func [IsSkippable](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L171>)
 
 ```go
 func IsSkippable(r rune) bool
@@ -1715,7 +1721,7 @@ func Stringify(t TokenType) string
 
 
 <a name="UnescapeString"></a>
-## func [UnescapeString](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L187>)
+## func [UnescapeString](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L189>)
 
 ```go
 func UnescapeString(s string) (string, error)
@@ -1724,7 +1730,7 @@ func UnescapeString(s string) (string, error)
 
 
 <a name="Token"></a>
-## type [Token](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L137-L144>)
+## type [Token](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L139-L146>)
 
 
 
@@ -1740,7 +1746,7 @@ type Token struct {
 ```
 
 <a name="NewToken"></a>
-### func [NewToken](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L146>)
+### func [NewToken](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L148>)
 
 ```go
 func NewToken(value string, tokenType TokenType, startLine, startCol, endLine, endCol int) Token
@@ -1749,7 +1755,7 @@ func NewToken(value string, tokenType TokenType, startLine, startCol, endLine, e
 
 
 <a name="Tokenize"></a>
-### func [Tokenize](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L224>)
+### func [Tokenize](<https://github.com/dev-kas/virtlang-go/blob/master/lexer/lexer.go#L226>)
 
 ```go
 func Tokenize(srcCode string) ([]Token, *errors.LexerError)
