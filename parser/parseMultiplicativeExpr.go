@@ -6,7 +6,7 @@ import (
 )
 
 func (p *Parser) parseMultiplicativeExpr() (ast.Expr, *errors.SyntaxError) {
-	lhs, err := p.parseCallMemberExpr()
+	lhs, err := p.parseUnaryExpr()
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +31,7 @@ func (p *Parser) parseMultiplicativeExpr() (ast.Expr, *errors.SyntaxError) {
 			}
 		}
 
-		rhs, err := p.parseCallMemberExpr()
+		rhs, err := p.parseUnaryExpr()
 		if err != nil {
 			return nil, err
 		}

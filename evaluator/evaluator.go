@@ -63,6 +63,9 @@ func Evaluate(astNode ast.Stmt, env *environment.Environment, dbgr *debugger.Deb
 	case ast.CompareExprNode:
 		return evalComEx(astNode.(*ast.CompareExpr), env, dbgr)
 
+	case ast.LogicalExprNode:
+		return evalLogicEx(astNode.(*ast.LogicalExpr), env, dbgr)
+
 	case ast.ProgramNode:
 		return evalProgram(astNode.(*ast.Program), env, dbgr)
 

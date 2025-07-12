@@ -2513,7 +2513,86 @@ func TestLogicalOperators(t *testing.T) {
 			},
 		},
 		{
+			input: "!!!true",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
 			input: "!false",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "!nil",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "!!nil",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		// few complex cases
+		{
+			input: "!true || false",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "!true && false",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "!true && !false",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "!!!!(1.23 || false) && (!!true ?? nil) && !(0 || false) && !true",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		// De Morgan's laws
+		{
+			input: "!(true || true)",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "!(false || false)",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "!(true && true)",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "!(false && false)",
 			output: shared.RuntimeValue{
 				Type:  shared.Boolean,
 				Value: true,

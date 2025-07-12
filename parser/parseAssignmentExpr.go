@@ -8,7 +8,7 @@ import (
 
 func (p *Parser) parseAssignmentExpr() (ast.Expr, *errors.SyntaxError) {
 	start := p.at()
-	lhs, err := p.parseComparisonExpr()
+	lhs, err := p.parseLogicalExpr()
 	if err != nil {
 		return nil, err
 	}

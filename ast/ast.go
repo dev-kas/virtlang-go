@@ -26,6 +26,7 @@ const (
 	IdentifierNode
 	CompareExprNode
 	BinaryExprNode
+	LogicalExprNode
 )
 
 func (n NodeType) String() string {
@@ -72,6 +73,8 @@ func (n NodeType) String() string {
 		return "ClassMethod"
 	case ClassPropertyNode:
 		return "ClassProperty"
+	case LogicalExprNode:
+		return "LogicalExpr"
 	default:
 		return "UnknownNodeType"
 	}
@@ -96,6 +99,15 @@ const (
 	Multiply BinaryOperator = "*"
 	Divide   BinaryOperator = "/"
 	Modulo   BinaryOperator = "%"
+)
+
+type LogicalOperator string
+
+const (
+	LogicalAND LogicalOperator = "&&"
+	LogicalOR  LogicalOperator = "||"
+	LogicalNilCoalescing LogicalOperator = "??"
+	LogicalNOT LogicalOperator = "!"
 )
 
 type SourceMetadata struct {
@@ -260,6 +272,16 @@ type CompareExpr struct {
 
 func (c *CompareExpr) GetType() NodeType                 { return CompareExprNode }
 func (c *CompareExpr) GetSourceMetadata() SourceMetadata { return c.SourceMetadata }
+
+type LogicalExpr struct {
+	LHS      *Expr // Optional LHS for unary operators
+	RHS      Expr
+	Operator LogicalOperator
+	SourceMetadata
+}
+
+func (l *LogicalExpr) GetType() NodeType                 { return LogicalExprNode }
+func (l *LogicalExpr) GetSourceMetadata() SourceMetadata { return l.SourceMetadata }
 
 type CallExpr struct {
 	Args   []Expr
