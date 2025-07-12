@@ -43,6 +43,7 @@ const (
 	Class                        // class
 	Public                       // public
 	Private                      // private
+	LogicalOperator              // && || ?? !
 	EOF                          // end of file
 )
 
@@ -110,6 +111,8 @@ func Stringify(t TokenType) string {
 		return "Public"
 	case Private:
 		return "Private"
+	case LogicalOperator:
+		return "LogicalOperator"
 	case EOF:
 		return "EOF"
 	default:
@@ -217,6 +220,15 @@ func UnescapeString(s string) (string, error) {
 func IsComparisonOperator(r string) bool {
 	switch r {
 	case "==", ">", "<", "!=", "<=", ">=":
+		return true
+	default:
+		return false
+	}
+}
+
+func IsLogicalOperator(r string) bool {
+	switch r {
+	case "&&", "||", "??", "!":
 		return true
 	default:
 		return false
@@ -385,7 +397,26 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 			}
 		}
 
-		// --- 6. String Literals ('...' or "...") ---
+		// --- 6. Logical Operators (&&, ||, ??, !) ---
+		if twoCharacterOperator := "" ; func()bool{
+			if position+1 < srcLen {
+				twoCharacterOperator = string([]rune{currentCharRune, runes[position+1]})
+				return IsLogicalOperator(twoCharacterOperator)
+			}
+			return false
+		}() {
+			position += 2
+			currentColumn += 2
+			tokens = append(tokens, NewToken(twoCharacterOperator, LogicalOperator, tokStartLine, tokStartCol, currentLine, currentColumn))
+			continue
+		} else if IsLogicalOperator(string(currentCharRune)) {
+			position++
+			currentColumn++
+			tokens = append(tokens, NewToken(string(currentCharRune), LogicalOperator, tokStartLine, tokStartCol, currentLine, currentColumn))
+			continue
+		}
+
+		// --- 7. String Literals ('...' or "...") ---
 		if currentCharRune == '\'' || currentCharRune == '"' {
 			quoteRune := currentCharRune
 
@@ -454,7 +485,7 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 			continue
 		}
 
-		// --- 7. Numbers (integers, floats, including dot-prefixed like .5) ---
+		// --- 8. Numbers (integers, floats, including dot-prefixed like .5) ---
 		if currentCharRune == '.' {
 			if position+1 < srcLen && IsNumeric(runes[position+1]) { // Number like .5
 				numStartIndex := position
@@ -508,7 +539,7 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 			continue
 		}
 
-		// --- 8. Identifiers and Keywords ---
+		// --- 9. Identifiers and Keywords ---
 		if IsAlpha(currentCharRune) || currentCharRune == '_' || currentCharRune == '$' {
 			identStartIndex := position
 
@@ -530,7 +561,7 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 			continue
 		}
 
-		// --- 9. Unrecognized Character ---
+		// --- 10. Unrecognized Character ---
 		return nil, &errors.LexerError{
 			Character: currentCharRune,
 			Pos:       errors.Position{Line: tokStartLine, Col: tokStartCol},
