@@ -47,6 +47,10 @@ import "github.com/dev-kas/virtlang-go/v4/ast"
 - [type IfStatement](<#IfStatement>)
   - [func \(i \*IfStatement\) GetSourceMetadata\(\) SourceMetadata](<#IfStatement.GetSourceMetadata>)
   - [func \(i \*IfStatement\) GetType\(\) NodeType](<#IfStatement.GetType>)
+- [type LogicalExpr](<#LogicalExpr>)
+  - [func \(l \*LogicalExpr\) GetSourceMetadata\(\) SourceMetadata](<#LogicalExpr.GetSourceMetadata>)
+  - [func \(l \*LogicalExpr\) GetType\(\) NodeType](<#LogicalExpr.GetType>)
+- [type LogicalOperator](<#LogicalOperator>)
 - [type MemberExpr](<#MemberExpr>)
   - [func \(m \*MemberExpr\) GetSourceMetadata\(\) SourceMetadata](<#MemberExpr.GetSourceMetadata>)
   - [func \(m \*MemberExpr\) GetType\(\) NodeType](<#MemberExpr.GetType>)
@@ -517,6 +521,58 @@ func (i *IfStatement) GetType() NodeType
 
 
 
+<a name="LogicalExpr"></a>
+## type LogicalExpr
+
+
+
+```go
+type LogicalExpr struct {
+    LHS      *Expr // Optional LHS for unary operators
+    RHS      Expr
+    Operator LogicalOperator
+    SourceMetadata
+}
+```
+
+<a name="LogicalExpr.GetSourceMetadata"></a>
+### func \(\*LogicalExpr\) GetSourceMetadata
+
+```go
+func (l *LogicalExpr) GetSourceMetadata() SourceMetadata
+```
+
+
+
+<a name="LogicalExpr.GetType"></a>
+### func \(\*LogicalExpr\) GetType
+
+```go
+func (l *LogicalExpr) GetType() NodeType
+```
+
+
+
+<a name="LogicalOperator"></a>
+## type LogicalOperator
+
+
+
+```go
+type LogicalOperator string
+```
+
+<a name="LogicalAND"></a>
+
+```go
+const (
+    LogicalAND           LogicalOperator = "&&"
+    LogicalOR            LogicalOperator = "||"
+    LogicalNilCoalescing LogicalOperator = "??"
+    LogicalNOT           LogicalOperator = "!"
+)
+```
+
 <a name="MemberExpr"></a>
 ## type MemberExpr
 
@@ -585,6 +641,7 @@ const (
     IdentifierNode
     CompareExprNode
     BinaryExprNode
+    LogicalExprNode
 )
 ```
 

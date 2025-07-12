@@ -104,10 +104,10 @@ const (
 type LogicalOperator string
 
 const (
-	LogicalAND LogicalOperator = "&&"
-	LogicalOR  LogicalOperator = "||"
+	LogicalAND           LogicalOperator = "&&"
+	LogicalOR            LogicalOperator = "||"
 	LogicalNilCoalescing LogicalOperator = "??"
-	LogicalNOT LogicalOperator = "!"
+	LogicalNOT           LogicalOperator = "!"
 )
 
 type SourceMetadata struct {
