@@ -12,39 +12,39 @@ import (
 type TokenType int
 
 const (
-	Number      TokenType = iota // 0 - 9
-	Identifier                   // a - z A - Z 0 - 9 _ $
-	Equals                       // =
-	BinOperator                  // / * + _
-	OParen                       // (
-	CParen                       // )
-	Let                          // let
-	Const                        // const
-	SemiColon                    // ;
-	Comma                        // ,
-	Colon                        // :
-	OBrace                       // {
-	CBrace                       // }
-	OBracket                     // [
-	CBracket                     // ]
-	Dot                          // .
-	Fn                           // fn
-	ComOperator                  // < == > != <= >=
-	If                           // if
-	Else                         // else
-	String                       // '...' "..."
-	WhileLoop                    // while
-	Comment                      // /*...*/ //...
-	Try                          // try
-	Catch                        // catch
-	Return                       // return
-	Break                        // break
-	Continue                     // continue
-	Class                        // class
-	Public                       // public
-	Private                      // private
-	LogicalOperator              // && || ?? !
-	EOF                          // end of file
+	Number          TokenType = iota // 0 - 9
+	Identifier                       // a - z A - Z 0 - 9 _ $
+	Equals                           // =
+	BinOperator                      // / * + _
+	OParen                           // (
+	CParen                           // )
+	Let                              // let
+	Const                            // const
+	SemiColon                        // ;
+	Comma                            // ,
+	Colon                            // :
+	OBrace                           // {
+	CBrace                           // }
+	OBracket                         // [
+	CBracket                         // ]
+	Dot                              // .
+	Fn                               // fn
+	ComOperator                      // < == > != <= >=
+	If                               // if
+	Else                             // else
+	String                           // '...' "..."
+	WhileLoop                        // while
+	Comment                          // /*...*/ //...
+	Try                              // try
+	Catch                            // catch
+	Return                           // return
+	Break                            // break
+	Continue                         // continue
+	Class                            // class
+	Public                           // public
+	Private                          // private
+	LogicalOperator                  // && || ?? !
+	EOF                              // end of file
 )
 
 func Stringify(t TokenType) string {
@@ -398,7 +398,7 @@ func Tokenize(srcCode string) ([]Token, *errors.LexerError) {
 		}
 
 		// --- 6. Logical Operators (&&, ||, ??, !) ---
-		if twoCharacterOperator := "" ; func()bool{
+		if twoCharacterOperator := ""; func() bool {
 			if position+1 < srcLen {
 				twoCharacterOperator = string([]rune{currentCharRune, runes[position+1]})
 				return IsLogicalOperator(twoCharacterOperator)
