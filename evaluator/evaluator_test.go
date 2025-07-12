@@ -10,6 +10,7 @@ import (
 	"github.com/dev-kas/virtlang-go/v4/evaluator"
 	"github.com/dev-kas/virtlang-go/v4/parser"
 	"github.com/dev-kas/virtlang-go/v4/shared"
+	"github.com/dev-kas/virtlang-go/v4/values"
 )
 
 func TestNumbers(t *testing.T) {
@@ -2339,6 +2340,197 @@ func TestClasses(t *testing.T) {
 			t.Fatalf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
 		}
 
+		evaluated, runErr := evaluator.Evaluate(program, env, nil)
+		if runErr != nil {
+			t.Fatalf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
+		}
+		if evaluated.Type != test.output.Type {
+			t.Errorf("test %d failed: input=%q, expected type %v, got %v", i, test.input, test.output.Type, evaluated.Type)
+		}
+		if !reflect.DeepEqual(evaluated.Value, test.output.Value) {
+			t.Errorf("test %d failed: input=%q, value mismatch. expected %v, got %v", i, test.input, test.output.Value, evaluated.Value)
+		}
+	}
+}
+
+func TestLogicalOperators(t *testing.T) {
+	tests := []struct {
+		input  string
+		output shared.RuntimeValue
+	}{
+		{
+			input: "'apple' && 'banana'",
+			output: shared.RuntimeValue{
+				Type:  shared.String,
+				Value: "banana",
+			},
+		},
+		{
+			input: "1 && 0",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 0.0,
+			},
+		},
+		{
+			input: "0 && 1",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 0.0,
+			},
+		},
+		{
+			input: "0 && 0",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 0.0,
+			},
+		},
+		{
+			input: "false && true",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "true && false",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "false && false",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "nil && 123",
+			output: shared.RuntimeValue{
+				Type:  shared.Nil,
+				Value: nil,
+			},
+		},
+		{
+			input: "1 || 1",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 1.0,
+			},
+		},
+		{
+			input: "1 || 0",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 1.0,
+			},
+		},
+		{
+			input: "0 || 1",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 1.0,
+			},
+		},
+		{
+			input: "0 || 0",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 0.0,
+			},
+		},
+		{
+			input: "true || false",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "false || true",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+		{
+			input: "false || false",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "nil || 123",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 123.0,
+			},
+		},
+		{
+			input: "nil || nil",
+			output: shared.RuntimeValue{
+				Type:  shared.Nil,
+				Value: nil,
+			},
+		},
+		{
+			input: "0 ?? 1",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 0.0,
+			},
+		},
+		{
+			input: "1 ?? 0",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 1.0,
+			},
+		},
+		{
+			input: "nil ?? 1",
+			output: shared.RuntimeValue{
+				Type:  shared.Number,
+				Value: 1.0,
+			},
+		},
+		{
+			input: "false ?? false",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "!true",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: false,
+			},
+		},
+		{
+			input: "!false",
+			output: shared.RuntimeValue{
+				Type:  shared.Boolean,
+				Value: true,
+			},
+		},
+	}
+
+	for i, test := range tests {
+		p := parser.New("test")
+		env := environment.NewEnvironment(nil)
+		env.DeclareVar("true", values.MK_BOOL(true), false)
+		env.DeclareVar("false", values.MK_BOOL(false), false)
+		env.DeclareVar("nil", values.MK_NIL(), false)
+		program, synErr := p.ProduceAST(test.input)
+		if synErr != nil {
+			t.Fatalf("test %d failed: input=%q, expected no error, got %v", i, test.input, synErr)
+		}
 		evaluated, runErr := evaluator.Evaluate(program, env, nil)
 		if runErr != nil {
 			t.Fatalf("test %d failed: input=%q, expected no error, got %v", i, test.input, runErr)
