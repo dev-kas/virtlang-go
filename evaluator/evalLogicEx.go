@@ -14,47 +14,65 @@ import (
 
 func evalLogicEx(expression *ast.LogicalExpr, env *environment.Environment, dbgr *debugger.Debugger) (*shared.RuntimeValue, *errors.RuntimeError) {
 	var lhs *shared.RuntimeValue
+	var err *errors.RuntimeError
+
+	if expression.Operator == ast.LogicalNOT {
+		if expression.LHS != nil {
+			return nil, &errors.RuntimeError{
+				Message: fmt.Sprintf("Logical NOT operator can only be used without LHS, got %v.", expression.LHS),
+			}
+		}
+
+		rhs, err := Evaluate(expression.RHS, env, dbgr)
+		if err != nil {
+			return nil, err
+		}
+
+		res := values.MK_BOOL(!helpers.IsTruthy(rhs))
+		return &res, nil
+	}
+
 	if expression.LHS != nil {
-		var err *errors.RuntimeError
 		lhs, err = Evaluate(*expression.LHS, env, dbgr)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	rhs, err := Evaluate(expression.RHS, env, dbgr)
-	if err != nil {
-		return nil, err
-	}
-
 	switch expression.Operator {
 	case ast.LogicalAND:
 		if !helpers.IsTruthy(lhs) {
-			return lhs, nil
+			return lhs, nil // short circuit: return if false
+		}
+		rhs, err := Evaluate(expression.RHS, env, dbgr)
+		if err != nil {
+			return nil, err
 		}
 		return rhs, nil
+
 	case ast.LogicalOR:
 		if helpers.IsTruthy(lhs) {
-			return lhs, nil
+			return lhs, nil // short circuit: return if true
+		}
+		rhs, err := Evaluate(expression.RHS, env, dbgr)
+		if err != nil {
+			return nil, err
 		}
 		return rhs, nil
+
 	case ast.LogicalNilCoalescing:
-		if lhs == nil || lhs.Type == shared.Nil && lhs.Value == nil {
+		if lhs == nil || (lhs.Type == shared.Nil && lhs.Value == nil) {
+			rhs, err := Evaluate(expression.RHS, env, dbgr)
+			if err != nil {
+				return nil, err
+			}
 			return rhs, nil
 		}
 		return lhs, nil
-	case ast.LogicalNOT:
-		if lhs != nil {
-			return nil, &errors.RuntimeError{
-				Message: fmt.Sprintf("Logical NOT operator can only be used without LHS, got %v.", lhs.Type),
-			}
-		}
 
-		res := values.MK_BOOL(!helpers.IsTruthy(rhs))
-		return &res, nil
 	default:
 		return nil, &errors.RuntimeError{
-			Message: fmt.Sprintf("Unknown comparison operator: %v.", expression.Operator),
+			Message: fmt.Sprintf("Unknown logical operator: %v.", expression.Operator),
 		}
 	}
 }

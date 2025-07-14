@@ -2598,6 +2598,107 @@ func TestLogicalOperators(t *testing.T) {
 				Value: true,
 			},
 		},
+		// Short-circuit evaluation
+		{
+			input: "let val = [nil, nil] \n fn shortCircuitBehaviourTest(r, idx) { val[idx] = r \n return r } \n [shortCircuitBehaviourTest(true, 0) || shortCircuitBehaviourTest(false, 1), val]",
+			output: shared.RuntimeValue{
+				Type:  shared.Array,
+				Value: []shared.RuntimeValue{
+					{
+						Type:  shared.Boolean,
+						Value: true,
+					},
+					{
+						Type:  shared.Array,
+						Value: []shared.RuntimeValue{
+							{
+								Type:  shared.Boolean,
+								Value: true,
+							},
+							{
+								Type:  shared.Nil,
+								Value: nil,
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			input: "let val = [nil, nil] \n fn shortCircuitBehaviourTest(r, idx) { val[idx] = r \n return r } \n [shortCircuitBehaviourTest(false, 0) || shortCircuitBehaviourTest(true, 1), val]",
+			output: shared.RuntimeValue{
+				Type:  shared.Array,
+				Value: []shared.RuntimeValue{
+					{
+						Type:  shared.Boolean,
+						Value: true,
+					},
+					{
+						Type:  shared.Array,
+						Value: []shared.RuntimeValue{
+							{
+								Type:  shared.Boolean,
+								Value: false,
+							},
+							{
+								Type:  shared.Boolean,
+								Value: true,
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			input: "let val = [nil, nil] \n fn shortCircuitBehaviourTest(r, idx) { val[idx] = r \n return r } \n [shortCircuitBehaviourTest(true, 0) && shortCircuitBehaviourTest(false, 1), val]",
+			output: shared.RuntimeValue{
+				Type:  shared.Array,
+				Value: []shared.RuntimeValue{
+					{
+						Type:  shared.Boolean,
+						Value: false,
+					},
+					{
+						Type:  shared.Array,
+						Value: []shared.RuntimeValue{
+							{
+								Type:  shared.Boolean,
+								Value: true,
+							},
+							{
+								Type:  shared.Boolean,
+								Value: false,
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			input: "let val = [nil, nil] \n fn shortCircuitBehaviourTest(r, idx) { val[idx] = r \n return r } \n [shortCircuitBehaviourTest(false, 0) && shortCircuitBehaviourTest(true, 1), val]",
+			output: shared.RuntimeValue{
+				Type:  shared.Array,
+				Value: []shared.RuntimeValue{
+					{
+						Type:  shared.Boolean,
+						Value: false,
+					},
+					{
+						Type:  shared.Array,
+						Value: []shared.RuntimeValue{
+							{
+								Type:  shared.Boolean,
+								Value: false,
+							},
+							{
+								Type:  shared.Nil,
+								Value: nil,
+							},
+						},
+					},
+				},
+			},
+		},
 	}
 
 	for i, test := range tests {
