@@ -27,6 +27,11 @@ const (
 	CompareExprNode
 	BinaryExprNode
 	LogicalExprNode
+	DestructureDeclarationNode
+	DestructureArrayPatternNode
+	DestructureArrayElementNode
+	DestructureObjectPatternNode
+	DestructureObjectPropertyNode
 )
 
 func (n NodeType) String() string {
@@ -75,6 +80,16 @@ func (n NodeType) String() string {
 		return "ClassProperty"
 	case LogicalExprNode:
 		return "LogicalExpr"
+	case DestructureDeclarationNode:
+		return "DestructureDeclaration"
+	case DestructureArrayPatternNode:
+		return "DestructureArrayPattern"
+	case DestructureArrayElementNode:
+		return "DestructureArrayElement"
+	case DestructureObjectPatternNode:
+		return "DestructureObjectPattern"
+	case DestructureObjectPropertyNode:
+		return "DestructureObjectProperties"
 	default:
 		return "UnknownNodeType"
 	}
@@ -147,6 +162,55 @@ type VarDeclaration struct {
 
 func (v *VarDeclaration) GetType() NodeType                 { return VarDeclarationNode }
 func (v *VarDeclaration) GetSourceMetadata() SourceMetadata { return v.SourceMetadata }
+
+type DestructureObjectPattern struct {
+	Properties []DestructureObjectProperty
+	Rest       *string
+	SourceMetadata
+}
+
+func (v *DestructureObjectPattern) GetType() NodeType                 { return DestructureObjectPatternNode }
+func (v *DestructureObjectPattern) GetSourceMetadata() SourceMetadata { return v.SourceMetadata }
+
+type DestructureObjectProperty struct {
+	Key    string
+	Target Expr
+	SourceMetadata
+}
+
+func (v *DestructureObjectProperty) GetType() NodeType                 { return DestructureObjectPropertyNode }
+func (v *DestructureObjectProperty) GetSourceMetadata() SourceMetadata { return v.SourceMetadata }
+
+type DestructureArrayPattern struct {
+	Elements []DestructureArrayElement
+	Rest     *string
+	SourceMetadata
+}
+
+func (v *DestructureArrayPattern) GetType() NodeType                 { return DestructureArrayPatternNode }
+func (v *DestructureArrayPattern) GetSourceMetadata() SourceMetadata { return v.SourceMetadata }
+
+type DestructureArrayElement struct {
+	Target Expr
+	SourceMetadata
+}
+
+func (v *DestructureArrayElement) GetType() NodeType                 { return DestructureArrayElementNode }
+func (v *DestructureArrayElement) GetSourceMetadata() SourceMetadata { return v.SourceMetadata }
+
+type DestructurePattern interface {
+	Expr
+}
+
+type DestructureDeclaration struct {
+	Constant bool
+	Pattern  DestructurePattern
+	Value    Expr
+	SourceMetadata
+}
+
+func (v *DestructureDeclaration) GetType() NodeType                 { return DestructureDeclarationNode }
+func (v *DestructureDeclaration) GetSourceMetadata() SourceMetadata { return v.SourceMetadata }
 
 type TryCatchStmt struct {
 	Try      []Stmt

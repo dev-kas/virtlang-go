@@ -8,8 +8,8 @@ import (
 	"github.com/dev-kas/virtlang-go/v4/shared"
 )
 
-// MustEval evaluates source code fully (parse -> eval) and returns the value
-func MustEval(t *testing.T, src string) *shared.RuntimeValue {
+// MustEval evaluates source code fully (parse -> eval) and returns the value and environment
+func MustEval(t *testing.T, src string) (*shared.RuntimeValue, *environment.Environment) {
 	t.Helper()
 	prog := MustParse(t, src)
 	env := environment.NewEnvironment(nil)
@@ -17,5 +17,5 @@ func MustEval(t *testing.T, src string) *shared.RuntimeValue {
 	if err != nil {
 		t.Fatal(err)
 	}
-	return val
+	return val, env
 }
