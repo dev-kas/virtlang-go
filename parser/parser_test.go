@@ -897,4 +897,17 @@ func TestDestructurePatterns(t *testing.T) {
             }
         }
     }
+
+	// commonly made errors
+	// objects
+	testhelpers.ExpectParseError(t, "let { a, b, ...rest, c } = obj")   // rest not last
+	testhelpers.ExpectParseError(t, "let { ...rest, a } = obj")         // rest not last
+	testhelpers.ExpectParseError(t, "let { a, , c, d = 5 } = obj")        // skipping not allowed in object destructuring
+	testhelpers.ExpectParseError(t, "let { a, b, ...rest, ...extra } = obj") // multiple rest
+
+	// arrays
+	testhelpers.ExpectParseError(t, "let [x, y, ...rest, z] = arr")     // rest not last
+	testhelpers.ExpectParseError(t, "let [...rest, x] = arr")           // rest not last
+	testhelpers.ExpectParseError(t, "let [a, ...rest, ...extra] = arr") // multiple rest
+	testhelpers.ExpectParseError(t, "let [a, b, , ...rest, c] = arr")   // rest not last even with skipped element
 }

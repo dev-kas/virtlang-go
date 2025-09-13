@@ -162,6 +162,7 @@ type VarDeclaration struct {
 
 func (v *VarDeclaration) GetType() NodeType                 { return VarDeclarationNode }
 func (v *VarDeclaration) GetSourceMetadata() SourceMetadata { return v.SourceMetadata }
+func (v *VarDeclaration) isDeclaration()                    {}
 
 type DestructureObjectPattern struct {
 	Properties []DestructureObjectProperty
@@ -173,13 +174,16 @@ func (v *DestructureObjectPattern) GetType() NodeType                 { return D
 func (v *DestructureObjectPattern) GetSourceMetadata() SourceMetadata { return v.SourceMetadata }
 
 type DestructureObjectProperty struct {
-	Key    string
-	Target Expr
+	Key                 string
+	Default             Expr
+	Name                string
+	DeconstructChildren DestructurePattern
 	SourceMetadata
 }
 
 func (v *DestructureObjectProperty) GetType() NodeType                 { return DestructureObjectPropertyNode }
 func (v *DestructureObjectProperty) GetSourceMetadata() SourceMetadata { return v.SourceMetadata }
+func (v *DestructureObjectPattern) isPattern()                         {}
 
 type DestructureArrayPattern struct {
 	Elements []DestructureArrayElement
@@ -189,9 +193,13 @@ type DestructureArrayPattern struct {
 
 func (v *DestructureArrayPattern) GetType() NodeType                 { return DestructureArrayPatternNode }
 func (v *DestructureArrayPattern) GetSourceMetadata() SourceMetadata { return v.SourceMetadata }
+func (v *DestructureArrayPattern) isPattern()                        {}
 
 type DestructureArrayElement struct {
-	Target Expr
+	Default             Expr
+	Name                string
+	DeconstructChildren DestructurePattern
+	Skipped             bool
 	SourceMetadata
 }
 
@@ -200,6 +208,7 @@ func (v *DestructureArrayElement) GetSourceMetadata() SourceMetadata { return v.
 
 type DestructurePattern interface {
 	Expr
+	isPattern()
 }
 
 type DestructureDeclaration struct {
@@ -211,6 +220,12 @@ type DestructureDeclaration struct {
 
 func (v *DestructureDeclaration) GetType() NodeType                 { return DestructureDeclarationNode }
 func (v *DestructureDeclaration) GetSourceMetadata() SourceMetadata { return v.SourceMetadata }
+func (v *DestructureDeclaration) isDeclaration()                    {}
+
+type Declaration interface {
+	Stmt
+	isDeclaration()
+}
 
 type TryCatchStmt struct {
 	Try      []Stmt
