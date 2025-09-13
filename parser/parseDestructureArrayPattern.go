@@ -31,7 +31,7 @@ func (p *Parser) parseDestructureArrayPattern() (ast.DestructurePattern, *errors
 
 			isRest = true
 		}
-		
+
 		var elem = ast.DestructureArrayElement{
 			Skipped: isSkip,
 		}

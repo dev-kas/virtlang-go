@@ -99,7 +99,6 @@ func (p *Parser) parseDestructureObjectPattern() (ast.DestructurePattern, *error
 			props = append(props, *prop)
 		}
 
-
 		if p.at().Type == lexer.Comma {
 			// further destructuring
 			_, err := p.expect(lexer.Comma)

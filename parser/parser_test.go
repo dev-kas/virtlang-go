@@ -815,94 +815,94 @@ func TestIfStmt(t *testing.T) {
 
 // #7 Feature: Implement Destructuring Assignments (Object and Array)
 func TestDestructurePatterns(t *testing.T) {
-    tests := []struct {
-        src           string
-        expectType    string // "object" or "array"
-        expectKeys    []string
-        expectElCount int
-    }{
-        // object patterns
-        {
-            src:        `let { name, age } = { name: "Jedi", age: 30 }`,
-            expectType: "object",
-            expectKeys: []string{"name", "age"},
-        },
-        {
-            src:        `let { user: { first, last }, id } = obj`,
-            expectType: "object",
-            expectKeys: []string{"user", "id"},
-        },
-        {
-            src:        `let { x, y, ...rest } = point`,
-            expectType: "object",
-            expectKeys: []string{"x", "y"},
-        },
+	tests := []struct {
+		src           string
+		expectType    string // "object" or "array"
+		expectKeys    []string
+		expectElCount int
+	}{
+		// object patterns
+		{
+			src:        `let { name, age } = { name: "Jedi", age: 30 }`,
+			expectType: "object",
+			expectKeys: []string{"name", "age"},
+		},
+		{
+			src:        `let { user: { first, last }, id } = obj`,
+			expectType: "object",
+			expectKeys: []string{"user", "id"},
+		},
+		{
+			src:        `let { x, y, ...rest } = point`,
+			expectType: "object",
+			expectKeys: []string{"x", "y"},
+		},
 
-        // array patterns
-        {
-            src:           `let [a, b, c] = [1,2,3]`,
-            expectType:    "array",
-            expectElCount: 3,
-        },
-        {
-            src:           `let [first, , third] = arr`,
-            expectType:    "array",
-            expectElCount: 3,
-        },
-        {
-            src:           `let [x, y, ...rest] = nums`,
-            expectType:    "array",
-            expectElCount: 2,
-        },
-        {
-            src:           `let [[a,b], c] = nested`,
-            expectType:    "array",
-            expectElCount: 2,
-        },
-    }
+		// array patterns
+		{
+			src:           `let [a, b, c] = [1,2,3]`,
+			expectType:    "array",
+			expectElCount: 3,
+		},
+		{
+			src:           `let [first, , third] = arr`,
+			expectType:    "array",
+			expectElCount: 3,
+		},
+		{
+			src:           `let [x, y, ...rest] = nums`,
+			expectType:    "array",
+			expectElCount: 2,
+		},
+		{
+			src:           `let [[a,b], c] = nested`,
+			expectType:    "array",
+			expectElCount: 2,
+		},
+	}
 
-    for _, tt := range tests {
-        prog := testhelpers.MustParse(t, tt.src)
-        if len(prog.Stmts) != 1 {
-            t.Fatalf("[%s] Expected 1 statement, got %d", tt.src, len(prog.Stmts))
-        }
+	for _, tt := range tests {
+		prog := testhelpers.MustParse(t, tt.src)
+		if len(prog.Stmts) != 1 {
+			t.Fatalf("[%s] Expected 1 statement, got %d", tt.src, len(prog.Stmts))
+		}
 
-        decl, ok := prog.Stmts[0].(*ast.DestructureDeclaration)
-        if !ok {
-            t.Fatalf("[%s] Expected DestructureDeclaration, got %s", tt.src, prog.Stmts[0].GetType())
-        }
+		decl, ok := prog.Stmts[0].(*ast.DestructureDeclaration)
+		if !ok {
+			t.Fatalf("[%s] Expected DestructureDeclaration, got %s", tt.src, prog.Stmts[0].GetType())
+		}
 
-        switch tt.expectType {
-        case "object":
-            pattern, ok := decl.Pattern.(*ast.DestructureObjectPattern)
-            if !ok {
-                t.Fatalf("[%s] Expected ObjectPattern, got %s", tt.src, decl.Pattern.GetType())
-            }
-            if len(pattern.Properties) != len(tt.expectKeys) {
-                t.Fatalf("[%s] Expected %d properties, got %d", tt.src, len(tt.expectKeys), len(pattern.Properties))
-            }
-            for i, key := range tt.expectKeys {
-                if pattern.Properties[i].Key != key {
-                    t.Fatalf("[%s] Expected key %s, got %s", tt.src, key, pattern.Properties[i].Key)
-                }
-            }
+		switch tt.expectType {
+		case "object":
+			pattern, ok := decl.Pattern.(*ast.DestructureObjectPattern)
+			if !ok {
+				t.Fatalf("[%s] Expected ObjectPattern, got %s", tt.src, decl.Pattern.GetType())
+			}
+			if len(pattern.Properties) != len(tt.expectKeys) {
+				t.Fatalf("[%s] Expected %d properties, got %d", tt.src, len(tt.expectKeys), len(pattern.Properties))
+			}
+			for i, key := range tt.expectKeys {
+				if pattern.Properties[i].Key != key {
+					t.Fatalf("[%s] Expected key %s, got %s", tt.src, key, pattern.Properties[i].Key)
+				}
+			}
 
-        case "array":
-            pattern, ok := decl.Pattern.(*ast.DestructureArrayPattern)
-            if !ok {
-                t.Fatalf("[%s] Expected ArrayPattern, got %s", tt.src, decl.Pattern.GetType())
-            }
-            if len(pattern.Elements) != tt.expectElCount {
-                t.Fatalf("[%s] Expected %d elements, got %d", tt.src, tt.expectElCount, len(pattern.Elements))
-            }
-        }
-    }
+		case "array":
+			pattern, ok := decl.Pattern.(*ast.DestructureArrayPattern)
+			if !ok {
+				t.Fatalf("[%s] Expected ArrayPattern, got %s", tt.src, decl.Pattern.GetType())
+			}
+			if len(pattern.Elements) != tt.expectElCount {
+				t.Fatalf("[%s] Expected %d elements, got %d", tt.src, tt.expectElCount, len(pattern.Elements))
+			}
+		}
+	}
 
 	// commonly made errors
 	// objects
-	testhelpers.ExpectParseError(t, "let { a, b, ...rest, c } = obj")   // rest not last
-	testhelpers.ExpectParseError(t, "let { ...rest, a } = obj")         // rest not last
-	testhelpers.ExpectParseError(t, "let { a, , c, d = 5 } = obj")        // skipping not allowed in object destructuring
+	testhelpers.ExpectParseError(t, "let { a, b, ...rest, c } = obj")        // rest not last
+	testhelpers.ExpectParseError(t, "let { ...rest, a } = obj")              // rest not last
+	testhelpers.ExpectParseError(t, "let { a, , c, d = 5 } = obj")           // skipping not allowed in object destructuring
 	testhelpers.ExpectParseError(t, "let { a, b, ...rest, ...extra } = obj") // multiple rest
 
 	// arrays

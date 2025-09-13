@@ -37,6 +37,23 @@ import "github.com/dev-kas/virtlang-go/v4/ast"
 - [type ContinueStmt](<#ContinueStmt>)
   - [func \(r \*ContinueStmt\) GetSourceMetadata\(\) SourceMetadata](<#ContinueStmt.GetSourceMetadata>)
   - [func \(r \*ContinueStmt\) GetType\(\) NodeType](<#ContinueStmt.GetType>)
+- [type Declaration](<#Declaration>)
+- [type DestructureArrayElement](<#DestructureArrayElement>)
+  - [func \(v \*DestructureArrayElement\) GetSourceMetadata\(\) SourceMetadata](<#DestructureArrayElement.GetSourceMetadata>)
+  - [func \(v \*DestructureArrayElement\) GetType\(\) NodeType](<#DestructureArrayElement.GetType>)
+- [type DestructureArrayPattern](<#DestructureArrayPattern>)
+  - [func \(v \*DestructureArrayPattern\) GetSourceMetadata\(\) SourceMetadata](<#DestructureArrayPattern.GetSourceMetadata>)
+  - [func \(v \*DestructureArrayPattern\) GetType\(\) NodeType](<#DestructureArrayPattern.GetType>)
+- [type DestructureDeclaration](<#DestructureDeclaration>)
+  - [func \(v \*DestructureDeclaration\) GetSourceMetadata\(\) SourceMetadata](<#DestructureDeclaration.GetSourceMetadata>)
+  - [func \(v \*DestructureDeclaration\) GetType\(\) NodeType](<#DestructureDeclaration.GetType>)
+- [type DestructureObjectPattern](<#DestructureObjectPattern>)
+  - [func \(v \*DestructureObjectPattern\) GetSourceMetadata\(\) SourceMetadata](<#DestructureObjectPattern.GetSourceMetadata>)
+  - [func \(v \*DestructureObjectPattern\) GetType\(\) NodeType](<#DestructureObjectPattern.GetType>)
+- [type DestructureObjectProperty](<#DestructureObjectProperty>)
+  - [func \(v \*DestructureObjectProperty\) GetSourceMetadata\(\) SourceMetadata](<#DestructureObjectProperty.GetSourceMetadata>)
+  - [func \(v \*DestructureObjectProperty\) GetType\(\) NodeType](<#DestructureObjectProperty.GetType>)
+- [type DestructurePattern](<#DestructurePattern>)
 - [type Expr](<#Expr>)
 - [type FnDeclaration](<#FnDeclaration>)
   - [func \(f \*FnDeclaration\) GetSourceMetadata\(\) SourceMetadata](<#FnDeclaration.GetSourceMetadata>)
@@ -413,6 +430,190 @@ func (r *ContinueStmt) GetType() NodeType
 
 
 
+<a name="Declaration"></a>
+## type Declaration
+
+
+
+```go
+type Declaration interface {
+    Stmt
+    // contains filtered or unexported methods
+}
+```
+
+<a name="DestructureArrayElement"></a>
+## type DestructureArrayElement
+
+
+
+```go
+type DestructureArrayElement struct {
+    Default             Expr
+    Name                string
+    DeconstructChildren DestructurePattern
+    Skipped             bool
+    SourceMetadata
+}
+```
+
+<a name="DestructureArrayElement.GetSourceMetadata"></a>
+### func \(\*DestructureArrayElement\) GetSourceMetadata
+
+```go
+func (v *DestructureArrayElement) GetSourceMetadata() SourceMetadata
+```
+
+
+
+<a name="DestructureArrayElement.GetType"></a>
+### func \(\*DestructureArrayElement\) GetType
+
+```go
+func (v *DestructureArrayElement) GetType() NodeType
+```
+
+
+
+<a name="DestructureArrayPattern"></a>
+## type DestructureArrayPattern
+
+
+
+```go
+type DestructureArrayPattern struct {
+    Elements []DestructureArrayElement
+    Rest     *string
+    SourceMetadata
+}
+```
+
+<a name="DestructureArrayPattern.GetSourceMetadata"></a>
+### func \(\*DestructureArrayPattern\) GetSourceMetadata
+
+```go
+func (v *DestructureArrayPattern) GetSourceMetadata() SourceMetadata
+```
+
+
+
+<a name="DestructureArrayPattern.GetType"></a>
+### func \(\*DestructureArrayPattern\) GetType
+
+```go
+func (v *DestructureArrayPattern) GetType() NodeType
+```
+
+
+
+<a name="DestructureDeclaration"></a>
+## type DestructureDeclaration
+
+
+
+```go
+type DestructureDeclaration struct {
+    Constant bool
+    Pattern  DestructurePattern
+    Value    Expr
+    SourceMetadata
+}
+```
+
+<a name="DestructureDeclaration.GetSourceMetadata"></a>
+### func \(\*DestructureDeclaration\) GetSourceMetadata
+
+```go
+func (v *DestructureDeclaration) GetSourceMetadata() SourceMetadata
+```
+
+
+
+<a name="DestructureDeclaration.GetType"></a>
+### func \(\*DestructureDeclaration\) GetType
+
+```go
+func (v *DestructureDeclaration) GetType() NodeType
+```
+
+
+
+<a name="DestructureObjectPattern"></a>
+## type DestructureObjectPattern
+
+
+
+```go
+type DestructureObjectPattern struct {
+    Properties []DestructureObjectProperty
+    Rest       *string
+    SourceMetadata
+}
+```
+
+<a name="DestructureObjectPattern.GetSourceMetadata"></a>
+### func \(\*DestructureObjectPattern\) GetSourceMetadata
+
+```go
+func (v *DestructureObjectPattern) GetSourceMetadata() SourceMetadata
+```
+
+
+
+<a name="DestructureObjectPattern.GetType"></a>
+### func \(\*DestructureObjectPattern\) GetType
+
+```go
+func (v *DestructureObjectPattern) GetType() NodeType
+```
+
+
+
+<a name="DestructureObjectProperty"></a>
+## type DestructureObjectProperty
+
+
+
+```go
+type DestructureObjectProperty struct {
+    Key                 string
+    Default             Expr
+    Name                string
+    DeconstructChildren DestructurePattern
+    SourceMetadata
+}
+```
+
+<a name="DestructureObjectProperty.GetSourceMetadata"></a>
+### func \(\*DestructureObjectProperty\) GetSourceMetadata
+
+```go
+func (v *DestructureObjectProperty) GetSourceMetadata() SourceMetadata
+```
+
+
+
+<a name="DestructureObjectProperty.GetType"></a>
+### func \(\*DestructureObjectProperty\) GetType
+
+```go
+func (v *DestructureObjectProperty) GetType() NodeType
+```
+
+
+
+<a name="DestructurePattern"></a>
+## type DestructurePattern
+
+
+
+```go
+type DestructurePattern interface {
+    Expr
+    // contains filtered or unexported methods
+}
+```
+
 <a name="Expr"></a>
 ## type Expr
 
@@ -642,6 +843,11 @@ const (
     CompareExprNode
     BinaryExprNode
     LogicalExprNode
+    DestructureDeclarationNode
+    DestructureArrayPatternNode
+    DestructureArrayElementNode
+    DestructureObjectPatternNode
+    DestructureObjectPropertyNode
 )
 ```
 
@@ -2150,7 +2356,7 @@ import "github.com/dev-kas/virtlang-go/v4/internal/testhelpers"
 
 - [func EvalNode\(t \*testing.T, node ast.Expr\) \*shared.RuntimeValue](<#EvalNode>)
 - [func ExpectParseError\(t \*testing.T, src string\)](<#ExpectParseError>)
-- [func MustEval\(t \*testing.T, src string\) \*shared.RuntimeValue](<#MustEval>)
+- [func MustEval\(t \*testing.T, src string\) \(\*shared.RuntimeValue, \*environment.Environment\)](<#MustEval>)
 - [func MustParse\(t \*testing.T, src string\) \*ast.Program](<#MustParse>)
 
 
@@ -2176,10 +2382,10 @@ ExpectParseError checks that parsing fails for invalid sources
 ## func MustEval
 
 ```go
-func MustEval(t *testing.T, src string) *shared.RuntimeValue
+func MustEval(t *testing.T, src string) (*shared.RuntimeValue, *environment.Environment)
 ```
 
-MustEval evaluates source code fully \(parse \-\> eval\) and returns the value
+MustEval evaluates source code fully \(parse \-\> eval\) and returns the value and environment
 
 <a name="MustParse"></a>
 ## func MustParse
