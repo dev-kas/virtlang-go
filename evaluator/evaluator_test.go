@@ -2735,8 +2735,8 @@ func TestDestructureEvaluator(t *testing.T) {
 		{
 			src: `let { x, y, ...rest } = { x: 1, y: 2, z: 3, w: 4 }`,
 			expected: map[string]interface{}{
-				"x":    1.0,
-				"y":    2.0,
+				"x": 1.0,
+				"y": 2.0,
 				"rest": map[string]*shared.RuntimeValue{
 					"z": {Type: shared.Number, Value: 3.0},
 					"w": {Type: shared.Number, Value: 4.0},
@@ -2756,8 +2756,8 @@ func TestDestructureEvaluator(t *testing.T) {
 		{
 			src: `let [a, b, ...rest] = [10, 20, 30, 40, 50]`,
 			expected: map[string]interface{}{
-				"a":    10.0,
-				"b":    20.0,
+				"a": 10.0,
+				"b": 20.0,
 				"rest": []shared.RuntimeValue{
 					{Type: shared.Number, Value: 30.0},
 					{Type: shared.Number, Value: 40.0},

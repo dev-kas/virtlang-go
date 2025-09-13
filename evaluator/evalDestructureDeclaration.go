@@ -91,7 +91,7 @@ func evalDestructureDeclaration_bindPattern(pattern ast.DestructurePattern, valu
 		return nil
 
 	case *ast.DestructureArrayPattern:
-		var arrValue []shared.RuntimeValue 
+		var arrValue []shared.RuntimeValue
 
 		// check if the value is a string and convert it to an array of characters
 		if value.Type == shared.String {
@@ -162,7 +162,7 @@ func evalDestructureDeclaration_bindPattern(pattern ast.DestructurePattern, valu
 			} else {
 				restSlice = []shared.RuntimeValue{} // empty slice if no elements are left
 			}
-			
+
 			restValue := values.MK_ARRAY(restSlice)
 			_, err := env.DeclareVar(*p.Rest, restValue, isConstant)
 			if err != nil {
