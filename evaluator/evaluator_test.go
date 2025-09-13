@@ -8,6 +8,7 @@ import (
 
 	"github.com/dev-kas/virtlang-go/v4/environment"
 	"github.com/dev-kas/virtlang-go/v4/evaluator"
+	"github.com/dev-kas/virtlang-go/v4/internal/testhelpers"
 	"github.com/dev-kas/virtlang-go/v4/parser"
 	"github.com/dev-kas/virtlang-go/v4/shared"
 	"github.com/dev-kas/virtlang-go/v4/values"
@@ -2720,6 +2721,92 @@ func TestLogicalOperators(t *testing.T) {
 		}
 		if !reflect.DeepEqual(evaluated.Value, test.output.Value) {
 			t.Errorf("test %d failed: input=%q, value mismatch. expected %v, got %v", i, test.input, test.output.Value, evaluated.Value)
+		}
+	}
+}
+
+// #7 Feature: Implement Destructuring Assignments (Object and Array)
+func TestDestructureEvaluator(t *testing.T) {
+	tests := []struct {
+		src      string
+		expected map[string]interface{}
+	}{
+		// object destructuring
+		{
+			src: `let { x, y, ...rest } = { x: 1, y: 2, z: 3, w: 4 }`,
+			expected: map[string]interface{}{
+				"x":    1.0,
+				"y":    2.0,
+				"rest": map[string]*shared.RuntimeValue{
+					"z": {Type: shared.Number, Value: 3.0},
+					"w": {Type: shared.Number, Value: 4.0},
+				},
+			},
+		},
+		{
+			src: `let { user: { first, last }, id } = { user: { first: "Luke", last: "Sky" }, id: 7 }`,
+			expected: map[string]interface{}{
+				"first": "Luke",
+				"last":  "Sky",
+				"id":    7.0,
+			},
+		},
+
+		// array destructuring
+		{
+			src: `let [a, b, ...rest] = [10, 20, 30, 40, 50]`,
+			expected: map[string]interface{}{
+				"a":    10.0,
+				"b":    20.0,
+				"rest": []shared.RuntimeValue{
+					{Type: shared.Number, Value: 30.0},
+					{Type: shared.Number, Value: 40.0},
+					{Type: shared.Number, Value: 50.0},
+				},
+			},
+		},
+		{
+			src: `let [[i, j], k] = [[1, 2], 3]`,
+			expected: map[string]interface{}{
+				"i": 1.0,
+				"j": 2.0,
+				"k": 3.0,
+			},
+		},
+
+		// string destructuring
+		{
+			src: `let [a, b, c, ...others] = "abcdef"`,
+			expected: map[string]interface{}{
+				"a": "a",
+				"b": "b",
+				"c": "c",
+				"others": []shared.RuntimeValue{
+					{Type: shared.String, Value: "d"},
+					{Type: shared.String, Value: "e"},
+					{Type: shared.String, Value: "f"},
+				},
+			},
+		},
+		{
+			src: `let [a, ,,,,, ,,,, k] = "abcdefghijk"`,
+			expected: map[string]interface{}{
+				"a": "a",
+				"k": "k",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		_, env := testhelpers.MustEval(t, tt.src)
+		for key, val := range tt.expected {
+			got, err := env.LookupVar(key)
+			if err != nil {
+				t.Fatalf("[%s] expected variable %s to exist", tt.src, key)
+			}
+			if !reflect.DeepEqual(got.Value, val) {
+				t.Fatalf("[%s] expected %v for %s, got %v", tt.src, val, key, got.Value)
+			}
 		}
 	}
 }

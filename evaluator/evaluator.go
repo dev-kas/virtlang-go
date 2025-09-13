@@ -101,6 +101,9 @@ func Evaluate(astNode ast.Stmt, env *environment.Environment, dbgr *debugger.Deb
 
 	case ast.ClassPropertyNode:
 		return evalClassProperty(astNode.(*ast.ClassProperty), env, dbgr)
+	
+	case ast.DestructureDeclarationNode:
+		return evalDestructureDeclaration(astNode.(*ast.DestructureDeclaration), env, dbgr)
 
 	default:
 		return nil, &errors.RuntimeError{
